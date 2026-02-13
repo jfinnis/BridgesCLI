@@ -1,6 +1,6 @@
 import { Command } from 'commander'
 import { Box, render } from 'ink'
-import { HashiNode } from './HashiNode.js'
+import { HashiRow } from './components/HashiRow.tsx'
 
 type CliOptions = {
     stdout: boolean
@@ -27,7 +27,14 @@ function App() {
             alignItems="center"
             justifyContent="center"
         >
-            <HashiNode />
+            <HashiRow
+                length={5}
+                nodes={[
+                    { position: 0, value: 1 },
+                    { position: 2, value: 2 },
+                    { position: 4, value: 3 },
+                ]}
+            />
         </Box>
     )
 }
