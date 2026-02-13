@@ -14,7 +14,8 @@
     "module": "NodeNext",
     "outDir": "dist",
     "sourceMap": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "allowImportingTsExtensions": true
   },
   "ts-node": {
     "compilerOptions": {
