@@ -1,50 +1,46 @@
 import { Box, Text } from 'ink'
 
-export type HashiNodeData = {
-    position: number
-    value: number
-}
+import { ROW_HEIGHT, NODE_WIDTH, SPACE_BETWEEN, OUTER_PADDING } from './HashiGrid.tsx'
+import type { HashiNodeData } from '../types.ts'
 
-export type HashiRowProps = {
-    length: number
+type HashiRowProps = {
+    /** Max number of nodes in this row */
+    maxNodes: number
     nodes: HashiNodeData[]
 }
 
-export function HashiRow({ length, nodes }: HashiRowProps) {
-    const nodeWidth = 5
-    const spaceBetween = 5
-    const spacePadding = 3
-
-    const slots: (number | null)[] = Array(length).fill(null)
+export default function HashiRow({ maxNodes, nodes }: HashiRowProps) {
+    const slots: (number | null)[] = Array(maxNodes).fill(null)
     for (const node of nodes) {
-        if (node.position >= 0 && node.position < length) {
+        if (node.position >= 0 && node.position < maxNodes) {
             slots[node.position] = node.value
         }
     }
 
+    // Each row represents multiple rows of actual terminal output.
     const lines: string[] = []
-    for (let line = 0; line < 5; line++) {
-        let rowStr = ' '.repeat(spacePadding)
+    for (let line = 0; line < ROW_HEIGHT; line++) {
+        let rowStr = ' '.repeat(OUTER_PADDING)
         for (let i = 0; i < slots.length; i++) {
-            const value = slots[i]
-            if (value === null) {
-                rowStr += ' '.repeat(nodeWidth)
+            if (slots[i] === null) {
+                // If not printing a node, put empty space
+                rowStr += ' '.repeat(NODE_WIDTH)
             } else {
-                if (line === 0 || line === 4) {
-                    rowStr += ' '.repeat(nodeWidth)
+                // Print the node
+                if (line === 0) {
+                    rowStr += '╭───╮'
                 } else if (line === 1) {
-                    rowStr += '┏━━━┓'
-                } else if (line === 3) {
-                    rowStr += '┗━━━┛'
-                } else {
-                    rowStr += `┃ ${value} ┃`
+                    rowStr += `│ ${slots[i]} │`
+                } else if (line === 2) {
+                    rowStr += '╰───╯'
                 }
             }
+
             if (i < slots.length - 1) {
-                rowStr += ' '.repeat(spaceBetween)
+                rowStr += ' '.repeat(SPACE_BETWEEN)
             }
         }
-        rowStr += ' '.repeat(spacePadding)
+        rowStr += ' '.repeat(OUTER_PADDING)
         lines.push(rowStr)
     }
 

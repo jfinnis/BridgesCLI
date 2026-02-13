@@ -1,6 +1,7 @@
 import { Command } from 'commander'
-import { Box, render } from 'ink'
-import { HashiRow } from './components/HashiRow.tsx'
+import { render } from 'ink'
+
+import HashiGrid from './components/HashiGrid.tsx'
 
 type CliOptions = {
     stdout: boolean
@@ -18,24 +19,28 @@ const options = program.opts<CliOptions>()
 
 function App() {
     return (
-        <Box
-            borderStyle="single"
-            borderColor="white"
-            width={60}
-            height={20}
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-        >
-            <HashiRow
-                length={5}
-                nodes={[
-                    { position: 0, value: 1 },
+        <HashiGrid
+            numNodes={5}
+            rows={[
+                [
+                    { position: 0, value: 3 },
                     { position: 2, value: 2 },
+                ],
+                [
+                    { position: 1, value: 1 },
+                    { position: 2, value: 3 },
+                    { position: 3, value: 2 },
+                ],
+                [
+                    { position: 3, value: 1 },
+                    { position: 4, value: 1 },
+                ],
+                [
+                    { position: 0, value: 4 },
                     { position: 4, value: 3 },
-                ]}
-            />
-        </Box>
+                ],
+            ]}
+        />
     )
 }
 
