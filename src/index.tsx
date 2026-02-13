@@ -1,5 +1,6 @@
 import { Command } from 'commander'
-import { Box, render, Text } from 'ink'
+import { Box, render } from 'ink'
+import { HashiNode } from './HashiNode.js'
 
 type CliOptions = {
     stdout: boolean
@@ -15,27 +16,21 @@ program
 
 const options = program.opts<CliOptions>()
 
-const CircleWithNumber = () => (
-    <Box flexDirection="column" alignItems="center">
-        <Text>┏━┓</Text>
-        <Text>┃4┃</Text>
-        <Text>┗━┛</Text>
-    </Box>
-)
-
-const App = () => (
-    <Box
-        borderStyle="single"
-        borderColor="white"
-        width={60}
-        height={20}
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-    >
-        <CircleWithNumber />
-    </Box>
-)
+function App() {
+    return (
+        <Box
+            borderStyle="single"
+            borderColor="white"
+            width={60}
+            height={20}
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+        >
+            <HashiNode />
+        </Box>
+    )
+}
 
 if (options.stdout) {
     const instance = render(<App />)
