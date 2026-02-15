@@ -16,9 +16,10 @@ describe('HashiRow', () => {
             />
         )
         expect(lastFrame()).toEqual(
-` ╭───╮╭───╮╭───╮
+            ` ╭───╮╭───╮╭───╮
  │ 1 ││ 2 ││ 3 │
- ╰───╯╰───╯╰───╯`)
+ ╰───╯╰───╯╰───╯`
+        )
     })
 
     it('renders empty positions as blank', () => {
@@ -32,9 +33,10 @@ describe('HashiRow', () => {
             />
         )
         expect(lastFrame()).toEqual(
-` ╭───╮     ╭───╮
+            ` ╭───╮     ╭───╮
  │ 1 │     │ 3 │
- ╰───╯     ╰───╯`)
+ ╰───╯     ╰───╯`
+        )
     })
 
     it('ignores nodes outside valid positions', () => {
@@ -49,9 +51,10 @@ describe('HashiRow', () => {
             />
         )
         expect(lastFrame()).toEqual(
-` ╭───╮
+            ` ╭───╮
  │ 2 │
- ╰───╯`)
+ ╰───╯`
+        )
         expect(lastFrame()).not.toContain('┃ 1 ┃')
         expect(lastFrame()).not.toContain('┃ 3 ┃')
     })

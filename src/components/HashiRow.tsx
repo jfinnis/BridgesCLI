@@ -1,7 +1,6 @@
 import { Box, Text } from 'ink'
-
-import { ROW_HEIGHT, NODE_WIDTH, SPACE_BETWEEN, OUTER_PADDING } from './HashiGrid.tsx'
 import type { HashiNodeData } from '../types.ts'
+import { NODE_WIDTH, OUTER_PADDING, ROW_HEIGHT, SPACE_BETWEEN } from './HashiGrid.tsx'
 
 type HashiRowProps = {
     /** Max number of nodes in this row */

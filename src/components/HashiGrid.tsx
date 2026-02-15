@@ -1,7 +1,6 @@
 import { Box } from 'ink'
-
-import HashiRow from './HashiRow.tsx'
 import type { HashiNodeData } from '../types.ts'
+import HashiRow from './HashiRow.tsx'
 
 export const ROW_HEIGHT = 3
 export const NODE_WIDTH = 5
