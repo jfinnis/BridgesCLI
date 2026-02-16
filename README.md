@@ -1,6 +1,7 @@
 # Hashi Puzzle
 
-A CLI-based Hashiwokakero (Bridges) puzzle renderer built with React and Ink.
+A CLI-based Hashiwokakero (Bridges) puzzle renderer built with React and Ink. This exists mostly to
+gain more experience with an agent-based workflow.
 
 ## What is Hashiwokakero?
 
@@ -25,7 +26,7 @@ bun start
 bun run test
 
 # Lint/format
-npx @biomejs/biome check --write .
+bun run lint
 ```
 
 ## Project Structure
