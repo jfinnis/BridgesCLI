@@ -1,8 +1,7 @@
 import { Command } from 'commander'
 import { render } from 'ink'
 
-import HashiGrid from './components/HashiGrid.tsx'
-import { parsePuzzle } from './utils/parsePuzzle.ts'
+import App from './App.tsx'
 import { samplePuzzles } from './utils/samplePuzzles.ts'
 
 type CliOptions = {
@@ -21,18 +20,23 @@ program
 
 const options = program.opts<CliOptions>()
 
-function App() {
-    const puzzle = options.puzzle ?? (samplePuzzles[0] || '')
-    const dimensions = puzzle.split(':')[0] ?? '5x5'
-    const numNodes = Number(dimensions.split('x')[1]) || 5
-    console.log(`rendering puzzle ${numNodes} width`)
+const puzzle = options.puzzle ?? (samplePuzzles[0] || '')
 
-    return <HashiGrid numNodes={numNodes} rows={parsePuzzle(puzzle)} />
-}
-
+// 
 if (options.stdout) {
-    const instance = render(<App />)
+    const instance = render(<App stdout={true} puzzle={puzzle} />)
     instance.unmount()
 } else {
-    render(<App />)
+    const instance = render(<App stdout={false} puzzle={puzzle} />)
+
+    process.stdin.setRawMode(true)
+    process.stdin.resume()
+    process.stdin.setEncoding('utf8')
+
+    process.stdin.on('data', (key: string) => {
+        if (key === 'q') {
+            instance.unmount()
+            process.exit(0)
+        }
+    })
 }

@@ -19,7 +19,7 @@ Hashiwokakero (橋をかけろ, "build bridges") is a logic puzzle where you con
 ## Getting Started
 
 ```bash
-# Run the puzzle
+# Run the puzzle (interactive mode - press q to quit)
 bun start
 
 # Run tests
@@ -28,6 +28,11 @@ bun run test
 # Lint/format
 bun run lint
 ```
+
+### CLI Options
+
+- `-s, --stdout` - Output to stdout and exit immediately (for testing)
+- `-p, --puzzle <identifier>` - Select a puzzle by its shorthand identifier (see `samplePuzzles.ts`)
 
 ## Project Structure
 

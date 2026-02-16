@@ -1,3 +1,9 @@
+/**
+ * The format is as follows:
+ * 7x7: - dimensions of the puzzle
+ * 4a3a3a3 - a row - number=a node with its value. letter is # spaces a=1 space, b=2 spaces, etc
+ * . - signifies end of a row
+ */
 export const samplePuzzles = [
     '7x7:4a3a3a3.a2c4a.3b3b3.g.2b8a4a.d1a3.a1a4a1a', // complete solution on site with code
     '9x9:3c1a3a3.b2b3c.3c2a2b.e4b6.3a4a8b3a.a1a3a2c.3a3a2b1a.c4a5b3.3a5a3b2a', // has a demo

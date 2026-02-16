@@ -29,9 +29,11 @@ type HashiNodeData = {
 
 ## Commands
 
-- `bun start` - Run the puzzle
+- `bun start` - Run the puzzle (interactive mode)
+- `bun start --stdout` - Run puzzle and output to stdout (for testing)
+- `bun start --puzzle <encoding>` - Run with a specific puzzle encoding
 - `bun run test` - Run typecheck and tests
-- `npx @biomejs/biome check --write .` - Lint and format
+- `bun run lint` - Lint and format
 
 ## Testing
 
@@ -42,6 +44,8 @@ Tests use Vitest with `@testing-library/react` patterns via `ink-testing-library
 - Biome is configured in `biome.json`
 - Run linting before committing
 - No custom ESLint/Prettier config - Biome handles everything
+- Add comments to break up sections but don't over do it. Don't need to explain simple things.
+
 
 ## Notes
 

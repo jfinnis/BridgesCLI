@@ -1,6 +1,8 @@
 import { Box } from 'ink'
+
 import type { HashiNodeData } from '../types.ts'
 import HashiRow from './HashiRow.tsx'
+import Messages from './Messages.tsx'
 
 export const ROW_HEIGHT = 3
 export const NODE_WIDTH = 5
@@ -13,6 +15,8 @@ type HashiGridProps = {
     rows: HashiNodeData[][]
     /** Number of nodes in a row. */
     numNodes: number
+    /** Show quit instructions */
+    showInstructions?: boolean
 }
 
 /**
@@ -42,10 +46,9 @@ export function validateGrid({ rows, numNodes }: HashiGridProps): void {
     }
 }
 
-export default function HashiGrid({ rows, numNodes }: HashiGridProps) {
+export default function HashiGrid({ rows, numNodes, showInstructions = false }: HashiGridProps) {
     validateGrid({ rows, numNodes })
 
-    // Constrain the box tightly around the space needed for the grid.
     const height = rows.length * ROW_HEIGHT + 2
     const borderWidth = 2
     const outerPadding = 2 * OUTER_PADDING
@@ -55,15 +58,20 @@ export default function HashiGrid({ rows, numNodes }: HashiGridProps) {
 
     return (
         <Box
-            borderStyle="single"
-            borderColor="white"
-            width={width}
-            height={height}
             flexDirection="column"
         >
-            {rows.map((nodes, i) => (
-                <HashiRow key={i} maxNodes={numNodes} nodes={nodes} />
-            ))}
+            <Box
+                borderStyle="single"
+                borderColor="white"
+                width={width}
+                height={height}
+                flexDirection="column"
+            >
+                {rows.map((nodes, i) => (
+                    <HashiRow key={i} maxNodes={numNodes} nodes={nodes} />
+                ))}
+            </Box>
+            {showInstructions && <Messages />}
         </Box>
     )
 }
