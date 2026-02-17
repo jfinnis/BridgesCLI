@@ -1,6 +1,7 @@
 import { Box } from 'ink'
 import type { HashiNodeData } from '../types.ts'
 import HashiRow from './HashiRow.tsx'
+import Header from './Header.tsx'
 import Messages from './Messages.tsx'
 
 export const ROW_HEIGHT = 3
@@ -16,6 +17,12 @@ type HashiGridProps = {
     numNodes: number
     /** Show quit instructions */
     showInstructions?: boolean
+    /** Current puzzle index for display */
+    puzzleIndex?: number
+    /** Current puzzle string for display */
+    puzzle?: string
+    /** Whether this is a custom puzzle */
+    isCustomPuzzle?: boolean
 }
 
 /**
@@ -45,7 +52,14 @@ export function validateGrid({ rows, numNodes }: HashiGridProps): void {
     }
 }
 
-export default function HashiGrid({ rows, numNodes, showInstructions = false }: HashiGridProps) {
+export default function HashiGrid({
+    rows,
+    numNodes,
+    showInstructions = false,
+    puzzleIndex = 0,
+    puzzle = '',
+    isCustomPuzzle = false,
+}: HashiGridProps) {
     validateGrid({ rows, numNodes })
 
     const height = rows.length * ROW_HEIGHT + 2
@@ -57,6 +71,7 @@ export default function HashiGrid({ rows, numNodes, showInstructions = false }: 
 
     return (
         <Box flexDirection="column">
+            <Header puzzleIndex={puzzleIndex} puzzle={puzzle} isCustomPuzzle={isCustomPuzzle} />
             <Box
                 borderStyle="single"
                 borderColor="white"
@@ -68,7 +83,7 @@ export default function HashiGrid({ rows, numNodes, showInstructions = false }: 
                     <HashiRow key={i} maxNodes={numNodes} nodes={nodes} />
                 ))}
             </Box>
-            {showInstructions && <Messages />}
+            {showInstructions ? <Messages /> : null}
         </Box>
     )
 }
