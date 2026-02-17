@@ -1,5 +1,4 @@
 import { Box } from 'ink'
-
 import type { HashiNodeData } from '../types.ts'
 import HashiRow from './HashiRow.tsx'
 import Messages from './Messages.tsx'
@@ -57,9 +56,7 @@ export default function HashiGrid({ rows, numNodes, showInstructions = false }: 
     const width = borderWidth + outerPadding + innerPadding + nodesWidth
 
     return (
-        <Box
-            flexDirection="column"
-        >
+        <Box flexDirection="column">
             <Box
                 borderStyle="single"
                 borderColor="white"

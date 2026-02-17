@@ -9,12 +9,12 @@ describe('App', () => {
     it('does not show instructions when stdout is true', () => {
         const { lastFrame } = render(<App stdout={true} puzzle={TEST_PUZZLE} />)
 
-        expect(lastFrame()).not.toContain('Press q to quit')
+        expect(lastFrame()).not.toContain('Controls:')
     })
 
     it('shows instructions when stdout is false', () => {
         const { lastFrame } = render(<App stdout={false} puzzle={TEST_PUZZLE} />)
 
-        expect(lastFrame()).toContain('Press q to quit')
+        expect(lastFrame()).toContain('Controls:')
     })
 })
