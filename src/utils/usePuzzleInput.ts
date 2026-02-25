@@ -1,4 +1,5 @@
 import { useApp, useInput } from 'ink'
+import { useRef } from 'react'
 
 export default function usePuzzleInput(
     puzzleIndex: number,
@@ -7,19 +8,20 @@ export default function usePuzzleInput(
     onNext: () => void
 ) {
     const { exit } = useApp()
+    const puzzleIndexRef = useRef(puzzleIndex)
+    puzzleIndexRef.current = puzzleIndex
 
     useInput(input => {
         if (input === 'q') {
             exit()
         }
 
-        if (input === 'n' && puzzleIndex + 1 < puzzlesLength) {
+        if (input === 'n' && puzzleIndexRef.current + 1 < puzzlesLength) {
             onNext()
         }
 
-        if (input === 'p' && puzzleIndex - 1 >= 0) {
+        if (input === 'p' && puzzleIndexRef.current - 1 >= 0) {
             onPrev()
         }
     })
 }
-

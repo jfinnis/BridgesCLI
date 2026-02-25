@@ -18,14 +18,18 @@ Hashiwokakero (橋をかけろ, "build bridges") is a logic puzzle where you con
 
 ## Getting Started
 
-```bash
 # Run the puzzle (interactive mode - press q to quit)
+``` bash
 bun start
+```
 
 # Run tests
+``` bash
 bun run test
+```
 
 # Lint/format
+``` bash
 bun run lint
 ```
 
@@ -34,14 +38,3 @@ bun run lint
 - `-s, --stdout` - Output to stdout and exit immediately (for testing)
 - `-p, --puzzle <identifier>` - Select a puzzle by its shorthand identifier (see `samplePuzzles.ts`)
 
-## Project Structure
-
-```
-src/
-├── components/
-│   ├── HashiGrid.tsx     # Main grid container
-│   ├── HashiRow.tsx      # Row of nodes
-│   └── __tests__/        # Component tests
-├── types.ts              # TypeScript types
-└── index.tsx             # Entry point
-=31337;OK```

@@ -16,8 +16,7 @@ export default function Game({ puzzles, hasCustomPuzzle, stdout }: GameProps) {
     const handlePrev = useCallback(() => setPuzzleIndex(i => i - 1), [])
     const handleNext = useCallback(() => setPuzzleIndex(i => i + 1), [])
 
-    const canUseInput = Boolean(process.stdin.isTTY && !stdout)
-
+    const canUseInput = Boolean(process.stdin.isTTY) && !stdout
     if (canUseInput) {
         usePuzzleInput(puzzleIndex, puzzles.length, handlePrev, handleNext)
     }
