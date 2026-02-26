@@ -21,6 +21,13 @@ describe('constructNode()', () => {
             expect(constructNode(node, 1)).toEqual('─────')
             expect(constructNode(node, 2)).toEqual('     ')
         })
+
+        it('renders a double horizontal line in the middle', () => {
+            const node: HashiNodeData = { value: '=' }
+            expect(constructNode(node, 0)).toEqual('     ')
+            expect(constructNode(node, 1)).toEqual('═════')
+            expect(constructNode(node, 2)).toEqual('     ')
+        })
     })
 
     describe('vertical line node', () => {
@@ -29,6 +36,13 @@ describe('constructNode()', () => {
             expect(constructNode(node, 0)).toEqual('  │  ')
             expect(constructNode(node, 1)).toEqual('  │  ')
             expect(constructNode(node, 2)).toEqual('  │  ')
+        })
+
+        it('renders a double vertical line in the center', () => {
+            const node: HashiNodeData = { value: '#' }
+            expect(constructNode(node, 0)).toEqual('  ║  ')
+            expect(constructNode(node, 1)).toEqual('  ║  ')
+            expect(constructNode(node, 2)).toEqual('  ║  ')
         })
     })
 
@@ -40,8 +54,13 @@ describe('constructNode()', () => {
             })
 
             it('renders border with vertical line up', () => {
-                const node: HashiNodeData = { value: 5, lineUp: true }
+                const node: HashiNodeData = { value: 5, lineUp: 1 }
                 expect(constructNode(node, 0)).toEqual('╭─┴─╮')
+            })
+
+            it('renders border with double vertical line up', () => {
+                const node: HashiNodeData = { value: 5, lineUp: 2 }
+                expect(constructNode(node, 0)).toEqual('╭─╩─╮')
             })
         })
 
@@ -52,18 +71,23 @@ describe('constructNode()', () => {
             })
 
             it('renders value with horizontal line on left', () => {
-                const node: HashiNodeData = { value: 5, lineLeft: true }
+                const node: HashiNodeData = { value: 5, lineLeft: 1 }
                 expect(constructNode(node, 1)).toEqual('┤ 5 │')
             })
 
             it('renders value with horizontal line on right', () => {
-                const node: HashiNodeData = { value: 5, lineRight: true }
+                const node: HashiNodeData = { value: 5, lineRight: 1 }
                 expect(constructNode(node, 1)).toEqual('│ 5 ├')
             })
 
             it('renders value with horizontal lines on both sides', () => {
-                const node: HashiNodeData = { value: 5, lineLeft: true, lineRight: true }
+                const node: HashiNodeData = { value: 5, lineLeft: 1, lineRight: 1 }
                 expect(constructNode(node, 1)).toEqual('┤ 5 ├')
+            })
+
+            it('renders value with double horizontal lines on both sides', () => {
+                const node: HashiNodeData = { value: 5, lineLeft: 2, lineRight: 2 }
+                expect(constructNode(node, 1)).toEqual('╣ 5 ╠')
             })
         })
 
@@ -74,8 +98,13 @@ describe('constructNode()', () => {
             })
 
             it('renders border with vertical line down', () => {
-                const node: HashiNodeData = { value: 5, lineDown: true }
+                const node: HashiNodeData = { value: 5, lineDown: 1 }
                 expect(constructNode(node, 2)).toEqual('╰─┬─╯')
+            })
+
+            it('renders border with double vertical line down', () => {
+                const node: HashiNodeData = { value: 5, lineDown: 2 }
+                expect(constructNode(node, 2)).toEqual('╰─╦─╯')
             })
         })
     })
@@ -96,11 +125,7 @@ describe('HashiRow component', () => {
     it('renders nodes connected horizontally', () => {
         const { lastFrame } = render(
             <HashiRow
-                nodes={[
-                    { value: 1, lineRight: true },
-                    { value: '-' },
-                    { value: 3, lineLeft: true },
-                ]}
+                nodes={[{ value: 1, lineRight: 1 }, { value: '-' }, { value: 3, lineLeft: 1 }]}
             />
         )
         expect(lastFrame()).toEqual(` ╭───╮     ╭───╮

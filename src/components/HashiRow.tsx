@@ -12,10 +12,11 @@ const BOTTOM_ROW = 2
 const ROW_HEIGHT = 3
 
 /**
- * Build the HashiGrid node with its value and borders. There are 3 options:
+ * Build the HashiGrid node with its value and borders. Options:
  *   - node with a value (always 1 digit)
  *   - empty node - render just spaces
- *   - horizontal line
+ *   - horizontal line - single and double
+ *   - vertical line - single and double
  */
 export function constructNode(node: HashiNodeData, line: 0 | 1 | 2): string {
     // Horizontal line
@@ -23,22 +24,32 @@ export function constructNode(node: HashiNodeData, line: 0 | 1 | 2): string {
         return line === MIDDLE_ROW ? '─────' : ' '.repeat(NODE_WIDTH)
     }
 
+    // Double horizontal line
+    if (node.value === '=') {
+        return line === MIDDLE_ROW ? '═════' : ' '.repeat(NODE_WIDTH)
+    }
+
     // Vertical line
     if (node.value === '|') {
         return '  │  '
     }
 
+    // Double vertical line
+    if (node.value === '#') {
+        return '  ║  '
+    }
+
     // Node with value to render
     if (node.value !== ' ') {
         if (line === TOP_ROW) {
-            const up = node.lineUp ? '┴' : '─'
+            const up = node.lineUp === 2 ? '╩' : node.lineUp === 1 ? '┴' : '─'
             return `╭─${up}─╮`
         } else if (line === MIDDLE_ROW) {
-            const left = node.lineLeft ? '┤' : '│'
-            const right = node.lineRight ? '├' : '│'
+            const left = node.lineLeft === 2 ? '╣' : node.lineLeft === 1 ? '┤' : '│'
+            const right = node.lineRight === 2 ? '╠' : node.lineRight === 1 ? '├' : '│'
             return `${left} ${node.value} ${right}`
         } else if (line === BOTTOM_ROW) {
-            const down = node.lineDown ? '┬' : '─'
+            const down = node.lineDown === 2 ? '╦' : node.lineDown === 1 ? '┬' : '─'
             return `╰─${down}─╯`
         }
     }
