@@ -21,9 +21,10 @@ export default function Game({ puzzles, hasCustomPuzzle, stdout }: GameProps) {
         usePuzzleInput(puzzleIndex, puzzles.length, handlePrev, handleNext)
     }
 
-    const puzzle = puzzles[puzzleIndex] || ''
+    const puzzle = puzzles[puzzleIndex]
+    if (!puzzle) throw new Error('HashiGrid: no puzzle found')
     const dimensions = puzzle.split(':')[0] ?? '5x5'
-    const numNodes = Number(dimensions.split('x')[1]) || 5
+    const numNodes = Number(dimensions.split('x')[0]) || 5
 
     return (
         <HashiGrid

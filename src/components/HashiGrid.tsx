@@ -50,7 +50,9 @@ export function validateGrid({ rows, numNodes }: HashiGridProps): void {
             if (
                 typeof node.value !== 'number' &&
                 node.value !== '-' &&
+                node.value !== '=' &&
                 node.value !== ' ' &&
+                node.value !== '#' &&
                 node.value !== '|'
             ) {
                 throw new Error(`${prefix}node at position ${i} has invalid value: ${node.value}`)

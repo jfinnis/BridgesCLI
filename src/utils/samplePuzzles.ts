@@ -38,5 +38,6 @@ export const samplePuzzles = [
     '21x35:a1a3b4a2a2a4b3a2b2.3c2b1e4b6a2b.b4c3a2c3d2a2a.a2a4a5a3b2b4a2d2.3a2a2a4a3c2c2d.a4a3a3a2b5b4a4a3a1a.3c4f4b3a3a2b.a2a2b3a4a3a2b5a4b5.4a2b4a1a3a7b2a1a1b.a2a3b5a4d1a3a3b4.3c4f2i.a2a2b4b5b5a3a3a4a4.e5b3a4f2a2a.4a3a5i1a2a2a3.a3a2a3a3a4b6b3a3a4a.3a2a3a2a2a4b2b4a3a3.a2a3e4k.4a4a2c2a3a5a3b5b3.a1a3b3b6c2b3d.1a3b3a3b1g2a2.a3a4b2b4b6b2a4c.2g2b2b2a2a3a2.a2a6a4a6d2b1a4c.5a4a4a2a2b4b8a3a1a2.a1a4a2a7b4b4a2a5a3a.b4e2b3b4c2b.3c6b7a3c2a2a1b3.a3a2o2a.3a5a5a3b3a4b5b2b3.e2a3e1d4b.3b2b3b2d2b2a',
 ]
 
-// TODO (for me not Opencode): add demo notes for puzzles 1/17. the site also has assist mode, could
-// be useful to read what that's about and apply here in order to assist the solving orc reation
+export const solutions = [
+    '7x7:4=3-3=3.#2=b4|.3-a3a#3.c#a#b.2=a8=4#.c#1-3.a1-4-1a'
+]

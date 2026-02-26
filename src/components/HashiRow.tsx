@@ -1,4 +1,5 @@
 import { Box, Text } from 'ink'
+
 import type { HashiNodeData } from '../types.ts'
 import { NODE_WIDTH, OUTER_PADDING, SPACE_BETWEEN } from './HashiGrid.tsx'
 
@@ -42,14 +43,14 @@ export function constructNode(node: HashiNodeData, line: 0 | 1 | 2): string {
     // Node with value to render
     if (node.value !== ' ') {
         if (line === TOP_ROW) {
-            const up = node.lineUp === 2 ? '╩' : node.lineUp === 1 ? '┴' : '─'
+            const up = node.lineUp === 2 ? '╨' : node.lineUp === 1 ? '┴' : '─'
             return `╭─${up}─╮`
         } else if (line === MIDDLE_ROW) {
-            const left = node.lineLeft === 2 ? '╣' : node.lineLeft === 1 ? '┤' : '│'
-            const right = node.lineRight === 2 ? '╠' : node.lineRight === 1 ? '├' : '│'
+            const left = node.lineLeft === 2 ? '╡' : node.lineLeft === 1 ? '┤' : '│'
+            const right = node.lineRight === 2 ? '╞' : node.lineRight === 1 ? '├' : '│'
             return `${left} ${node.value} ${right}`
         } else if (line === BOTTOM_ROW) {
-            const down = node.lineDown === 2 ? '╦' : node.lineDown === 1 ? '┬' : '─'
+            const down = node.lineDown === 2 ? '╥' : node.lineDown === 1 ? '┬' : '─'
             return `╰─${down}─╯`
         }
     }

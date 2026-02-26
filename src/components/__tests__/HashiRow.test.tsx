@@ -60,7 +60,7 @@ describe('constructNode()', () => {
 
             it('renders border with double vertical line up', () => {
                 const node: HashiNodeData = { value: 5, lineUp: 2 }
-                expect(constructNode(node, 0)).toEqual('╭─╩─╮')
+                expect(constructNode(node, 0)).toEqual('╭─╨─╮')
             })
         })
 
@@ -87,7 +87,7 @@ describe('constructNode()', () => {
 
             it('renders value with double horizontal lines on both sides', () => {
                 const node: HashiNodeData = { value: 5, lineLeft: 2, lineRight: 2 }
-                expect(constructNode(node, 1)).toEqual('╣ 5 ╠')
+                expect(constructNode(node, 1)).toEqual('╡ 5 ╞')
             })
         })
 
@@ -104,7 +104,7 @@ describe('constructNode()', () => {
 
             it('renders border with double vertical line down', () => {
                 const node: HashiNodeData = { value: 5, lineDown: 2 }
-                expect(constructNode(node, 2)).toEqual('╰─╦─╯')
+                expect(constructNode(node, 2)).toEqual('╰─╥─╯')
             })
         })
     })
