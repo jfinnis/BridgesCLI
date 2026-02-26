@@ -9,23 +9,10 @@ describe('HashiGrid', () => {
             <HashiGrid
                 numNodes={5}
                 rows={[
-                    [
-                        { position: 0, value: 3 },
-                        { position: 2, value: 2 },
-                    ],
-                    [
-                        { position: 1, value: 1 },
-                        { position: 2, value: 3 },
-                        { position: 3, value: 2 },
-                    ],
-                    [
-                        { position: 3, value: 1 },
-                        { position: 4, value: 1 },
-                    ],
-                    [
-                        { position: 0, value: 4 },
-                        { position: 4, value: 3 },
-                    ],
+                    [{ value: 3 }, { value: ' ' }, { value: 2 }, { value: ' ' }, { value: ' ' }],
+                    [{ value: ' ' }, { value: 1 }, { value: 3 }, { value: 2 }, { value: ' ' }],
+                    [{ value: ' ' }, { value: ' ' }, { value: ' ' }, { value: 1 }, { value: 1 }],
+                    [{ value: 4 }, { value: ' ' }, { value: ' ' }, { value: ' ' }, { value: 3 }],
                 ]}
             />
         )
@@ -51,18 +38,18 @@ describe('HashiGrid', () => {
     })
 
     describe('grid data validation', () => {
-        it('throws if node position is greater than the max row length', () => {
+        it('throws if row length does not match numNodes', () => {
             const { lastFrame } = render(
-                <HashiGrid numNodes={3} rows={[[{ position: 5, value: 1 }]]} />
+                <HashiGrid numNodes={3} rows={[[{ value: 1 }, { value: ' ' }]]} />
             )
-            expect(lastFrame()).toContain('position 5 is invalid')
+            expect(lastFrame()).toContain('expected 3 nodes, got 2')
         })
 
-        it('throws if node position is less than 0', () => {
+        it('throws if node value is invalid', () => {
             const { lastFrame } = render(
-                <HashiGrid numNodes={3} rows={[[{ position: -1, value: 1 }]]} />
+                <HashiGrid numNodes={1} rows={[[{ value: 'invalid' } as never]]} />
             )
-            expect(lastFrame()).toContain('position -1 is invalid')
+            expect(lastFrame()).toContain('invalid value')
         })
     })
 })

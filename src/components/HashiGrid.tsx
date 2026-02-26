@@ -1,4 +1,5 @@
 import { Box } from 'ink'
+
 import type { HashiNodeData } from '../types.ts'
 import HashiRow from './HashiRow.tsx'
 import Header from './Header.tsx'
@@ -10,7 +11,7 @@ export const SPACE_BETWEEN = 0
 export const OUTER_PADDING = 1
 
 type HashiGridProps = {
-    /** The full data structure needed to render the grid. Hiehgt of the grid is determined
+    /** The full data structure needed to render the grid. Height of the grid is determined
      * by the number of rows here. */
     rows: HashiNodeData[][]
     /** Number of nodes in a row. */
@@ -36,16 +37,23 @@ export function validateGrid({ rows, numNodes }: HashiGridProps): void {
     let rowCount = 0
     for (const nodes of rows) {
         const prefix = `HashiGrid row ${rowCount}: `
-        for (const node of nodes) {
-            // Invalid node position
-            if (node.position < 0 || node.position >= numNodes) {
-                throw new Error(`${prefix}node position ${node.position} is invalid`)
-            }
 
-            // There should always be a space between nodes.
-            const lastPosition = -999
-            if (node.position === lastPosition + 1) {
-                throw new Error(`${prefix}nodes ${lastPosition} and ${node.position} are adjacent`)
+        if (nodes.length !== numNodes) {
+            throw new Error(`${prefix}expected ${numNodes} nodes, got ${nodes.length}`)
+        }
+
+        for (let i = 0; i < nodes.length; i++) {
+            const node = nodes[i]
+            if (!node) {
+                throw new Error(`${prefix}node at position ${i} is undefined`)
+            }
+            if (
+                typeof node.value !== 'number' &&
+                node.value !== '-' &&
+                node.value !== ' ' &&
+                node.value !== '|'
+            ) {
+                throw new Error(`${prefix}node at position ${i} has invalid value: ${node.value}`)
             }
         }
         rowCount++
@@ -80,7 +88,7 @@ export default function HashiGrid({
                 flexDirection="column"
             >
                 {rows.map((nodes, i) => (
-                    <HashiRow key={i} maxNodes={numNodes} nodes={nodes} />
+                    <HashiRow key={i} nodes={nodes} />
                 ))}
             </Box>
             {showInstructions ? <Messages /> : null}

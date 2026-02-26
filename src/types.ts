@@ -1,4 +1,7 @@
 export type HashiNodeData = {
-    position: number
-    value: number
+    value: number | '-' | ' ' | '|'
+    lineLeft?: boolean
+    lineRight?: boolean
+    lineUp?: boolean
+    lineDown?: boolean
 }

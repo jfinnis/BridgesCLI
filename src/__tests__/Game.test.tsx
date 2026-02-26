@@ -1,5 +1,5 @@
-import { render } from 'ink-testing-library'
 import { setTimeout } from 'node:timers/promises'
+import { render } from 'ink-testing-library'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import Game from '../Game.tsx'
@@ -35,7 +35,11 @@ describe('Game', () => {
     describe('game controls', () => {
         it('navigates to next puzzle with n key when interactive', async () => {
             const { stdin, lastFrame } = render(
-                <Game puzzles={[TEST_PUZZLE, TEST_PUZZLE_2]} hasCustomPuzzle={false} stdout={false} />
+                <Game
+                    puzzles={[TEST_PUZZLE, TEST_PUZZLE_2]}
+                    hasCustomPuzzle={false}
+                    stdout={false}
+                />
             )
 
             expect(lastFrame()).toEqual(`Sample Puzzle #1
@@ -79,9 +83,13 @@ n: Next puzzle
 q: Quit`)
         })
 
-        it.only('navigates to previous puzzle with p key when interactive', async () => {
+        it('navigates to previous puzzle with p key when interactive', async () => {
             const { stdin, lastFrame } = render(
-                <Game puzzles={[TEST_PUZZLE, TEST_PUZZLE_2]} hasCustomPuzzle={false} stdout={false} />
+                <Game
+                    puzzles={[TEST_PUZZLE, TEST_PUZZLE_2]}
+                    hasCustomPuzzle={false}
+                    stdout={false}
+                />
             )
 
             stdin.write('n')
@@ -106,7 +114,7 @@ n: Next puzzle
 q: Quit`)
 
             stdin.write('p')
-            await setTimeout(500)
+            await setTimeout(5)
             expect(lastFrame()).toEqual(`Sample Puzzle #1
 
 ┌─────────────────┐

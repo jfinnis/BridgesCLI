@@ -5,7 +5,9 @@
     "main": "index.js",
     "scripts": {
         "start": "bun src/index.tsx",
-        "test": "tsc --noEmit && vitest",
+        "demo": "bun src/demo.tsx",
+        "test": "vitest",
+        "typecheck": "tsc --noEmit",
         "lint": "node_modules/.bin/biome check --write"
     },
     "keywords": [],
