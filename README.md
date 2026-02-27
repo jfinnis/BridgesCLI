@@ -1,40 +1,25 @@
-# Hashi Puzzle
-
-A CLI-based Hashiwokakero (Bridges) puzzle renderer built with React and Ink. This exists mostly to
+# BridgesCLI
+A CLI-based Bridges (Hashiwokakero) puzzle renderer built with React and Ink. This exists mostly to
 gain more experience with an agent-based workflow.
 
 ## What is Hashiwokakero?
+Hashiwokakero (橋をかけろ, "build bridges") is a logic puzzle where you connect islands with bridges.
+Each island has a number indicating how many bridges must connect to it.
 
-Hashiwokakero (橋をかけろ, "build bridges") is a logic puzzle where you connect islands with bridges. Each island has a number indicating how many bridges must connect to it.
+![Demo](docs/readme-demo-1.png)
 
-## Tech Stack
-
-- **React** - UI components
-- **Ink** - CLI rendering
-- **TypeScript** - Type safety
-- **Vitest** - Testing
-- **Biome** - Linting/formatting
-- **Bun** - Runtime (or Node.js)
-
-## Getting Started
-
-# Run the puzzle (interactive mode - press q to quit)
+## Run the puzzle (interactive mode - press q to quit)
 ``` bash
 bun start
 ```
 
-# Run tests
-``` bash
-bun run test
-```
+### CLI Options
+- `-s, --stdout` - Output to stdout and exit immediately (for testing)
+- `-p, --puzzle <identifier>` - Render a puzzle via shorthand encoding (see `samplePuzzles.ts`)
 
-# Lint/format
+## Run tests and linter
 ``` bash
+bun run typecheck
+bun run test
 bun run lint
 ```
-
-### CLI Options
-
-- `-s, --stdout` - Output to stdout and exit immediately (for testing)
-- `-p, --puzzle <identifier>` - Select a puzzle by its shorthand identifier (see `samplePuzzles.ts`)
-
