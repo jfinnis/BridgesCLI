@@ -42,7 +42,7 @@ describe('Game', () => {
                 />
             )
 
-            expect(lastFrame()).toEqual(`Sample Puzzle #1
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
 
 ┌─────────────────┐
 │ ╭───╮     ╭───╮ │
@@ -64,7 +64,7 @@ q: Quit`)
 
             stdin.write('n')
             await setTimeout(5)
-            expect(lastFrame()).toEqual(`Sample Puzzle #2
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #2
 
 ┌─────────────────┐
 │ ╭───╮     ╭───╮ │
@@ -96,7 +96,7 @@ q: Quit`)
 
             stdin.write('n')
             await setTimeout(5)
-            expect(lastFrame()).toEqual(`Sample Puzzle #2
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #2
 
 ┌─────────────────┐
 │ ╭───╮     ╭───╮ │
@@ -118,7 +118,7 @@ q: Quit`)
 
             stdin.write('p')
             await setTimeout(5)
-            expect(lastFrame()).toEqual(`Sample Puzzle #1
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
 
 ┌─────────────────┐
 │ ╭───╮     ╭───╮ │
@@ -146,7 +146,7 @@ q: Quit`)
 
             stdin.write('n')
             await setTimeout(5)
-            expect(lastFrame()).toEqual(`Sample Puzzle #1
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
 
 ┌─────────────────┐
 │ ╭───╮     ╭───╮ │
@@ -174,7 +174,7 @@ q: Quit`)
 
             stdin.write('p')
             await setTimeout(5)
-            expect(lastFrame()).toEqual(`Sample Puzzle #1
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
 
 ┌─────────────────┐
 │ ╭───╮     ╭───╮ │

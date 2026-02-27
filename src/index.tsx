@@ -1,3 +1,5 @@
+#!/usr/bin/env -S bun run
+
 import { Command } from 'commander'
 import { render } from 'ink'
 
@@ -12,8 +14,8 @@ type CliOptions = {
 const program = new Command()
 
 program
-    .name('hashi')
-    .description('Hashi puzzle game')
+    .name('bridges')
+    .description('Bridges (Hashiwokakero) puzzle game')
     .option('-s, --stdout', 'Output to stdout and exit (for testing)')
     .option('-p, --puzzle <puzzle>', 'Puzzle shorthand encoding')
     .parse(process.argv)

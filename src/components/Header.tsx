@@ -14,8 +14,8 @@ export default function Header({
     showSolution = false,
 }: HeaderProps) {
     const title = isCustomPuzzle
-        ? `Custom Puzzle - ${puzzle}`
-        : `Sample Puzzle #${puzzleIndex + 1}${showSolution ? ' (Solution)' : ''}`
+        ? `Bridges: Puzzle - ${puzzle}`
+        : `Bridges: Puzzle #${puzzleIndex + 1}${showSolution ? ' (Solution)' : ''}`
 
     return (
         <Box marginBottom={1}>

@@ -18,7 +18,7 @@ describe('HashiGrid', () => {
         )
 
         expect(lastFrame()).toEqual(
-            `Sample Puzzle #1
+            `Bridges: Puzzle #1
 
 ┌───────────────────────────┐
 │ ╭───╮     ╭───╮           │
