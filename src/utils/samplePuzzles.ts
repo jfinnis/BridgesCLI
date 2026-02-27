@@ -10,7 +10,8 @@ export const samplePuzzles: PuzzleData[] = [
     },
     {
         encoding: '9x9:3c1a3a3.b2b3c.3c2a2b.e4b6.3a4a8b3a.a1a3a2c.3a3a2b1a.c4a5b3.3a5a3b2a',
-        solution: '9x9:3-b1a3-3.#a2-a3#a#.3a|a2#2a#.|a|a#4=a6.3-4=8=a3#.|1-3#2a|#.3-3#2#a1#.|a#4=5-a3.3=5-3=a2a'
+        solution:
+            '9x9:3-b1a3-3.#a2-a3#a#.3a|a2#2a#.|a|a#4=a6.3-4=8=a3#.|1-3#2a|#.3-3#2#a1#.|a#4=5-a3.3=5-3=a2a',
     },
     { encoding: '9x9:2a5a6b2a.a1d1a2.3a2b1a2a.a4b8a4b.3g3.b3a3b2a.a2a1b3a3.1a3d2a.a3b4a3a2' },
     { encoding: '9x9:4b4a5b3.a2b3a1b.2h.a2a1a4c.4a4a3a2a3.c2a8a4a.h2.b2a1b2a.3b2a4b2' },

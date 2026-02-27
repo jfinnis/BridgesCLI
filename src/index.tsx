@@ -1,10 +1,14 @@
 #!/usr/bin/env -S bun run
 
 import { Command } from 'commander'
+import { readFileSync } from 'fs'
 import { render } from 'ink'
+import { resolve } from 'path'
 
 import Game from './Game.tsx'
 import { type PuzzleData, samplePuzzles } from './utils/samplePuzzles.ts'
+
+const packageJson = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf8'))
 
 type CliOptions = {
     stdout: boolean
@@ -16,6 +20,7 @@ const program = new Command()
 program
     .name('bridges')
     .description('Bridges (Hashiwokakero) puzzle game')
+    .version(packageJson.version, '-v, --version')
     .option('-s, --stdout', 'Output to stdout and exit (for testing)')
     .option('-p, --puzzle <puzzle>', 'Puzzle shorthand encoding')
     .parse(process.argv)
