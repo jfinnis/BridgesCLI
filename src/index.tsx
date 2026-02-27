@@ -2,7 +2,7 @@ import { Command } from 'commander'
 import { render } from 'ink'
 
 import Game from './Game.tsx'
-import { samplePuzzles } from './utils/samplePuzzles.ts'
+import { type PuzzleData, samplePuzzles } from './utils/samplePuzzles.ts'
 
 type CliOptions = {
     stdout: boolean
@@ -20,11 +20,11 @@ program
 
 const options = program.opts<CliOptions>()
 
-let puzzles = samplePuzzles
+let puzzles: PuzzleData[] = samplePuzzles
 let hasCustomPuzzle = false
 if (options.puzzle) {
     hasCustomPuzzle = true
-    puzzles = [options.puzzle, ...samplePuzzles]
+    puzzles = [{ encoding: options.puzzle }, ...samplePuzzles]
 }
 
 render(

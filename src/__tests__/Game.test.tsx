@@ -4,8 +4,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import Game from '../Game.tsx'
 
-const TEST_PUZZLE = '3x3:1a1.c.2a2'
-const TEST_PUZZLE_2 = '3x3:3a3.c.1a1'
+const TEST_PUZZLE = { encoding: '3x3:1a1.c.2a2' }
+const TEST_PUZZLE_2 = { encoding: '3x3:3a3.c.1a1' }
 
 describe('Game', () => {
     beforeEach(() => {
@@ -59,6 +59,7 @@ describe('Game', () => {
 Controls:
 p: Previous puzzle
 n: Next puzzle
+s: Show solution
 q: Quit`)
 
             stdin.write('n')
@@ -80,6 +81,7 @@ q: Quit`)
 Controls:
 p: Previous puzzle
 n: Next puzzle
+s: Show solution
 q: Quit`)
         })
 
@@ -111,6 +113,7 @@ q: Quit`)
 Controls:
 p: Previous puzzle
 n: Next puzzle
+s: Show solution
 q: Quit`)
 
             stdin.write('p')
@@ -132,6 +135,7 @@ q: Quit`)
 Controls:
 p: Previous puzzle
 n: Next puzzle
+s: Show solution
 q: Quit`)
         })
 
@@ -159,6 +163,7 @@ q: Quit`)
 Controls:
 p: Previous puzzle
 n: Next puzzle
+s: Show solution
 q: Quit`)
         })
 
@@ -186,6 +191,7 @@ q: Quit`)
 Controls:
 p: Previous puzzle
 n: Next puzzle
+s: Show solution
 q: Quit`)
         })
     })

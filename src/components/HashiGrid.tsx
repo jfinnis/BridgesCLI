@@ -24,6 +24,10 @@ type HashiGridProps = {
     puzzle?: string
     /** Whether this is a custom puzzle */
     isCustomPuzzle?: boolean
+    /** Whether this puzzle has a solution available */
+    hasSolution?: boolean
+    /** Whether to show the solution */
+    showSolution?: boolean
 }
 
 /**
@@ -69,6 +73,8 @@ export default function HashiGrid({
     puzzleIndex = 0,
     puzzle = '',
     isCustomPuzzle = false,
+    hasSolution = false,
+    showSolution = false,
 }: HashiGridProps) {
     validateGrid({ rows, numNodes })
 
@@ -81,7 +87,12 @@ export default function HashiGrid({
 
     return (
         <Box flexDirection="column">
-            <Header puzzleIndex={puzzleIndex} puzzle={puzzle} isCustomPuzzle={isCustomPuzzle} />
+            <Header
+                puzzleIndex={puzzleIndex}
+                puzzle={puzzle}
+                isCustomPuzzle={isCustomPuzzle}
+                showSolution={showSolution}
+            />
             <Box
                 borderStyle="single"
                 borderColor="white"
@@ -93,7 +104,7 @@ export default function HashiGrid({
                     <HashiRow key={i} nodes={nodes} />
                 ))}
             </Box>
-            {showInstructions ? <Messages /> : null}
+            {showInstructions ? <Messages hasSolution={hasSolution} /> : null}
         </Box>
     )
 }

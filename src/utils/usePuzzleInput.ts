@@ -5,7 +5,8 @@ export default function usePuzzleInput(
     puzzleIndex: number,
     puzzlesLength: number,
     onPrev: () => void,
-    onNext: () => void
+    onNext: () => void,
+    onToggleSolution: () => void
 ) {
     const { exit } = useApp()
     const puzzleIndexRef = useRef(puzzleIndex)
@@ -22,6 +23,10 @@ export default function usePuzzleInput(
 
         if (input === 'p' && puzzleIndexRef.current - 1 >= 0) {
             onPrev()
+        }
+
+        if (input === 's') {
+            onToggleSolution()
         }
     })
 }

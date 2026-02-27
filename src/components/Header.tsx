@@ -4,10 +4,18 @@ type HeaderProps = {
     puzzleIndex: number
     puzzle: string
     isCustomPuzzle?: boolean
+    showSolution?: boolean
 }
 
-export default function Header({ puzzleIndex, puzzle, isCustomPuzzle = false }: HeaderProps) {
-    const title = isCustomPuzzle ? `Custom Puzzle - ${puzzle}` : `Sample Puzzle #${puzzleIndex + 1}`
+export default function Header({
+    puzzleIndex,
+    puzzle,
+    isCustomPuzzle = false,
+    showSolution = false,
+}: HeaderProps) {
+    const title = isCustomPuzzle
+        ? `Custom Puzzle - ${puzzle}`
+        : `Sample Puzzle #${puzzleIndex + 1}${showSolution ? ' (Solution)' : ''}`
 
     return (
         <Box marginBottom={1}>
