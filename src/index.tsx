@@ -22,7 +22,22 @@ program
     .description('Bridges (Hashiwokakero) puzzle game')
     .version(packageJson.version, '-v, --version')
     .option('-s, --stdout', 'Output to stdout and exit (for testing)')
-    .option('-p, --puzzle <puzzle>', 'Puzzle shorthand encoding')
+    .option('-p, --puzzle <puzzle>',
+`Puzzle shorthand encoding
+  Format: "WIDTHxHEIGHT:row1.row2.row3..."
+
+  Node encoding:
+    - Digits (1-8): island with that value
+    - Letters (a-z): space between islands (b=2, etc.)
+
+  Bridge encoding (optional):
+    - "-": single horizontal bridge
+    - "=": double horizontal bridge
+    - "|": single vertical bridge
+    - "#": double vertical bridge
+
+  Example (3x3 with corner islands):
+    --puzzle "3x3:1a2.c.1a2"`)
     .parse(process.argv)
 
 const options = program.opts<CliOptions>()
