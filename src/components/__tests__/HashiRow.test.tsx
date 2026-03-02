@@ -152,4 +152,37 @@ describe('HashiRow component', () => {
  ╰───╯     ╰───╯`
         )
     })
+
+    it('renders highlighted node with bold', () => {
+        const { lastFrame } = render(
+            <HashiRow nodes={[{ value: 1 }]} nodeOptions={[{ highlight: true }]} />
+        )
+        expect(lastFrame()).toEqual(
+            ` ╭───╮
+ │ \x1b[1m1\x1b[22m │
+ ╰───╯`
+        )
+    })
+
+    it('renders node with label in top-right corner', () => {
+        const { lastFrame } = render(
+            <HashiRow nodes={[{ value: 1 }]} nodeOptions={[{ label: 'a' }]} />
+        )
+        expect(lastFrame()).toEqual(
+            ` ╭─a─╮
+ │ 1 │
+ ╰───╯`
+        )
+    })
+
+    it('renders node with both highlight and label', () => {
+        const { lastFrame } = render(
+            <HashiRow nodes={[{ value: 1 }]} nodeOptions={[{ highlight: true, label: 'a' }]} />
+        )
+        expect(lastFrame()).toEqual(
+            ` ╭─a─╮
+ │ \x1b[1m1\x1b[22m │
+ ╰───╯`
+        )
+    })
 })
