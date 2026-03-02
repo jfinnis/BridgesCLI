@@ -1,8 +1,7 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import HashiGrid from './components/HashiGrid.tsx'
-import { parsePuzzle } from './utils/parsePuzzle.ts'
-import type { PuzzleData } from './utils/samplePuzzles.ts'
+import { type PuzzleData, parsePuzzle } from './utils/puzzle-encoding.ts'
 import usePuzzleInput from './utils/usePuzzleInput.ts'
 
 type GameProps = {
@@ -27,11 +26,6 @@ export default function Game({ puzzles, hasCustomPuzzle, stdout }: GameProps) {
         setShowSolution(s => !s)
     }, [])
 
-    const canUseInput = Boolean(process.stdin.isTTY) && !stdout
-    if (canUseInput) {
-        usePuzzleInput(puzzleIndex, puzzles.length, handlePrev, handleNext, handleToggleSolution)
-    }
-
     const puzzle = puzzles[puzzleIndex]
     if (!puzzle) throw new Error('HashiGrid: no puzzle found')
 
@@ -39,16 +33,49 @@ export default function Game({ puzzles, hasCustomPuzzle, stdout }: GameProps) {
     const dimensions = encoding.split(':')[0] ?? '5x5'
     const numNodes = Number(dimensions.split('x')[0]) || 5
 
+    const rows = useMemo(() => parsePuzzle(encoding), [encoding])
+
+    // Compute min and max numbers in the puzzle
+    const { minNumber, maxNumber } = useMemo(() => {
+        let min = 9
+        let max = 1
+        for (const row of rows) {
+            for (const node of row) {
+                if (typeof node.value === 'number') {
+                    if (node.value < min) min = node.value
+                    if (node.value > max) max = node.value
+                }
+            }
+        }
+        return { minNumber: min, maxNumber: max }
+    }, [rows])
+
+    const canUseInput = Boolean(process.stdin.isTTY) && !stdout
+    const { selectionState } = canUseInput
+        ? usePuzzleInput({
+              puzzleIndex,
+              puzzlesLength: puzzles.length,
+              rows,
+              showSolution,
+              onPrev: handlePrev,
+              onNext: handleNext,
+              onToggleSolution: handleToggleSolution,
+          })
+        : { selectionState: undefined }
+
     return (
         <HashiGrid
             numNodes={numNodes}
-            rows={parsePuzzle(encoding)}
+            rows={rows}
             showInstructions={!stdout}
             puzzleIndex={puzzleIndex}
             puzzle={encoding}
             isCustomPuzzle={hasCustomPuzzle && puzzleIndex === 0}
             hasSolution={!!puzzle.solution}
             showSolution={showSolution}
+            selectionState={selectionState}
+            minNumber={minNumber}
+            maxNumber={maxNumber}
         />
     )
 }

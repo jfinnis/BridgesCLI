@@ -6,7 +6,7 @@ import { render } from 'ink'
 import { resolve } from 'path'
 
 import Game from './Game.tsx'
-import { type PuzzleData, samplePuzzles } from './utils/samplePuzzles.ts'
+import { type PuzzleData, samplePuzzles } from './utils/puzzle-encoding.ts'
 
 const packageJson = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf8'))
 

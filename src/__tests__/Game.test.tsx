@@ -43,6 +43,7 @@ describe('Game', () => {
             )
 
             expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Type a number [1-2] to select a node
 
 ┌─────────────────┐
 │ ╭───╮     ╭───╮ │
@@ -65,6 +66,7 @@ q: Quit`)
             stdin.write('n')
             await setTimeout(5)
             expect(lastFrame()).toEqual(`Bridges: Puzzle #2
+• Type a number [1-3] to select a node
 
 ┌─────────────────┐
 │ ╭───╮     ╭───╮ │
@@ -97,6 +99,7 @@ q: Quit`)
             stdin.write('n')
             await setTimeout(5)
             expect(lastFrame()).toEqual(`Bridges: Puzzle #2
+• Type a number [1-3] to select a node
 
 ┌─────────────────┐
 │ ╭───╮     ╭───╮ │
@@ -119,6 +122,7 @@ q: Quit`)
             stdin.write('p')
             await setTimeout(5)
             expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Type a number [1-2] to select a node
 
 ┌─────────────────┐
 │ ╭───╮     ╭───╮ │
@@ -147,6 +151,7 @@ q: Quit`)
             stdin.write('n')
             await setTimeout(5)
             expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Type a number [1-2] to select a node
 
 ┌─────────────────┐
 │ ╭───╮     ╭───╮ │
@@ -175,6 +180,7 @@ q: Quit`)
             stdin.write('p')
             await setTimeout(5)
             expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Type a number [1-2] to select a node
 
 ┌─────────────────┐
 │ ╭───╮     ╭───╮ │

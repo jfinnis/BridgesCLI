@@ -19,6 +19,7 @@ describe('HashiGrid', () => {
 
         expect(lastFrame()).toEqual(
             `Bridges: Puzzle #1
+• Type a number to select a node
 
 ┌───────────────────────────┐
 │ ╭───╮     ╭───╮           │

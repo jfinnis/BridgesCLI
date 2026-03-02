@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { parsePuzzle } from '../parsePuzzle.ts'
+import { parsePuzzle } from '../puzzle-encoding.ts'
 
 describe('parsePuzzle', () => {
     describe('encodings without the solution (bridges)', () => {

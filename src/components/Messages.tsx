@@ -1,27 +1,34 @@
 import { Box, Text } from 'ink'
 
+import type { SelectionState } from '../types.ts'
+
 type LegendItem = {
     key: string
     description: string
     disabled?: boolean
 }
 
-const LEGEND_ITEMS = (hasSolution: boolean): LegendItem[] => [
-    { key: 'p', description: 'Previous puzzle' },
-    { key: 'n', description: 'Next puzzle' },
-    { key: 's', description: 'Show solution', disabled: !hasSolution },
-    { key: 'q', description: 'Quit' },
-]
+export function legendItems(hasSolution: boolean, isSelecting: boolean): LegendItem[] {
+    return [
+        { key: 'p', description: 'Previous puzzle', disabled: isSelecting },
+        { key: 'n', description: 'Next puzzle', disabled: isSelecting },
+        { key: 's', description: 'Show solution', disabled: isSelecting || !hasSolution },
+        { key: 'q', description: 'Quit' },
+    ]
+}
 
 type MessagesProps = {
     hasSolution?: boolean
+    selectionState?: SelectionState
 }
 
-export default function Messages({ hasSolution = false }: MessagesProps) {
+export default function Messages({ hasSolution = false, selectionState }: MessagesProps) {
+    const isSelecting = selectionState !== undefined && selectionState.mode !== 'idle'
+
     return (
         <Box flexDirection="column" marginTop={1}>
             <Text bold>Controls:</Text>
-            {LEGEND_ITEMS(hasSolution).map(item => (
+            {legendItems(hasSolution, isSelecting).map(item => (
                 <Box key={item.key}>
                     <Text bold color={item.disabled ? 'gray' : undefined}>
                         {item.key}

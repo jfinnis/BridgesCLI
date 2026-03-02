@@ -17,8 +17,7 @@ Tests use Vitest with `@testing-library/react` patterns via `ink-testing-library
 
 ## Code Style
 
-- Biome is configured in `biome.json`
-- Run linting before committing
-- No custom ESLint/Prettier config - Biome handles everything
+- Run linting before committing - the lint command uses Biome.js
 - Add comments to separate code blocks. Don't remove existing comments.
+- Don't re-export imports - no barrel files
 

@@ -1,3 +1,6 @@
+/**
+ * HashiNode types
+ */
 export type HashiNodeData = {
     value: number | '-' | '=' | '#' | ' ' | '|'
     /** Num lines connected on left, undefined if 0. */
@@ -17,3 +20,17 @@ export type HashiNodeOptions = {
     label?: string
 }
 
+/**
+ * Game operation types
+ */
+export type SelectionMode = 'idle' | 'selecting-node' | 'disambiguation' | 'selected' | 'invalid'
+
+export type Direction = 'h' | 'j' | 'k' | 'l'
+
+export type SelectionState = {
+    mode: SelectionMode
+    selectedNumber: number | null
+    direction: Direction | null
+    matchingNodes: { row: number; col: number }[]
+    disambiguationLabels: string[]
+}
