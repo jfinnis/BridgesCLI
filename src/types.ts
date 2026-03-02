@@ -9,3 +9,11 @@ export type HashiNodeData = {
     /** Num lines connected below, undefined if 0. */
     lineDown?: 1 | 2
 }
+
+export type HashiNodeDisplayMode = 'normal' | 'highlight' | 'dim'
+
+export type HashiNodeOptions = {
+    displayMode?: HashiNodeDisplayMode
+    label?: string
+}
+
