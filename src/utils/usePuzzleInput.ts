@@ -128,6 +128,7 @@ export default function usePuzzleInput({
         direction: null,
         matchingNodes: [],
         disambiguationLabels: [],
+        selectedNode: null,
     })
 
     // Use a ref to track mode for synchronous access in input handler
@@ -141,6 +142,7 @@ export default function usePuzzleInput({
             direction: null,
             matchingNodes: [],
             disambiguationLabels: [],
+            selectedNode: null,
         })
     }, [])
 
@@ -171,6 +173,7 @@ export default function usePuzzleInput({
                         ...selectionStateRef.current,
                         mode: 'selecting-node',
                         disambiguationLabels: [],
+                        selectedNode: matches[labelIndex] ?? null,
                     })
                 }
                 return
@@ -183,7 +186,7 @@ export default function usePuzzleInput({
             ) {
                 if (input === 'h' || input === 'j' || input === 'k' || input === 'l') {
                     const direction = input as Direction
-                    const selectedNode = selectionStateRef.current.matchingNodes[0]
+                    const selectedNode = selectionStateRef.current.selectedNode
                     const isValid = selectedNode
                         ? findNodeInDirection(rows, selectedNode.row, selectedNode.col, direction)
                         : false
@@ -194,7 +197,7 @@ export default function usePuzzleInput({
                         mode: isValid ? 'selected' : 'invalid',
                         direction,
                     })
-                    setTimeout(resetSelection, 1000)
+                    setTimeout(resetSelection, 1_500)
                 }
                 return
             }
@@ -225,6 +228,7 @@ export default function usePuzzleInput({
                         direction: null,
                         matchingNodes: matches,
                         disambiguationLabels: [],
+                        selectedNode: matches[0] ?? null,
                     })
                 } else {
                     // Multiple matches - enter disambiguation mode
@@ -234,6 +238,7 @@ export default function usePuzzleInput({
                         direction: null,
                         matchingNodes: matches,
                         disambiguationLabels: generateLabels(matches.length),
+                        selectedNode: null,
                     })
                 }
             }

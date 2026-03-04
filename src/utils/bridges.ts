@@ -55,8 +55,25 @@ export function validateGrid({ rows, numNodes }: HashiGridValidationProps): void
  */
 export function getDisplayMode(
     node: HashiNodeData,
-    highlightedNode?: number
+    highlightedNode?: number,
+    row?: number,
+    col?: number,
+    selectedNode?: { row: number; col: number } | null,
+    mode?: string
 ): HashiNodeDisplayMode {
+    // In selecting-node, selected, or invalid mode, highlight only the specific selected node
+    if (
+        (mode === 'selecting-node' || mode === 'selected' || mode === 'invalid') &&
+        selectedNode &&
+        row !== undefined &&
+        col !== undefined
+    ) {
+        if (row === selectedNode.row && col === selectedNode.col) {
+            return 'highlight'
+        }
+        return 'dim'
+    }
+
     if (highlightedNode === undefined) {
         return 'normal'
     }
@@ -78,7 +95,8 @@ export function getDisplayMode(
 export function constructNode(
     node: HashiNodeData,
     line: 0 | 1 | 2,
-    displayMode: HashiNodeDisplayMode = 'normal'
+    displayMode: HashiNodeDisplayMode = 'normal',
+    disambiguationLabel?: string
 ): string {
     // Horizontal line
     if (node.value === '-') {
@@ -116,7 +134,8 @@ export function constructNode(
     if (node.value !== ' ') {
         if (line === TOP_ROW) {
             const up = node.lineUp === 2 ? '╨' : node.lineUp === 1 ? '┴' : '─'
-            const border = `╭─${up}─╮`
+            const label = disambiguationLabel ? disambiguationLabel : '─'
+            const border = `╭${label}${up}─╮`
             if (displayMode === 'highlight') {
                 return `\x1b[1m${border}\x1b[22m`
             }

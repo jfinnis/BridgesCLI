@@ -82,7 +82,9 @@ export default function HashiGrid({
                     <HashiRow
                         key={i}
                         nodes={nodes}
+                        rowIndex={i}
                         highlightedNode={selectionState?.selectedNumber ?? undefined}
+                        selectionState={selectionState}
                     />
                 ))}
             </Box>

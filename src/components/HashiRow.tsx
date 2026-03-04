@@ -1,7 +1,7 @@
 import { Box, Text } from 'ink'
 import type React from 'react'
 
-import type { HashiNodeData } from '../types.ts'
+import type { HashiNodeData, SelectionState } from '../types.ts'
 import {
     constructNode,
     getDisplayMode,
@@ -14,11 +14,31 @@ import {
 type HashiRowProps = {
     nodes: HashiNodeData[]
     highlightedNode?: number
+    rowIndex: number
+    selectionState?: SelectionState
 }
 
-export default function HashiRow({ nodes, highlightedNode }: HashiRowProps) {
+export default function HashiRow({
+    nodes,
+    highlightedNode,
+    rowIndex,
+    selectionState,
+}: HashiRowProps) {
     // Each row consists of multiple lines of terminal output
     const lines: React.ReactNode[] = []
+
+    // Build a map of col index to disambiguation label for this row
+    const disambiguationMap: Record<number, string> = {}
+    if (selectionState?.mode === 'disambiguation' && selectionState.matchingNodes) {
+        for (let i = 0; i < selectionState.matchingNodes.length; i++) {
+            const match = selectionState.matchingNodes[i]
+            const label = selectionState.disambiguationLabels[i]
+            if (match && match.row === rowIndex) {
+                disambiguationMap[match.col] = label ?? ''
+            }
+        }
+    }
+
     for (let line = 0; line < ROW_HEIGHT; line++) {
         const rowItems: React.ReactNode[] = []
 
@@ -31,8 +51,16 @@ export default function HashiRow({ nodes, highlightedNode }: HashiRowProps) {
                 continue
             }
 
-            const displayMode = getDisplayMode(node, highlightedNode)
-            rowItems.push(constructNode(node, line as 0 | 1 | 2, displayMode))
+            const displayMode = getDisplayMode(
+                node,
+                highlightedNode,
+                rowIndex,
+                i,
+                selectionState?.selectedNode ?? null,
+                selectionState?.mode
+            )
+            const label = disambiguationMap[i]
+            rowItems.push(constructNode(node, line as 0 | 1 | 2, displayMode, label))
 
             // Add space between columns except the last
             if (i < nodes.length - 1) {

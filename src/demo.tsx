@@ -14,6 +14,7 @@ render(
             { value: 2 },
             { value: 3 },
         ]}
+        rowIndex={0}
         highlightedNode={2}
     />
 )

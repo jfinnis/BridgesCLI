@@ -27,6 +27,7 @@ describe('Header', () => {
                     { row: 1, col: 1 },
                 ],
                 disambiguationLabels: [],
+                selectedNode: { row: 0, col: 0 },
             }
             const { lastFrame } = render(
                 <Header puzzleIndex={0} puzzle="5x5:1a1" selectionState={selectionState} />
@@ -44,6 +45,7 @@ describe('Header', () => {
                     { row: 1, col: 2 },
                 ],
                 disambiguationLabels: ['a', 'b'],
+                selectedNode: null,
             }
             const { lastFrame } = render(
                 <Header puzzleIndex={0} puzzle="5x5:1a1" selectionState={selectionState} />
@@ -61,6 +63,7 @@ describe('Header', () => {
                     { row: 1, col: 2 },
                 ],
                 disambiguationLabels: ['a', 'b'],
+                selectedNode: null,
             }
             const { lastFrame } = render(
                 <Header puzzleIndex={0} puzzle="5x5:1a1" selectionState={selectionState} />
@@ -75,6 +78,7 @@ describe('Header', () => {
                 direction: 'l',
                 matchingNodes: [{ row: 0, col: 0 }],
                 disambiguationLabels: [],
+                selectedNode: { row: 0, col: 0 },
             }
             const { lastFrame } = render(
                 <Header puzzleIndex={0} puzzle="5x5:1a1" selectionState={selectionState} />
@@ -89,6 +93,7 @@ describe('Header', () => {
                 direction: 'k',
                 matchingNodes: [{ row: 0, col: 0 }],
                 disambiguationLabels: [],
+                selectedNode: { row: 0, col: 0 },
             }
             const { lastFrame } = render(
                 <Header puzzleIndex={0} puzzle="5x5:1a1" selectionState={selectionState} />
@@ -103,11 +108,12 @@ describe('Header', () => {
                 direction: 'h',
                 matchingNodes: [{ row: 0, col: 0 }],
                 disambiguationLabels: [],
+                selectedNode: { row: 0, col: 0 },
             }
             const { lastFrame } = render(
                 <Header puzzleIndex={0} puzzle="5x5:1a1" selectionState={selectionState} />
             )
-            expect(lastFrame()).toContain('No node left of node 1 to connect')
+            expect(lastFrame()).toContain('Cannot draw bridge left from node')
         })
     })
 

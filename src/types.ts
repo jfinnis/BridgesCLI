@@ -33,4 +33,5 @@ export type SelectionState = {
     direction: Direction | null
     matchingNodes: { row: number; col: number }[]
     disambiguationLabels: string[]
+    selectedNode: { row: number; col: number } | null
 }

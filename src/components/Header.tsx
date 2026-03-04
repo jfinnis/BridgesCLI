@@ -43,7 +43,7 @@ export default function Header({
             const lineType = direction === 'h' || direction === 'l' ? 'horizontal' : 'vertical'
             statusText = `Drew ${lineType} bridge`
         } else if (mode === 'invalid' && selectedNumber !== null && direction) {
-            statusText = `No node ${directionNames[direction]} of node ${selectedNumber} to connect`
+            statusText = `Cannot draw bridge ${directionNames[direction]} from node`
         }
     }
 
