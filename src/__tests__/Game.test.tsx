@@ -3,9 +3,11 @@ import { render } from 'ink-testing-library'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import Game from '../Game.tsx'
+import { type PuzzleData, samplePuzzles } from '../utils/puzzle-encoding.ts'
 
 const TEST_PUZZLE = { encoding: '3x3:1a1.c.2a2' }
 const TEST_PUZZLE_2 = { encoding: '3x3:3a3.c.1a1' }
+const SMALL_PUZZLE_3X3 = { encoding: '3x3:2a1.c.1a3' }
 
 describe('Game', () => {
     beforeEach(() => {
@@ -32,7 +34,124 @@ describe('Game', () => {
         })
     })
 
-    describe('game controls', () => {
+    describe('game controls - toggle solution', () => {
+        it('pressing s toggles the solution on and off', async () => {
+            const { stdin, lastFrame } = render(
+                <Game
+                    puzzles={[samplePuzzles[0] as PuzzleData]}
+                    hasCustomPuzzle={false}
+                    stdout={false}
+                />
+            )
+
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Type a number [1-8] to select a node
+
+┌─────────────────────────────────────┐
+│ ╭───╮     ╭───╮     ╭───╮     ╭───╮ │
+│ │ 4 │     │ 3 │     │ 3 │     │ 3 │ │
+│ ╰───╯     ╰───╯     ╰───╯     ╰───╯ │
+│      ╭───╮               ╭───╮      │
+│      │ 2 │               │ 4 │      │
+│      ╰───╯               ╰───╯      │
+│ ╭───╮          ╭───╮          ╭───╮ │
+│ │ 3 │          │ 3 │          │ 3 │ │
+│ ╰───╯          ╰───╯          ╰───╯ │
+│                                     │
+│                                     │
+│                                     │
+│ ╭───╮          ╭───╮     ╭───╮      │
+│ │ 2 │          │ 8 │     │ 4 │      │
+│ ╰───╯          ╰───╯     ╰───╯      │
+│                     ╭───╮     ╭───╮ │
+│                     │ 1 │     │ 3 │ │
+│                     ╰───╯     ╰───╯ │
+│      ╭───╮     ╭───╮     ╭───╮      │
+│      │ 1 │     │ 4 │     │ 1 │      │
+│      ╰───╯     ╰───╯     ╰───╯      │
+└─────────────────────────────────────┘
+
+Controls:
+p: Previous puzzle
+n: Next puzzle
+s: Show solution
+q: Quit`)
+
+            // Now toggle the solution on
+            stdin.write('s')
+            await setTimeout(5)
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Viewing solution (press s to return to puzzle)
+
+┌─────────────────────────────────────┐
+│ ╭───╮     ╭───╮     ╭───╮     ╭───╮ │
+│ │ 4 ╞═════╡ 3 ├─────┤ 3 ╞═════╡ 3 │ │
+│ ╰─╥─╯     ╰───╯     ╰───╯     ╰─┬─╯ │
+│   ║  ╭───╮               ╭───╮  │   │
+│   ║  │ 2 ╞═══════════════╡ 4 │  │   │
+│   ║  ╰───╯               ╰─╥─╯  │   │
+│ ╭─╨─╮          ╭───╮       ║  ╭─┴─╮ │
+│ │ 3 ├──────────┤ 3 │       ║  │ 3 │ │
+│ ╰───╯          ╰─╥─╯       ║  ╰─╥─╯ │
+│                  ║         ║    ║   │
+│                  ║         ║    ║   │
+│                  ║         ║    ║   │
+│ ╭───╮          ╭─╨─╮     ╭─╨─╮  ║   │
+│ │ 2 ╞══════════╡ 8 ╞═════╡ 4 │  ║   │
+│ ╰───╯          ╰─╥─╯     ╰───╯  ║   │
+│                  ║  ╭───╮     ╭─╨─╮ │
+│                  ║  │ 1 ├─────┤ 3 │ │
+│                  ║  ╰───╯     ╰───╯ │
+│      ╭───╮     ╭─╨─╮     ╭───╮      │
+│      │ 1 ├─────┤ 4 ├─────┤ 1 │      │
+│      ╰───╯     ╰───╯     ╰───╯      │
+└─────────────────────────────────────┘
+
+Controls:
+p: Previous puzzle
+n: Next puzzle
+s: Show solution
+q: Quit`)
+
+            // And toggle it off again
+            stdin.write('s')
+            await setTimeout(5)
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Type a number [1-8] to select a node
+
+┌─────────────────────────────────────┐
+│ ╭───╮     ╭───╮     ╭───╮     ╭───╮ │
+│ │ 4 │     │ 3 │     │ 3 │     │ 3 │ │
+│ ╰───╯     ╰───╯     ╰───╯     ╰───╯ │
+│      ╭───╮               ╭───╮      │
+│      │ 2 │               │ 4 │      │
+│      ╰───╯               ╰───╯      │
+│ ╭───╮          ╭───╮          ╭───╮ │
+│ │ 3 │          │ 3 │          │ 3 │ │
+│ ╰───╯          ╰───╯          ╰───╯ │
+│                                     │
+│                                     │
+│                                     │
+│ ╭───╮          ╭───╮     ╭───╮      │
+│ │ 2 │          │ 8 │     │ 4 │      │
+│ ╰───╯          ╰───╯     ╰───╯      │
+│                     ╭───╮     ╭───╮ │
+│                     │ 1 │     │ 3 │ │
+│                     ╰───╯     ╰───╯ │
+│      ╭───╮     ╭───╮     ╭───╮      │
+│      │ 1 │     │ 4 │     │ 1 │      │
+│      ╰───╯     ╰───╯     ╰───╯      │
+└─────────────────────────────────────┘
+
+Controls:
+p: Previous puzzle
+n: Next puzzle
+s: Show solution
+q: Quit`)
+        })
+    })
+
+    describe('game controls - next/previous', () => {
         it('navigates to next puzzle with n key when interactive', async () => {
             const { stdin, lastFrame } = render(
                 <Game
@@ -199,6 +318,102 @@ p: Previous puzzle
 n: Next puzzle
 s: Show solution
 q: Quit`)
+        })
+    })
+
+    describe('game controls - node selection', () => {
+        it('selects node immediately when there is only one of that number', async () => {
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
+            )
+
+            // Press '1' to select nodes with value 1 (there are 4)
+            stdin.write('2')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Select direction with h/j/k/l')
+            expect(lastFrame()).not.toContain('╭a──╮')
+        })
+
+        it('shows disambiguation labels when multiple nodes have the same number', async () => {
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
+            )
+
+            // Press '1' to select nodes with value 1 (there are 4)
+            stdin.write('1')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Press label shown to select that node')
+            expect(lastFrame()).toContain('╭a──╮')
+            expect(lastFrame()).toContain('╭b──╮')
+        })
+
+        it('selects a specific node when disambiguation label is pressed', async () => {
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
+            )
+
+            // Press '1' to select nodes with value 1
+            stdin.write('1')
+            await setTimeout(5)
+
+            // Press 'a' to select the second node
+            stdin.write('b')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Select direction with h/j/k/l')
+        })
+
+        it('draws a bridge when a valid direction is selected', async () => {
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
+            )
+
+            // Press '1' to enter disambiguation mode
+            stdin.write('1')
+            await setTimeout(5)
+
+            // Press 'b' to select the second node
+            stdin.write('b')
+            await setTimeout(5)
+
+            // Press 'l' to draw a bridge to the right
+            stdin.write('l')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Drew horizontal bridge')
+        })
+
+        it('shows an invalid message for a bad bridge direction', async () => {
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
+            )
+
+            // Press '1' to enter disambiguation mode
+            stdin.write('1')
+            await setTimeout(5)
+
+            // Press 'b' to select the second node
+            stdin.write('b')
+            await setTimeout(5)
+
+            // Press 'h' to draw a bridge to the left
+            stdin.write('h')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Cannot draw bridge left from node')
+        })
+
+        it('resets selection when Escape is pressed', async () => {
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
+            )
+
+            stdin.write('1')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Press label shown')
+
+            // Note: Escape key handling may not work in test environment
+            // Testing that we entered disambiguation mode successfully
+            stdin.write('\x1b')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Type a number')
         })
     })
 })

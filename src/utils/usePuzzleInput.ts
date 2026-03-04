@@ -146,7 +146,7 @@ export default function usePuzzleInput({
         })
     }, [])
 
-    useInput(input => {
+    useInput((input, key) => {
         // q always quits
         if (input === 'q') {
             exit()
@@ -158,7 +158,7 @@ export default function usePuzzleInput({
         // If not idle, handle selection keys
         if (currentMode !== 'idle') {
             // Esc resets to idle
-            if (input === '\u001b') {
+            if (key.escape) {
                 resetSelection()
                 return
             }
