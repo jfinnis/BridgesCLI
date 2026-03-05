@@ -1,13 +1,13 @@
 import { setTimeout } from 'node:timers/promises'
 import { render } from 'ink-testing-library'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import Game from '../Game.tsx'
 import { type PuzzleData, samplePuzzles } from '../utils/puzzle-encoding.ts'
 
 const TEST_PUZZLE = { encoding: '3x3:1a1.c.2a2' }
 const TEST_PUZZLE_2 = { encoding: '3x3:3a3.c.1a1' }
-const SMALL_PUZZLE_3X3 = { encoding: '3x3:2a1.c.1a3' }
+const SMALL_PUZZLE_3X3 = { encoding: '3x3:2a3.c.1a2' }
 
 describe('Game', () => {
     beforeEach(() => {
@@ -327,8 +327,8 @@ q: Quit`)
                 <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
             )
 
-            // Press '1' to select nodes with value 1 (there are 4)
-            stdin.write('2')
+            // Press '3' to select single node of value 3
+            stdin.write('3')
             await setTimeout(5)
             expect(lastFrame()).toContain('Select direction with h/j/k/l')
             expect(lastFrame()).not.toContain('╭a──╮')
@@ -339,8 +339,8 @@ q: Quit`)
                 <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
             )
 
-            // Press '1' to select nodes with value 1 (there are 4)
-            stdin.write('1')
+            // Press '2' to select from multiple nodes with value 2
+            stdin.write('2')
             await setTimeout(5)
             expect(lastFrame()).toContain('Press label shown to select that node')
             expect(lastFrame()).toContain('╭a──╮')
@@ -352,7 +352,7 @@ q: Quit`)
                 <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
             )
 
-            // Press '1' to select nodes with value 1
+            // Press '1' to select from multiple nodes with value 1
             stdin.write('1')
             await setTimeout(5)
 
@@ -381,7 +381,7 @@ q: Quit`)
             expect(lastFrame()).toContain('Drew horizontal bridge')
         })
 
-        it('shows an invalid message for a bad bridge direction', async () => {
+        it('shows an invalid message for a bad bridge direction off the grid', async () => {
             const { stdin, lastFrame } = render(
                 <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
             )
@@ -400,12 +400,82 @@ q: Quit`)
             expect(lastFrame()).toContain('Cannot draw bridge left from node')
         })
 
+        it('shows an invalid message for horizontal bridge colliding with bridge', async () => {
+            const puzzleWithBarrier = { encoding: '4x3:2a2a.a1|1.b1a' }
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[puzzleWithBarrier]} hasCustomPuzzle={false} stdout={false} />
+            )
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Type a number [1-2] to select a node
+
+┌──────────────────────┐
+│ ╭───╮     ╭───╮      │
+│ │ 2 │     │ 2 │      │
+│ ╰───╯     ╰─┬─╯      │
+│      ╭───╮  │  ╭───╮ │
+│      │ 1 │  │  │ 1 │ │
+│      ╰───╯  │  ╰───╯ │
+│           ╭─┴─╮      │
+│           │ 1 │      │
+│           ╰───╯      │
+└──────────────────────┘
+
+Controls:
+p: Previous puzzle
+n: Next puzzle
+s: Show solution
+q: Quit`)
+
+            stdin.write('1')
+            await setTimeout(5)
+            stdin.write('a')
+            await setTimeout(5)
+            stdin.write('l')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Cannot draw bridge right from node')
+        })
+
+        it('shows an invalid message for vertical bridge colliding with bridge', async () => {
+            const puzzleWithBarrier = { encoding: '4x3:2a2a.a1=1.b1a' }
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[puzzleWithBarrier]} hasCustomPuzzle={false} stdout={false} />
+            )
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Type a number [1-2] to select a node
+
+┌──────────────────────┐
+│ ╭───╮     ╭───╮      │
+│ │ 2 │     │ 2 │      │
+│ ╰───╯     ╰───╯      │
+│      ╭───╮     ╭───╮ │
+│      │ 1 ╞═════╡ 1 │ │
+│      ╰───╯     ╰───╯ │
+│           ╭───╮      │
+│           │ 1 │      │
+│           ╰───╯      │
+└──────────────────────┘
+
+Controls:
+p: Previous puzzle
+n: Next puzzle
+s: Show solution
+q: Quit`)
+
+            stdin.write('2')
+            await setTimeout(5)
+            stdin.write('b')
+            await setTimeout(5)
+            stdin.write('j')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Cannot draw bridge down from node')
+        })
+
         it('resets selection when Escape is pressed', async () => {
             const { stdin, lastFrame } = render(
                 <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
             )
 
-            stdin.write('1')
+            stdin.write('2')
             await setTimeout(5)
             expect(lastFrame()).toContain('Press label shown')
 

@@ -60,8 +60,14 @@ export function findNodeInDirection(
             const row = rows[fromRow]
             if (!row) return false
             const cell = row[checkCol]
-            if (cell && typeof cell.value === 'number') {
-                return true
+            if (cell) {
+                if (cell.value === '|' || cell.value === '#') {
+                    // Bridge in the way - invalid
+                    return false
+                }
+                if (typeof cell.value === 'number') {
+                    return true
+                }
             }
             checkCol--
         }
@@ -72,8 +78,14 @@ export function findNodeInDirection(
             const row = rows[fromRow]
             if (!row) return false
             const cell = row[checkCol]
-            if (cell && typeof cell.value === 'number') {
-                return true
+            if (cell) {
+                if (cell.value === '|' || cell.value === '#') {
+                    // Bridge in the way - invalid
+                    return false
+                }
+                if (typeof cell.value === 'number') {
+                    return true
+                }
             }
             checkCol++
         }
@@ -84,8 +96,14 @@ export function findNodeInDirection(
             const row = rows[checkRow]
             if (!row) return false
             const cell = row[fromCol]
-            if (cell && typeof cell.value === 'number') {
-                return true
+            if (cell) {
+                if (cell.value === '-' || cell.value === '=') {
+                    // Bridge in the way - invalid
+                    return false
+                }
+                if (typeof cell.value === 'number') {
+                    return true
+                }
             }
             checkRow++
         }
@@ -96,8 +114,14 @@ export function findNodeInDirection(
             const row = rows[checkRow]
             if (!row) return false
             const cell = row[fromCol]
-            if (cell && typeof cell.value === 'number') {
-                return true
+            if (cell) {
+                if (cell.value === '-' || cell.value === '=') {
+                    // Bridge in the way - invalid
+                    return false
+                }
+                if (typeof cell.value === 'number') {
+                    return true
+                }
             }
             checkRow--
         }
