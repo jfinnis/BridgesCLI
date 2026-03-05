@@ -161,7 +161,14 @@ export default function usePuzzleInput({
     const selectionStateRef = useRef(selectionState)
     selectionStateRef.current = selectionState
 
+    // Store timeout ID so we can cancel it when user provides input
+    const resetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
     const resetSelection = useCallback(() => {
+        if (resetTimeoutRef.current) {
+            clearTimeout(resetTimeoutRef.current)
+            resetTimeoutRef.current = null
+        }
         setSelectionState({
             mode: 'idle',
             selectedNumber: null,
@@ -170,6 +177,14 @@ export default function usePuzzleInput({
             disambiguationLabels: [],
             selectedNode: null,
         })
+    }, [])
+
+    // Clear the reset timeout when user changes mode (e.g., starts a new selection)
+    const clearResetTimeout = useCallback(() => {
+        if (resetTimeoutRef.current) {
+            clearTimeout(resetTimeoutRef.current)
+            resetTimeoutRef.current = null
+        }
     }, [])
 
     useInput((input, key) => {
@@ -220,10 +235,8 @@ export default function usePuzzleInput({
                     let erased = false
                     if (targetNode && selectedNode && onBridgePlaced) {
                         // Toggle the bridge (add if not exists, remove if exists)
-                        erased = onBridgePlaced({
-                            from: selectedNode,
-                            to: targetNode,
-                        })
+                        // The callback returns true if a bridge was erased
+                        erased = onBridgePlaced({ from: selectedNode, to: targetNode })
                     }
 
                     // Show selected/invalid state, then reset after 1.5s
@@ -233,13 +246,16 @@ export default function usePuzzleInput({
                         direction,
                         bridgeErased: erased,
                     })
-                    setTimeout(resetSelection, 1_500)
+                    resetTimeoutRef.current = setTimeout(resetSelection, 1_500)
                 }
                 return
             }
 
             // In selected/invalid mode, allow immediate input for next action
             if (currentMode === 'selected' || currentMode === 'invalid') {
+                // Clear any pending timeout since user is providing input
+                clearResetTimeout()
+
                 // Allow n/p/s navigation
                 if (input === 'n' && puzzleIndexRef.current + 1 < puzzlesLength) {
                     onNext()
