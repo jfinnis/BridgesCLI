@@ -8,7 +8,7 @@ This is a CLI renderer for Hashiwokakero (Bridges) puzzles. It renders a grid of
 - `bun start --stdout` - Run puzzle and output to stdout (for testing)
 - `bun start --puzzle <encoding>` - Run with a specific puzzle encoding
 - `bun run test` - Run unit tests
-- `bun run typehceck` - typescript typechecker
+- `bun run typecheck` - typescript typechecker
 - `bun run lint` - Lint and format
 
 ## Testing
@@ -19,5 +19,6 @@ Tests use Vitest with `@testing-library/react` patterns via `ink-testing-library
 
 - Run linting before committing - the lint command uses Biome.js
 - Add comments to separate code blocks. Don't remove existing comments.
+- Add a comment above functions that explain the intention of the function.
 - Don't re-export imports - no barrel files
 

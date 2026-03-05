@@ -1,7 +1,7 @@
 import { useApp, useInput } from 'ink'
 import { useCallback, useRef, useState } from 'react'
 
-import type { Direction, SelectionState } from '../types.ts'
+import type { Direction, PlacedBridge, SelectionState } from '../types.ts'
 
 type UsePuzzleInputProps = {
     puzzleIndex: number
@@ -11,6 +11,7 @@ type UsePuzzleInputProps = {
     onPrev: () => void
     onNext: () => void
     onToggleSolution: () => void
+    onBridgePlaced?: (bridge: PlacedBridge) => void
 }
 
 function findMatchingNodes(
@@ -44,10 +45,10 @@ export function findNodeInDirection(
     fromRow: number,
     fromCol: number,
     direction: Direction
-): boolean {
+): { row: number; col: number } | null {
     const rowCount = rows.length
     const firstRow = rows[0]
-    if (!firstRow) return false
+    if (!firstRow) return null
     const colCount = firstRow.length
 
     let checkRow = fromRow
@@ -58,15 +59,15 @@ export function findNodeInDirection(
         checkCol = fromCol - 1
         while (checkCol >= 0) {
             const row = rows[fromRow]
-            if (!row) return false
+            if (!row) return null
             const cell = row[checkCol]
             if (cell) {
                 if (cell.value === '|' || cell.value === '#') {
                     // Bridge in the way - invalid
-                    return false
+                    return null
                 }
                 if (typeof cell.value === 'number') {
-                    return true
+                    return { row: fromRow, col: checkCol }
                 }
             }
             checkCol--
@@ -76,15 +77,15 @@ export function findNodeInDirection(
         checkCol = fromCol + 1
         while (checkCol < colCount) {
             const row = rows[fromRow]
-            if (!row) return false
+            if (!row) return null
             const cell = row[checkCol]
             if (cell) {
                 if (cell.value === '|' || cell.value === '#') {
                     // Bridge in the way - invalid
-                    return false
+                    return null
                 }
                 if (typeof cell.value === 'number') {
-                    return true
+                    return { row: fromRow, col: checkCol }
                 }
             }
             checkCol++
@@ -94,15 +95,15 @@ export function findNodeInDirection(
         checkRow = fromRow + 1
         while (checkRow < rowCount) {
             const row = rows[checkRow]
-            if (!row) return false
+            if (!row) return null
             const cell = row[fromCol]
             if (cell) {
                 if (cell.value === '-' || cell.value === '=') {
                     // Bridge in the way - invalid
-                    return false
+                    return null
                 }
                 if (typeof cell.value === 'number') {
-                    return true
+                    return { row: checkRow, col: fromCol }
                 }
             }
             checkRow++
@@ -112,22 +113,22 @@ export function findNodeInDirection(
         checkRow = fromRow - 1
         while (checkRow >= 0) {
             const row = rows[checkRow]
-            if (!row) return false
+            if (!row) return null
             const cell = row[fromCol]
             if (cell) {
                 if (cell.value === '-' || cell.value === '=') {
                     // Bridge in the way - invalid
-                    return false
+                    return null
                 }
                 if (typeof cell.value === 'number') {
-                    return true
+                    return { row: checkRow, col: fromCol }
                 }
             }
             checkRow--
         }
     }
 
-    return false
+    return null
 }
 
 export default function usePuzzleInput({
@@ -138,6 +139,7 @@ export default function usePuzzleInput({
     onPrev,
     onNext,
     onToggleSolution,
+    onBridgePlaced,
 }: UsePuzzleInputProps) {
     const { exit } = useApp()
     const puzzleIndexRef = useRef(puzzleIndex)
@@ -211,14 +213,22 @@ export default function usePuzzleInput({
                 if (input === 'h' || input === 'j' || input === 'k' || input === 'l') {
                     const direction = input as Direction
                     const selectedNode = selectionStateRef.current.selectedNode
-                    const isValid = selectedNode
+                    const targetNode = selectedNode
                         ? findNodeInDirection(rows, selectedNode.row, selectedNode.col, direction)
-                        : false
+                        : null
 
-                    // Selected! Show selected/invalid state briefly then reset
+                    if (targetNode && selectedNode && onBridgePlaced) {
+                        // Toggle the bridge (add if not exists, remove if exists)
+                        onBridgePlaced({
+                            from: selectedNode,
+                            to: targetNode,
+                        })
+                    }
+
+                    // Show selected/invalid state, then reset after 1.5s
                     setSelectionState({
                         ...selectionStateRef.current,
-                        mode: isValid ? 'selected' : 'invalid',
+                        mode: targetNode ? 'selected' : 'invalid',
                         direction,
                     })
                     setTimeout(resetSelection, 1_500)
@@ -226,8 +236,82 @@ export default function usePuzzleInput({
                 return
             }
 
-            // Don't allow n/p/s in selection modes
-            return
+            // In selected/invalid mode, allow immediate input for next action
+            if (currentMode === 'selected' || currentMode === 'invalid') {
+                // Allow n/p/s navigation
+                if (input === 'n' && puzzleIndexRef.current + 1 < puzzlesLength) {
+                    onNext()
+                    resetSelection()
+                    return
+                } else if (input === 'p' && puzzleIndexRef.current - 1 >= 0) {
+                    onPrev()
+                    resetSelection()
+                    return
+                } else if (input === 's') {
+                    onToggleSolution()
+                    resetSelection()
+                    return
+                }
+
+                // Allow number keys to start a new selection
+                if (input >= '1' && input <= '8') {
+                    if (showSolutionRef.current) return
+
+                    const num = parseInt(input, 10)
+                    const matches = findMatchingNodes(rows, num)
+                    if (matches.length > 0) {
+                        if (matches.length === 1) {
+                            setSelectionState({
+                                mode: 'selecting-node',
+                                selectedNumber: num,
+                                direction: null,
+                                matchingNodes: matches,
+                                disambiguationLabels: [],
+                                selectedNode: matches[0] ?? null,
+                            })
+                        } else {
+                            setSelectionState({
+                                mode: 'disambiguation',
+                                selectedNumber: num,
+                                direction: null,
+                                matchingNodes: matches,
+                                disambiguationLabels: generateLabels(matches.length),
+                                selectedNode: null,
+                            })
+                        }
+                    }
+                    return
+                }
+
+                // Allow direction keys to draw another bridge immediately
+                if (input === 'h' || input === 'j' || input === 'k' || input === 'l') {
+                    // Get the previously selected node to use as starting point
+                    const prevNode = selectionStateRef.current.selectedNode
+                    if (prevNode) {
+                        const direction = input as Direction
+                        const targetNode = findNodeInDirection(
+                            rows,
+                            prevNode.row,
+                            prevNode.col,
+                            direction
+                        )
+
+                        if (targetNode && onBridgePlaced) {
+                            onBridgePlaced({
+                                from: prevNode,
+                                to: targetNode,
+                            })
+                        }
+
+                        setSelectionState({
+                            ...selectionStateRef.current,
+                            mode: targetNode ? 'selected' : 'invalid',
+                            direction,
+                        })
+                    }
+                    return
+                }
+            }
         }
 
         // Normal mode key handling

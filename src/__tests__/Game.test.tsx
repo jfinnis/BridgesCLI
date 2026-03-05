@@ -486,4 +486,36 @@ q: Quit`)
             expect(lastFrame()).toContain('Type a number')
         })
     })
+
+    describe('game controls - drawing each kind of bridge', () => {
+        it('draws horizontal bridge', async () => {
+            const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} stdout={false} />
+            )
+            stdin.write('3')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Press label shown to select that node')
+            stdin.write('a')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Select direction with h/j/k/l')
+            stdin.write('h')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Drew horizontal bridge')
+        })
+
+        it('draws a vertical bridge', async () => {
+            const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} stdout={false} />
+            )
+            stdin.write('2')
+            await setTimeout(5)
+            stdin.write('a')
+            await setTimeout(5)
+            stdin.write('j')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Drew vertical bridge')
+        })
+    })
 })

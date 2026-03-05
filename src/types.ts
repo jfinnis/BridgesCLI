@@ -27,6 +27,11 @@ export type SelectionMode = 'idle' | 'selecting-node' | 'disambiguation' | 'sele
 
 export type Direction = 'h' | 'j' | 'k' | 'l'
 
+export type PlacedBridge = {
+    from: { row: number; col: number }
+    to: { row: number; col: number }
+}
+
 export type SelectionState = {
     mode: SelectionMode
     selectedNumber: number | null
