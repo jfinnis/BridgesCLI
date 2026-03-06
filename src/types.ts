@@ -39,4 +39,5 @@ export type SelectionState = {
     matchingNodes: { row: number; col: number }[]
     disambiguationLabels: string[]
     selectedNode: { row: number; col: number } | null
+    bridgeErased?: boolean
 }

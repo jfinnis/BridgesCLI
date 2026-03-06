@@ -11,7 +11,7 @@ type UsePuzzleInputProps = {
     onPrev: () => void
     onNext: () => void
     onToggleSolution: () => void
-    onBridgePlaced?: (bridge: PlacedBridge) => void
+    onBridgePlaced?: (bridge: PlacedBridge) => boolean
 }
 
 function findMatchingNodes(
@@ -217,9 +217,10 @@ export default function usePuzzleInput({
                         ? findNodeInDirection(rows, selectedNode.row, selectedNode.col, direction)
                         : null
 
+                    let erased = false
                     if (targetNode && selectedNode && onBridgePlaced) {
                         // Toggle the bridge (add if not exists, remove if exists)
-                        onBridgePlaced({
+                        erased = onBridgePlaced({
                             from: selectedNode,
                             to: targetNode,
                         })
@@ -230,6 +231,7 @@ export default function usePuzzleInput({
                         ...selectionStateRef.current,
                         mode: targetNode ? 'selected' : 'invalid',
                         direction,
+                        bridgeErased: erased,
                     })
                     setTimeout(resetSelection, 1_500)
                 }
@@ -296,8 +298,9 @@ export default function usePuzzleInput({
                             direction
                         )
 
+                        let erased = false
                         if (targetNode && onBridgePlaced) {
-                            onBridgePlaced({
+                            erased = onBridgePlaced({
                                 from: prevNode,
                                 to: targetNode,
                             })
@@ -307,6 +310,7 @@ export default function usePuzzleInput({
                             ...selectionStateRef.current,
                             mode: targetNode ? 'selected' : 'invalid',
                             direction,
+                            bridgeErased: erased,
                         })
                     }
                     return

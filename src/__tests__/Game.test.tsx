@@ -1,6 +1,6 @@
 import { setTimeout } from 'node:timers/promises'
 import { render } from 'ink-testing-library'
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import Game from '../Game.tsx'
 import { type PuzzleData, samplePuzzles } from '../utils/puzzle-encoding.ts'
@@ -501,7 +501,26 @@ q: Quit`)
             expect(lastFrame()).toContain('Select direction with h/j/k/l')
             stdin.write('h')
             await setTimeout(5)
-            expect(lastFrame()).toContain('Drew horizontal bridge')
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Drew horizontal bridge
+
+┌─────────────────┐
+│ \x1b[2m╭───╮\x1b[22m     \x1b[1m╭───╮\x1b[22m │
+│ \x1b[2m│ 2 ├─────\x1b[22m\x1b[1m┤ 3 │\x1b[22m │
+│ \x1b[2m╰───╯\x1b[22m     \x1b[1m╰───╯\x1b[22m │
+│                 │
+│                 │
+│                 │
+│ \x1b[2m╭───╮\x1b[22m     \x1b[2m╭───╮\x1b[22m │
+│ \x1b[2m│ 3 │\x1b[22m     \x1b[2m│ 4 │\x1b[22m │
+│ \x1b[2m╰───╯\x1b[22m     \x1b[2m╰───╯\x1b[22m │
+└─────────────────┘
+
+Controls:
+p: Previous puzzle
+n: Next puzzle
+s: Show solution
+q: Quit`)
         })
 
         it('draws a vertical bridge', async () => {
@@ -511,11 +530,54 @@ q: Quit`)
             )
             stdin.write('2')
             await setTimeout(5)
-            stdin.write('a')
-            await setTimeout(5)
             stdin.write('j')
             await setTimeout(5)
-            expect(lastFrame()).toContain('Drew vertical bridge')
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Drew vertical bridge
+
+┌─────────────────┐
+│ \x1b[1m╭───╮\x1b[22m     \x1b[2m╭───╮\x1b[22m │
+│ \x1b[1m│ 2 │\x1b[22m     \x1b[2m│ 3 │\x1b[22m │
+│ \x1b[1m╰─┬─╯\x1b[22m     \x1b[2m╰───╯\x1b[22m │
+│ \x1b[2m  │  \x1b[22m           │
+│ \x1b[2m  │  \x1b[22m           │
+│ \x1b[2m  │  \x1b[22m           │
+│ \x1b[2m╭─┴─╮\x1b[22m     \x1b[2m╭───╮\x1b[22m │
+│ \x1b[2m│ 3 │\x1b[22m     \x1b[2m│ 4 │\x1b[22m │
+│ \x1b[2m╰───╯\x1b[22m     \x1b[2m╰───╯\x1b[22m │
+└─────────────────┘
+
+Controls:
+p: Previous puzzle
+n: Next puzzle
+s: Show solution
+q: Quit`)
+        })
+
+        it('erases a bridge', async () => {
+            const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} stdout={false} />
+            )
+            stdin.write('3')
+            await setTimeout(5)
+            stdin.write('a')
+            await setTimeout(5)
+            stdin.write('h')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Drew horizontal bridge')
+
+            stdin.write('3')
+            await setTimeout(5)
+            stdin.write('a')
+            await setTimeout(5)
+            stdin.write('h')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Erased bridge')
+
+            // Verify the bridge was actually erased (grid shows no bridge)
+            expect(lastFrame()).not.toContain('╞═════')
+            expect(lastFrame()).not.toContain('═╡')
         })
     })
 })

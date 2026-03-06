@@ -27,13 +27,16 @@ function bridgesEqual(a: PlacedBridge, b: PlacedBridge): boolean {
 }
 
 // Toggles a bridge: removes it if it already exists, otherwise adds it.
-// This allows users to draw/remove bridges with the same input.
-function toggleBridge(bridges: PlacedBridge[], bridge: PlacedBridge): PlacedBridge[] {
+// Returns true if bridge was erased, false if it was added.
+function toggleBridge(
+    bridges: PlacedBridge[],
+    bridge: PlacedBridge
+): { bridges: PlacedBridge[]; erased: boolean } {
     const exists = bridges.some(b => bridgesEqual(b, bridge))
     if (exists) {
-        return bridges.filter(b => !bridgesEqual(b, bridge))
+        return { bridges: bridges.filter(b => !bridgesEqual(b, bridge)), erased: true }
     }
-    return [...bridges, bridge]
+    return { bridges: [...bridges, bridge], erased: false }
 }
 
 // Merges user-placed bridges with the original puzzle rows.
@@ -117,9 +120,14 @@ export default function Game({ puzzles, hasCustomPuzzle, stdout }: GameProps) {
     const handleToggleSolution = useCallback(() => {
         setShowSolution(s => !s)
     }, [])
-    const handleBridgePlaced = useCallback((bridge: PlacedBridge) => {
-        setUserBridges(prev => toggleBridge(prev, bridge))
-    }, [])
+    const handleBridgePlaced = useCallback(
+        (bridge: PlacedBridge) => {
+            const result = toggleBridge(userBridges, bridge)
+            setUserBridges(result.bridges)
+            return result.erased
+        },
+        [userBridges]
+    )
 
     const puzzle = puzzles[puzzleIndex]
     if (!puzzle) throw new Error('HashiGrid: no puzzle found')
