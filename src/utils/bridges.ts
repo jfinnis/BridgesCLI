@@ -15,7 +15,7 @@ export type HashiGridValidationProps = {
 }
 
 /**
- * Ensure the grid data is consistent with a valid Hashiwokakero puzzle.
+ * Ensure the grid data is consistent with a valid Bridges puzzle.
  */
 export function validateGrid({ rows, numNodes }: HashiGridValidationProps): void {
     if (!rows || rows.length === 0) {

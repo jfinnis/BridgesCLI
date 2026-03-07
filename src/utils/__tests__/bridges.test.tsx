@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { HashiNodeData } from '../../types.ts'
 import { constructNode, getDisplayMode } from '../bridges.ts'
 
+// biome-ignore lint/security/noSecrets: false positive
 describe('getDisplayMode()', () => {
     it('returns normal when highlightedNode is undefined', () => {
         const node: HashiNodeData = { value: 1 }

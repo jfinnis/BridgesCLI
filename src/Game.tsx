@@ -116,6 +116,7 @@ export default function Game({ puzzles, hasCustomPuzzle, stdout }: GameProps) {
     const handleToggleSolution = useCallback(() => {
         setShowSolution(s => !s)
     }, [])
+
     const handleBridgePlaced = useCallback(
         (bridge: PlacedBridge) => {
             const result = toggleBridge(userBridges, bridge)
@@ -156,7 +157,7 @@ export default function Game({ puzzles, hasCustomPuzzle, stdout }: GameProps) {
         ? usePuzzleInput({
               puzzleIndex,
               puzzlesLength: puzzles.length,
-              rows: originalRows,
+              rows: rows,
               showSolution,
               onPrev: handlePrev,
               onNext: handleNext,

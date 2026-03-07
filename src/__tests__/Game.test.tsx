@@ -554,6 +554,41 @@ s: Show solution
 q: Quit`)
         })
 
+        it('does not draw a bridge over an existing bridge', async () => {
+            const puzzleWithEachBridge = { encoding: '4x3:1a3a.a2#2.3a4a' }
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} stdout={false} />
+            )
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Type a number [1-4] to select a node
+
+┌──────────────────────┐
+│ ╭───╮     ╭───╮      │
+│ │ 1 │     │ 3 │      │
+│ ╰───╯     ╰─╥─╯      │
+│      ╭───╮  ║  ╭───╮ │
+│      │ 2 │  ║  │ 2 │ │
+│      ╰───╯  ║  ╰───╯ │
+│ ╭───╮     ╭─╨─╮      │
+│ │ 3 │     │ 4 │      │
+│ ╰───╯     ╰───╯      │
+└──────────────────────┘
+
+Controls:
+p: Previous puzzle
+n: Next puzzle
+s: Show solution
+q: Quit`)
+
+            stdin.write('2')
+            await setTimeout(5)
+            stdin.write('a')
+            await setTimeout(5)
+            stdin.write('l')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Cannot draw bridge right from node')
+        })
+
         it('erases a bridge', async () => {
             const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
             const { stdin, lastFrame } = render(
