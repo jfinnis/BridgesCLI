@@ -18,30 +18,10 @@ describe('Game', () => {
         vi.spyOn(process.stdin, 'isTTY', 'get').mockReturnValue(true)
     })
 
-    describe('--stdout flag', () => {
-        it('does not show instructions when stdout is true', () => {
-            const { lastFrame } = render(
-                <Game puzzles={[TEST_PUZZLE]} hasCustomPuzzle={false} stdout={true} />
-            )
-            expect(lastFrame()).not.toContain('Controls:')
-        })
-
-        it('shows instructions when stdout is false', () => {
-            const { lastFrame } = render(
-                <Game puzzles={[TEST_PUZZLE]} hasCustomPuzzle={false} stdout={false} />
-            )
-            expect(lastFrame()).toContain('Controls:')
-        })
-    })
-
     describe('game controls - toggle solution', () => {
         it('pressing s toggles the solution on and off', async () => {
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[samplePuzzles[0] as PuzzleData]}
-                    hasCustomPuzzle={false}
-                    stdout={false}
-                />
+                <Game puzzles={[samplePuzzles[0] as PuzzleData]} hasCustomPuzzle={false} />
             )
 
             expect(lastFrame()).toEqual(`Bridges: Puzzle #1
@@ -154,11 +134,7 @@ q: Quit`)
     describe('game controls - next/previous', () => {
         it('navigates to next puzzle with n key when interactive', async () => {
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[TEST_PUZZLE, TEST_PUZZLE_2]}
-                    hasCustomPuzzle={false}
-                    stdout={false}
-                />
+                <Game puzzles={[TEST_PUZZLE, TEST_PUZZLE_2]} hasCustomPuzzle={false} />
             )
 
             expect(lastFrame()).toEqual(`Bridges: Puzzle #1
@@ -208,11 +184,7 @@ q: Quit`)
 
         it('navigates to previous puzzle with p key when interactive', async () => {
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[TEST_PUZZLE, TEST_PUZZLE_2]}
-                    hasCustomPuzzle={false}
-                    stdout={false}
-                />
+                <Game puzzles={[TEST_PUZZLE, TEST_PUZZLE_2]} hasCustomPuzzle={false} />
             )
 
             stdin.write('n')
@@ -264,7 +236,7 @@ q: Quit`)
 
         it('does not navigate past last puzzle', async () => {
             const { stdin, lastFrame } = render(
-                <Game puzzles={[TEST_PUZZLE]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[TEST_PUZZLE]} hasCustomPuzzle={false} />
             )
 
             stdin.write('n')
@@ -293,7 +265,7 @@ q: Quit`)
 
         it('does not navigate before first puzzle', async () => {
             const { stdin, lastFrame } = render(
-                <Game puzzles={[TEST_PUZZLE]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[TEST_PUZZLE]} hasCustomPuzzle={false} />
             )
 
             stdin.write('p')
@@ -324,7 +296,7 @@ q: Quit`)
     describe('game controls - node selection', () => {
         it('selects node immediately when there is only one of that number', async () => {
             const { stdin, lastFrame } = render(
-                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} />
             )
 
             // Press '3' to select single node of value 3
@@ -336,7 +308,7 @@ q: Quit`)
 
         it('shows disambiguation labels when multiple nodes have the same number', async () => {
             const { stdin, lastFrame } = render(
-                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} />
             )
 
             // Press '2' to select from multiple nodes with value 2
@@ -349,7 +321,7 @@ q: Quit`)
 
         it('selects a specific node when disambiguation label is pressed', async () => {
             const { stdin, lastFrame } = render(
-                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} />
             )
 
             // Press '1' to select from multiple nodes with value 1
@@ -364,7 +336,7 @@ q: Quit`)
 
         it('draws a bridge when a valid direction is selected', async () => {
             const { stdin, lastFrame } = render(
-                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} />
             )
 
             // Press '1' to enter disambiguation mode
@@ -383,7 +355,7 @@ q: Quit`)
 
         it('shows an invalid message for a bad bridge direction off the grid', async () => {
             const { stdin, lastFrame } = render(
-                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} />
             )
 
             // Press '1' to enter disambiguation mode
@@ -403,7 +375,7 @@ q: Quit`)
         it('shows an invalid message for horizontal bridge colliding with bridge', async () => {
             const puzzleWithBarrier = { encoding: '4x3:2a2a.a1|1.b1a' }
             const { stdin, lastFrame } = render(
-                <Game puzzles={[puzzleWithBarrier]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[puzzleWithBarrier]} hasCustomPuzzle={false} />
             )
             expect(lastFrame()).toEqual(`Bridges: Puzzle #1
 • Type a number [1-2] to select a node
@@ -438,7 +410,7 @@ q: Quit`)
         it('shows an invalid message for vertical bridge colliding with bridge', async () => {
             const puzzleWithBarrier = { encoding: '4x3:2a2a.a1=1.b1a' }
             const { stdin, lastFrame } = render(
-                <Game puzzles={[puzzleWithBarrier]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[puzzleWithBarrier]} hasCustomPuzzle={false} />
             )
             expect(lastFrame()).toEqual(`Bridges: Puzzle #1
 • Type a number [1-2] to select a node
@@ -472,7 +444,7 @@ q: Quit`)
 
         it('resets selection when Escape is pressed', async () => {
             const { stdin, lastFrame } = render(
-                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[SMALL_PUZZLE_3X3]} hasCustomPuzzle={false} />
             )
 
             stdin.write('2')
@@ -491,7 +463,7 @@ q: Quit`)
         it('draws horizontal bridge', async () => {
             const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
             const { stdin, lastFrame } = render(
-                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} />
             )
             stdin.write('3')
             await setTimeout(5)
@@ -526,7 +498,7 @@ q: Quit`)
         it('draws a vertical bridge', async () => {
             const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
             const { stdin, lastFrame } = render(
-                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} />
             )
             stdin.write('2')
             await setTimeout(5)
@@ -557,7 +529,7 @@ q: Quit`)
         it('draws a double horizontal bridge', async () => {
             const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
             const { stdin, lastFrame } = render(
-                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} />
             )
             stdin.write('3')
             await setTimeout(5)
@@ -592,7 +564,7 @@ q: Quit`)
         it('draws a double vertical bridge', async () => {
             const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
             const { stdin, lastFrame } = render(
-                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} />
             )
             stdin.write('2')
             await setTimeout(5)
@@ -623,7 +595,7 @@ q: Quit`)
         it('does not draw a bridge over an existing bridge', async () => {
             const puzzleWithEachBridge = { encoding: '4x3:1a3a.a2#2.3a4a' }
             const { stdin, lastFrame } = render(
-                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} />
             )
             expect(lastFrame()).toEqual(`Bridges: Puzzle #1
 • Type a number [1-4] to select a node
@@ -658,7 +630,7 @@ q: Quit`)
         it('erases a bridge', async () => {
             const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
             const { stdin, lastFrame } = render(
-                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} stdout={false} />
+                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} />
             )
             stdin.write('3')
             await setTimeout(5)

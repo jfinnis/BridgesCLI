@@ -11,7 +11,6 @@ import { type PuzzleData, samplePuzzles } from './utils/puzzle-encoding.ts'
 const packageJson = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf8'))
 
 type CliOptions = {
-    stdout: boolean
     puzzle: string | undefined
 }
 
@@ -21,7 +20,6 @@ program
     .name('bridges')
     .description('Bridges (Hashiwokakero) puzzle game')
     .version(packageJson.version, '-v, --version')
-    .option('-s, --stdout', 'Output to stdout and exit (for testing)')
     .option(
         '-p, --puzzle <puzzle>',
         `Puzzle shorthand encoding
@@ -51,6 +49,4 @@ if (options.puzzle) {
     puzzles = [{ encoding: options.puzzle }, ...samplePuzzles]
 }
 
-render(
-    <Game puzzles={puzzles} hasCustomPuzzle={hasCustomPuzzle} stdout={options.stdout || false} />
-)
+render(<Game puzzles={puzzles} hasCustomPuzzle={hasCustomPuzzle} />)

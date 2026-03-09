@@ -5,7 +5,6 @@ This is a CLI renderer for Hashiwokakero (Bridges) puzzles. It renders a grid of
 ## Commands
 
 - `bun start` - Run the puzzle (interactive mode)
-- `bun start --stdout` - Run puzzle and output to stdout (for testing)
 - `bun start --puzzle <encoding>` - Run with a specific puzzle encoding
 - `bun run test` - Run unit tests
 - `bun run typecheck` - typescript typechecker

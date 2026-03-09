@@ -8,7 +8,6 @@ import usePuzzleInput from './utils/usePuzzleInput.ts'
 type GameProps = {
     puzzles: PuzzleData[]
     hasCustomPuzzle: boolean
-    stdout: boolean
 }
 
 // Compares two bridges for equality, treating bridges in either direction as equivalent.
@@ -101,7 +100,7 @@ function mergeBridges(originalRows: HashiNodeData[][], bridges: PlacedBridge[]):
     return rows
 }
 
-export default function Game({ puzzles, hasCustomPuzzle, stdout }: GameProps) {
+export default function Game({ puzzles, hasCustomPuzzle }: GameProps) {
     const [puzzleIndex, setPuzzleIndex] = useState(0)
     const [showSolution, setShowSolution] = useState(false)
     const [userBridges, setUserBridges] = useState<PlacedBridge[]>([])
@@ -153,7 +152,7 @@ export default function Game({ puzzles, hasCustomPuzzle, stdout }: GameProps) {
         return { minNumber: min, maxNumber: max }
     }, [rows])
 
-    const canUseInput = Boolean(process.stdin.isTTY) && !stdout
+    const canUseInput = Boolean(process.stdin.isTTY)
     const { selectionState } = canUseInput
         ? usePuzzleInput({
               puzzleIndex,
@@ -171,7 +170,7 @@ export default function Game({ puzzles, hasCustomPuzzle, stdout }: GameProps) {
         <HashiGrid
             numNodes={numNodes}
             rows={rows}
-            showInstructions={!stdout}
+            showInstructions={true}
             puzzleIndex={puzzleIndex}
             puzzle={encoding}
             isCustomPuzzle={hasCustomPuzzle && puzzleIndex === 0}
