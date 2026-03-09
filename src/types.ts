@@ -30,6 +30,7 @@ export type Direction = 'h' | 'j' | 'k' | 'l'
 export type PlacedBridge = {
     from: { row: number; col: number }
     to: { row: number; col: number }
+    count?: number
 }
 
 export type SelectionState = {
@@ -40,4 +41,5 @@ export type SelectionState = {
     disambiguationLabels: string[]
     selectedNode: { row: number; col: number } | null
     bridgeErased?: boolean
+    isDoubleBridge?: boolean
 }

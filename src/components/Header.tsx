@@ -34,9 +34,9 @@ export default function Header({
 
     let statusText = ''
     if (selectionState) {
-        const { mode, selectedNumber, direction, bridgeErased } = selectionState
+        const { mode, selectedNumber, direction, bridgeErased, isDoubleBridge } = selectionState
         if (mode === 'selecting-node' && selectedNumber !== null) {
-            statusText = 'Select direction with h/j/k/l (left/down/up/right, <shift> = double line)'
+            statusText = 'Select direction with h/j/k/l (H/J/K/L = double line)'
         } else if (mode === 'disambiguation' && selectedNumber !== null) {
             statusText = 'Press label shown to select that node'
         } else if (mode === 'selected' && selectedNumber !== null && direction) {
@@ -44,7 +44,8 @@ export default function Header({
                 statusText = 'Erased bridge'
             } else {
                 const lineType = direction === 'h' || direction === 'l' ? 'horizontal' : 'vertical'
-                statusText = `Drew ${lineType} bridge`
+                const bridgeType = isDoubleBridge ? 'double ' : ''
+                statusText = `Drew ${bridgeType}${lineType} bridge`
             }
         } else if (mode === 'invalid' && selectedNumber !== null && direction) {
             statusText = `Cannot draw bridge ${directionNames[direction]} from node`

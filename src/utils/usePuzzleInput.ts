@@ -225,8 +225,18 @@ export default function usePuzzleInput({
                 currentMode === 'selecting-node' &&
                 selectionStateRef.current.selectedNumber !== null
             ) {
-                if (input === 'h' || input === 'j' || input === 'k' || input === 'l') {
-                    const direction = input as Direction
+                if (
+                    input === 'h' ||
+                    input === 'j' ||
+                    input === 'k' ||
+                    input === 'l' ||
+                    input === 'H' ||
+                    input === 'J' ||
+                    input === 'K' ||
+                    input === 'L'
+                ) {
+                    const isDouble = input === input.toUpperCase()
+                    const direction = input.toLowerCase() as Direction
                     const selectedNode = selectionStateRef.current.selectedNode
                     const targetNode = selectedNode
                         ? findNodeInDirection(rows, selectedNode.row, selectedNode.col, direction)
@@ -236,7 +246,11 @@ export default function usePuzzleInput({
                     if (targetNode && selectedNode && onBridgePlaced) {
                         // Toggle the bridge (add if not exists, remove if exists)
                         // The callback returns true if a bridge was erased
-                        erased = onBridgePlaced({ from: selectedNode, to: targetNode })
+                        erased = onBridgePlaced({
+                            from: selectedNode,
+                            to: targetNode,
+                            count: isDouble ? 2 : 1,
+                        })
                     }
 
                     // Show selected/invalid state, then reset after 1.5s
@@ -245,6 +259,7 @@ export default function usePuzzleInput({
                         mode: targetNode ? 'selected' : 'invalid',
                         direction,
                         bridgeErased: erased,
+                        isDoubleBridge: isDouble,
                     })
                     resetTimeoutRef.current = setTimeout(resetSelection, 1_500)
                 }
@@ -302,11 +317,21 @@ export default function usePuzzleInput({
                 }
 
                 // Allow direction keys to draw another bridge immediately
-                if (input === 'h' || input === 'j' || input === 'k' || input === 'l') {
+                if (
+                    input === 'h' ||
+                    input === 'j' ||
+                    input === 'k' ||
+                    input === 'l' ||
+                    input === 'H' ||
+                    input === 'J' ||
+                    input === 'K' ||
+                    input === 'L'
+                ) {
                     // Get the previously selected node to use as starting point
                     const prevNode = selectionStateRef.current.selectedNode
                     if (prevNode) {
-                        const direction = input as Direction
+                        const isDouble = input === input.toUpperCase()
+                        const direction = input.toLowerCase() as Direction
                         const targetNode = findNodeInDirection(
                             rows,
                             prevNode.row,
@@ -319,6 +344,7 @@ export default function usePuzzleInput({
                             erased = onBridgePlaced({
                                 from: prevNode,
                                 to: targetNode,
+                                count: isDouble ? 2 : 1,
                             })
                         }
 
@@ -327,6 +353,7 @@ export default function usePuzzleInput({
                             mode: targetNode ? 'selected' : 'invalid',
                             direction,
                             bridgeErased: erased,
+                            isDoubleBridge: isDouble,
                         })
                     }
                     return

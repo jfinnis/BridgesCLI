@@ -49,6 +49,7 @@ function mergeBridges(originalRows: HashiNodeData[][], bridges: PlacedBridge[]):
     // Apply each bridge
     for (const bridge of bridges) {
         const { from, to } = bridge
+        const bridgeCount = bridge.count || 1
 
         if (from.row === to.row) {
             // Horizontal bridge
@@ -60,18 +61,18 @@ function mergeBridges(originalRows: HashiNodeData[][], bridges: PlacedBridge[]):
             // Set lineRight on the left node
             if (minCol >= 0 && minCol < row.length) {
                 const cell = row[minCol]
-                if (cell) cell.lineRight = 1
+                if (cell) cell.lineRight = bridgeCount as 1 | 2
             }
             // Set lineLeft on the right node
             if (maxCol >= 0 && maxCol < row.length) {
                 const cell = row[maxCol]
-                if (cell) cell.lineLeft = 1
+                if (cell) cell.lineLeft = bridgeCount as 1 | 2
             }
             // Fill in bridge cells
             for (let c = minCol + 1; c < maxCol; c++) {
                 if (c >= 0 && c < row.length) {
                     const cell = row[c]
-                    if (cell) cell.value = '-'
+                    if (cell) cell.value = bridgeCount === 2 ? '=' : '-'
                 }
             }
         } else if (from.col === to.col) {
@@ -81,17 +82,17 @@ function mergeBridges(originalRows: HashiNodeData[][], bridges: PlacedBridge[]):
 
             // Set lineDown on the top node
             const topNode = rows[minRow]?.[from.col]
-            if (topNode) topNode.lineDown = 1
+            if (topNode) topNode.lineDown = bridgeCount as 1 | 2
 
             // Set lineUp on the bottom node
             const bottomNode = rows[maxRow]?.[from.col]
-            if (bottomNode) bottomNode.lineUp = 1
+            if (bottomNode) bottomNode.lineUp = bridgeCount as 1 | 2
 
             // Fill in bridge cells
             for (let r = minRow + 1; r < maxRow; r++) {
                 if (r >= 0 && r < rows.length) {
                     const rowNode = rows[r]?.[from.col]
-                    if (rowNode) rowNode.value = '|'
+                    if (rowNode) rowNode.value = bridgeCount === 2 ? '#' : '|'
                 }
             }
         }

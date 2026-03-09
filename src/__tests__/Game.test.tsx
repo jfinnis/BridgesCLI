@@ -554,6 +554,72 @@ s: Show solution
 q: Quit`)
         })
 
+        it('draws a double horizontal bridge', async () => {
+            const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} stdout={false} />
+            )
+            stdin.write('3')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Press label shown to select that node')
+            stdin.write('a')
+            await setTimeout(5)
+            expect(lastFrame()).toContain('Select direction with h/j/k/l')
+            stdin.write('H')
+            await setTimeout(5)
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Drew double horizontal bridge
+
+┌─────────────────┐
+│ \x1b[2m╭───╮\x1b[22m     \x1b[1m╭───╮\x1b[22m │
+│ \x1b[2m│ 2 ╞═════\x1b[22m\x1b[1m╡ 3 │\x1b[22m │
+│ \x1b[2m╰───╯\x1b[22m     \x1b[1m╰───╯\x1b[22m │
+│                 │
+│                 │
+│                 │
+│ \x1b[2m╭───╮\x1b[22m     \x1b[2m╭───╮\x1b[22m │
+│ \x1b[2m│ 3 │\x1b[22m     \x1b[2m│ 4 │\x1b[22m │
+│ \x1b[2m╰───╯\x1b[22m     \x1b[2m╰───╯\x1b[22m │
+└─────────────────┘
+
+Controls:
+p: Previous puzzle
+n: Next puzzle
+s: Show solution
+q: Quit`)
+        })
+
+        it('draws a double vertical bridge', async () => {
+            const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} stdout={false} />
+            )
+            stdin.write('2')
+            await setTimeout(5)
+            stdin.write('J')
+            await setTimeout(5)
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Drew double vertical bridge
+
+┌─────────────────┐
+│ \x1b[1m╭───╮\x1b[22m     \x1b[2m╭───╮\x1b[22m │
+│ \x1b[1m│ 2 │\x1b[22m     \x1b[2m│ 3 │\x1b[22m │
+│ \x1b[1m╰─╥─╯\x1b[22m     \x1b[2m╰───╯\x1b[22m │
+│ \x1b[2m  ║  \x1b[22m           │
+│ \x1b[2m  ║  \x1b[22m           │
+│ \x1b[2m  ║  \x1b[22m           │
+│ \x1b[2m╭─╨─╮\x1b[22m     \x1b[2m╭───╮\x1b[22m │
+│ \x1b[2m│ 3 │\x1b[22m     \x1b[2m│ 4 │\x1b[22m │
+│ \x1b[2m╰───╯\x1b[22m     \x1b[2m╰───╯\x1b[22m │
+└─────────────────┘
+
+Controls:
+p: Previous puzzle
+n: Next puzzle
+s: Show solution
+q: Quit`)
+        })
+
         it('does not draw a bridge over an existing bridge', async () => {
             const puzzleWithEachBridge = { encoding: '4x3:1a3a.a2#2.3a4a' }
             const { stdin, lastFrame } = render(
