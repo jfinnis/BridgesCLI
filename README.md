@@ -12,14 +12,18 @@ Each island has a number indicating how many bridges must connect to it.
 ``` bash
 npm install -g bridges-cli
 bridges
-w
+```
+
+## Local Development
+Clone the repo then run:
+``` bash
 bun start
 ```
 
 ### CLI Options
 - `-p, --puzzle <identifier>` - Render a puzzle via shorthand encoding (see `samplePuzzles.ts`)
 
-## Run tests and linter
+### Run tests and linter
 ``` bash
 bun run typecheck
 bun run test
