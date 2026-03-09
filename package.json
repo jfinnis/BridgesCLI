@@ -1,7 +1,7 @@
 {
     "name": "bridges-cli",
-    "version": "0.0.1",
-    "description": "Hashiwokakero (Bridges) CLI puzzle game",
+    "version": "0.1.0",
+    "description": "Bridges CLI puzzle game",
     "bin": {
         "bridges": "src/index.tsx"
     },
