@@ -53,9 +53,9 @@ export function parsePuzzle(encoding: string): HashiNodeData[][] {
                 // Check if previous position has a line node and set lineLeft
                 if (
                     position > 0 &&
-                    (nodes[position - 1]!.value === '-' || nodes[position - 1]!.value === '=')
+                    (nodes[position - 1]?.value === '-' || nodes[position - 1]?.value === '=')
                 ) {
-                    const lineCount: 1 | 2 = nodes[position - 1]!.value === '=' ? 2 : 1
+                    const lineCount: 1 | 2 = nodes[position - 1]?.value === '=' ? 2 : 1
                     nodes[position] = { value, lineLeft: lineCount }
                 } else {
                     nodes[position] = { value }
@@ -67,16 +67,22 @@ export function parsePuzzle(encoding: string): HashiNodeData[][] {
                 const lineCount: 1 | 2 = char === '=' ? 2 : 1
 
                 // Set lineRight on current position if it's a number node
-                if (position > 0 && typeof nodes[position - 1]!.value === 'number') {
-                    nodes[position - 1] = { ...nodes[position - 1]!, lineRight: lineCount }
+                if (position > 0 && typeof nodes[position - 1]?.value === 'number') {
+                    const node = nodes[position - 1]
+                    if (node) {
+                        nodes[position - 1] = { ...node, lineRight: lineCount }
+                    }
                 }
 
                 // Create the line node
                 nodes[position] = { value: char as '-' | '=' }
 
                 // Set lineRight on the line node and lineLeft on next position if it's a number node
-                if (position < numNodes - 1 && typeof nodes[position + 1]!.value === 'number') {
-                    nodes[position + 1] = { ...nodes[position + 1]!, lineLeft: lineCount }
+                if (position < numNodes - 1 && typeof nodes[position + 1]?.value === 'number') {
+                    const node = nodes[position + 1]
+                    if (node) {
+                        nodes[position + 1] = { ...node, lineLeft: lineCount }
+                    }
                 }
 
                 // Check if next char is a letter (repeat count)
@@ -90,20 +96,26 @@ export function parsePuzzle(encoding: string): HashiNodeData[][] {
                         // Set lineLeft/lineRight on adjacent number nodes
                         if (
                             position + r > 0 &&
-                            typeof nodes[position + r - 1]!.value === 'number'
+                            typeof nodes[position + r - 1]?.value === 'number'
                         ) {
-                            nodes[position + r - 1] = {
-                                ...nodes[position + r - 1]!,
-                                lineRight: lineCount,
+                            const node = nodes[position + r - 1]
+                            if (node) {
+                                nodes[position + r - 1] = {
+                                    ...node,
+                                    lineRight: lineCount,
+                                }
                             }
                         }
                         if (
                             position + r < numNodes - 1 &&
-                            typeof nodes[position + r + 1]!.value === 'number'
+                            typeof nodes[position + r + 1]?.value === 'number'
                         ) {
-                            nodes[position + r + 1] = {
-                                ...nodes[position + r + 1]!,
-                                lineLeft: lineCount,
+                            const node = nodes[position + r + 1]
+                            if (node) {
+                                nodes[position + r + 1] = {
+                                    ...node,
+                                    lineLeft: lineCount,
+                                }
                             }
                         }
                     }
@@ -111,9 +123,12 @@ export function parsePuzzle(encoding: string): HashiNodeData[][] {
                     const lastLinePos = position + repeat
                     if (
                         lastLinePos < numNodes - 1 &&
-                        typeof nodes[lastLinePos + 1]!.value === 'number'
+                        typeof nodes[lastLinePos + 1]?.value === 'number'
                     ) {
-                        nodes[lastLinePos + 1] = { ...nodes[lastLinePos + 1]!, lineLeft: lineCount }
+                        const node = nodes[lastLinePos + 1]
+                        if (node) {
+                            nodes[lastLinePos + 1] = { ...node, lineLeft: lineCount }
+                        }
                     }
                     position += repeat + 1
                     i += 2
@@ -148,26 +163,34 @@ export function parsePuzzle(encoding: string): HashiNodeData[][] {
     // Second pass: handle vertical line connections
     // For each vertical line, connect to the number nodes above and below
     for (let rowIdx = 0; rowIdx < rows.length; rowIdx++) {
-        const currentRow = rows[rowIdx]!
+        const currentRow = rows[rowIdx]
+        if (!currentRow) continue
 
         for (let colIdx = 0; colIdx < currentRow.length; colIdx++) {
-            const node = currentRow[colIdx]!
+            const node = currentRow[colIdx]
+            if (!node) continue
             if (node.value === '|' || node.value === '#') {
                 const lineCount: 1 | 2 = node.value === '#' ? 2 : 1
 
                 // Set lineDown on the number node in the row above (if exists)
                 if (rowIdx > 0) {
-                    const nodeAbove = rows[rowIdx - 1]![colIdx]!
-                    if (typeof nodeAbove.value === 'number') {
-                        rows[rowIdx - 1]![colIdx] = { ...nodeAbove, lineDown: lineCount }
+                    const nodeAbove = rows[rowIdx - 1]?.[colIdx]
+                    if (nodeAbove && typeof nodeAbove.value === 'number') {
+                        const row = rows[rowIdx - 1]
+                        if (row) {
+                            row[colIdx] = { ...nodeAbove, lineDown: lineCount }
+                        }
                     }
                 }
 
                 // Set lineUp on the number node in the row below (if exists)
                 if (rowIdx < rows.length - 1) {
-                    const nodeBelow = rows[rowIdx + 1]![colIdx]!
-                    if (typeof nodeBelow.value === 'number') {
-                        rows[rowIdx + 1]![colIdx] = { ...nodeBelow, lineUp: lineCount }
+                    const nodeBelow = rows[rowIdx + 1]?.[colIdx]
+                    if (nodeBelow && typeof nodeBelow.value === 'number') {
+                        const row = rows[rowIdx + 1]
+                        if (row) {
+                            row[colIdx] = { ...nodeBelow, lineUp: lineCount }
+                        }
                     }
                 }
             }

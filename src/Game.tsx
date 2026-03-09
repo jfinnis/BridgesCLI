@@ -80,22 +80,18 @@ function mergeBridges(originalRows: HashiNodeData[][], bridges: PlacedBridge[]):
             const maxRow = Math.max(from.row, to.row)
 
             // Set lineDown on the top node
-            const topRow = rows[minRow]
-            if (topRow && topRow[from.col]) {
-                topRow[from.col]!.lineDown = 1
-            }
+            const topNode = rows[minRow]?.[from.col]
+            if (topNode) topNode.lineDown = 1
+
             // Set lineUp on the bottom node
-            const bottomRow = rows[maxRow]
-            if (bottomRow && bottomRow[from.col]) {
-                bottomRow[from.col]!.lineUp = 1
-            }
+            const bottomNode = rows[maxRow]?.[from.col]
+            if (bottomNode) bottomNode.lineUp = 1
+
             // Fill in bridge cells
             for (let r = minRow + 1; r < maxRow; r++) {
                 if (r >= 0 && r < rows.length) {
-                    const row = rows[r]
-                    if (row && row[from.col]) {
-                        row[from.col]!.value = '|'
-                    }
+                    const rowNode = rows[r]?.[from.col]
+                    if (rowNode) rowNode.value = '|'
                 }
             }
         }

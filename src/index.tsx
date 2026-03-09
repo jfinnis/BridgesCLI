@@ -1,9 +1,9 @@
 #!/usr/bin/env -S bun run
 
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { Command } from 'commander'
-import { readFileSync } from 'fs'
 import { render } from 'ink'
-import { resolve } from 'path'
 
 import Game from './Game.tsx'
 import { type PuzzleData, samplePuzzles } from './utils/puzzle-encoding.ts'
