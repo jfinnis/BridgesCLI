@@ -64,27 +64,27 @@ q: Quit`)
 • Viewing solution (press s to return to puzzle)
 
 ┌─────────────────────────────────────┐
-│ ╭───╮     ╭───╮     ╭───╮     ╭───╮ │
-│ │ 4 ╞═════╡ 3 ├─────┤ 3 ╞═════╡ 3 │ │
-│ ╰─╥─╯     ╰───╯     ╰───╯     ╰─┬─╯ │
-│   ║  ╭───╮               ╭───╮  │   │
-│   ║  │ 2 ╞═══════════════╡ 4 │  │   │
-│   ║  ╰───╯               ╰─╥─╯  │   │
-│ ╭─╨─╮          ╭───╮       ║  ╭─┴─╮ │
-│ │ 3 ├──────────┤ 3 │       ║  │ 3 │ │
-│ ╰───╯          ╰─╥─╯       ║  ╰─╥─╯ │
+│ \x1b[32m╭───╮\x1b[39m     \x1b[32m╭───╮\x1b[39m     \x1b[32m╭───╮\x1b[39m     \x1b[32m╭───╮\x1b[39m │
+│ \x1b[32m│ 4 ╞\x1b[39m═════\x1b[32m╡ 3 ├\x1b[39m─────\x1b[32m┤ 3 ╞\x1b[39m═════\x1b[32m╡ 3 │\x1b[39m │
+│ \x1b[32m╰─╥─╯\x1b[39m     \x1b[32m╰───╯\x1b[39m     \x1b[32m╰───╯\x1b[39m     \x1b[32m╰─┬─╯\x1b[39m │
+│   ║  \x1b[32m╭───╮\x1b[39m               \x1b[32m╭───╮\x1b[39m  │   │
+│   ║  \x1b[32m│ 2 ╞\x1b[39m═══════════════\x1b[32m╡ 4 │\x1b[39m  │   │
+│   ║  \x1b[32m╰───╯\x1b[39m               \x1b[32m╰─╥─╯\x1b[39m  │   │
+│ \x1b[32m╭─╨─╮\x1b[39m          \x1b[32m╭───╮\x1b[39m       ║  \x1b[32m╭─┴─╮\x1b[39m │
+│ \x1b[32m│ 3 ├\x1b[39m──────────\x1b[32m┤ 3 │\x1b[39m       ║  \x1b[32m│ 3 │\x1b[39m │
+│ \x1b[32m╰───╯\x1b[39m          \x1b[32m╰─╥─╯\x1b[39m       ║  \x1b[32m╰─╥─╯\x1b[39m │
 │                  ║         ║    ║   │
 │                  ║         ║    ║   │
 │                  ║         ║    ║   │
-│ ╭───╮          ╭─╨─╮     ╭─╨─╮  ║   │
-│ │ 2 ╞══════════╡ 8 ╞═════╡ 4 │  ║   │
-│ ╰───╯          ╰─╥─╯     ╰───╯  ║   │
-│                  ║  ╭───╮     ╭─╨─╮ │
-│                  ║  │ 1 ├─────┤ 3 │ │
-│                  ║  ╰───╯     ╰───╯ │
-│      ╭───╮     ╭─╨─╮     ╭───╮      │
-│      │ 1 ├─────┤ 4 ├─────┤ 1 │      │
-│      ╰───╯     ╰───╯     ╰───╯      │
+│ \x1b[32m╭───╮\x1b[39m          \x1b[32m╭─╨─╮\x1b[39m     \x1b[32m╭─╨─╮\x1b[39m  ║   │
+│ \x1b[32m│ 2 ╞\x1b[39m══════════\x1b[32m╡ 8 ╞\x1b[39m═════\x1b[32m╡ 4 │\x1b[39m  ║   │
+│ \x1b[32m╰───╯\x1b[39m          \x1b[32m╰─╥─╯\x1b[39m     \x1b[32m╰───╯\x1b[39m  ║   │
+│                  ║  \x1b[32m╭───╮\x1b[39m     \x1b[32m╭─╨─╮\x1b[39m │
+│                  ║  \x1b[32m│ 1 ├\x1b[39m─────\x1b[32m┤ 3 │\x1b[39m │
+│                  ║  \x1b[32m╰───╯\x1b[39m     \x1b[32m╰───╯\x1b[39m │
+│      \x1b[32m╭───╮\x1b[39m     \x1b[32m╭─╨─╮\x1b[39m     \x1b[32m╭───╮\x1b[39m      │
+│      \x1b[32m│ 1 ├\x1b[39m─────\x1b[32m┤ 4 ├\x1b[39m─────\x1b[32m┤ 1 │\x1b[39m      │
+│      \x1b[32m╰───╯\x1b[39m     \x1b[32m╰───╯\x1b[39m     \x1b[32m╰───╯\x1b[39m      │
 └─────────────────────────────────────┘
 
 Controls:
@@ -373,12 +373,12 @@ q: Quit`)
         })
 
         it('shows an invalid message for horizontal bridge colliding with bridge', async () => {
-            const puzzleWithBarrier = { encoding: '4x3:2a2a.a1|1.b1a' }
+            const puzzleWithBarrier = { encoding: '4x3:2a2a.a1|1.b3a' }
             const { stdin, lastFrame } = render(
                 <Game puzzles={[puzzleWithBarrier]} hasCustomPuzzle={false} />
             )
             expect(lastFrame()).toEqual(`Bridges: Puzzle #1
-• Type a number [1-2] to select a node
+• Type a number [1-3] to select a node
 
 ┌──────────────────────┐
 │ ╭───╮     ╭───╮      │
@@ -388,7 +388,7 @@ q: Quit`)
 │      │ 1 │  │  │ 1 │ │
 │      ╰───╯  │  ╰───╯ │
 │           ╭─┴─╮      │
-│           │ 1 │      │
+│           │ 3 │      │
 │           ╰───╯      │
 └──────────────────────┘
 
@@ -408,19 +408,19 @@ q: Quit`)
         })
 
         it('shows an invalid message for vertical bridge colliding with bridge', async () => {
-            const puzzleWithBarrier = { encoding: '4x3:2a2a.a1=1.b1a' }
+            const puzzleWithBarrier = { encoding: '4x3:2a2a.a3=3.b1a' }
             const { stdin, lastFrame } = render(
                 <Game puzzles={[puzzleWithBarrier]} hasCustomPuzzle={false} />
             )
             expect(lastFrame()).toEqual(`Bridges: Puzzle #1
-• Type a number [1-2] to select a node
+• Type a number [1-3] to select a node
 
 ┌──────────────────────┐
 │ ╭───╮     ╭───╮      │
 │ │ 2 │     │ 2 │      │
 │ ╰───╯     ╰───╯      │
 │      ╭───╮     ╭───╮ │
-│      │ 1 ╞═════╡ 1 │ │
+│      │ 3 ╞═════╡ 3 │ │
 │      ╰───╯     ╰───╯ │
 │           ╭───╮      │
 │           │ 1 │      │

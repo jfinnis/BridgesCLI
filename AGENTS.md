@@ -12,7 +12,10 @@ This is a CLI renderer for Hashiwokakero (Bridges) puzzles. It renders a grid of
 
 ## Testing
 
-Tests use Vitest with `@testing-library/react` patterns via `ink-testing-library`.
+- Tests use Vitest with `@testing-library/react` patterns via `ink-testing-library`.
+- The output is a grid drawn with ascii, and tests often do exact matches. When nodes are
+highlighted, they have ANSI codes to appear as bold/dim or red/green. The tests will put
+these codes directly in the test expectation around the nodes.
 
 ## Code Style
 

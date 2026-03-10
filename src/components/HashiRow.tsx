@@ -5,6 +5,7 @@ import type { HashiNodeData, SelectionState } from '../types.ts'
 import {
     constructNode,
     getDisplayMode,
+    getNodeFilledState,
     NODE_WIDTH,
     OUTER_PADDING,
     ROW_HEIGHT,
@@ -60,7 +61,8 @@ export default function HashiRow({
                 selectionState?.mode
             )
             const label = disambiguationMap[i]
-            rowItems.push(constructNode(node, line as 0 | 1 | 2, displayMode, label))
+            const filledState = getNodeFilledState(node)
+            rowItems.push(constructNode(node, line as 0 | 1 | 2, displayMode, label, filledState))
 
             // Add space between columns except the last
             if (i < nodes.length - 1) {

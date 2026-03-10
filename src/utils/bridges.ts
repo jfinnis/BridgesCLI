@@ -1,5 +1,7 @@
 import type { HashiNodeData, HashiNodeDisplayMode } from '../types.ts'
 
+export type NodeFilledState = 'valid' | 'invalid' | 'incomplete'
+
 export const ROW_HEIGHT = 3
 export const NODE_WIDTH = 5
 export const SPACE_BETWEEN = 0
@@ -51,6 +53,26 @@ export function validateGrid({ rows, numNodes }: HashiGridValidationProps): void
 }
 
 /**
+ * Determines if a node has the correct number of bridges, too many, or too few.
+ */
+export function getNodeFilledState(node: HashiNodeData): NodeFilledState | null {
+    if (typeof node.value !== 'number') {
+        return null
+    }
+
+    const bridges =
+        (node.lineUp ?? 0) + (node.lineDown ?? 0) + (node.lineLeft ?? 0) + (node.lineRight ?? 0)
+
+    if (bridges === node.value) {
+        return 'valid'
+    }
+    if (bridges > node.value) {
+        return 'invalid'
+    }
+    return 'incomplete'
+}
+
+/**
  * Determines the display mode for a node based on the highlighted node value.
  */
 export function getDisplayMode(
@@ -96,14 +118,31 @@ export function constructNode(
     node: HashiNodeData,
     line: 0 | 1 | 2,
     displayMode: HashiNodeDisplayMode = 'normal',
-    disambiguationLabel?: string
+    disambiguationLabel?: string,
+    validationState?: NodeFilledState | null
 ): string {
+    // Determine color prefix based on validation state
+    const getColorPrefix = (): string => {
+        if (validationState === 'valid') {
+            return '\x1b[32m' // green
+        }
+        if (validationState === 'invalid') {
+            return '\x1b[31m' // red
+        }
+        return ''
+    }
+
+    const colorReset = '\x1b[0m'
+    const colorPrefix = displayMode === 'dim' ? '' : getColorPrefix()
+    const useColor = colorPrefix !== ''
+
     // Horizontal line
     if (node.value === '-') {
         if (displayMode === 'dim') {
             return line === MIDDLE_ROW ? `\x1b[2m─────\x1b[22m` : ' '.repeat(NODE_WIDTH)
         }
-        return line === MIDDLE_ROW ? '─────' : ' '.repeat(NODE_WIDTH)
+        const content = line === MIDDLE_ROW ? '─────' : ' '.repeat(NODE_WIDTH)
+        return useColor ? `${colorPrefix}${content}${colorReset}` : content
     }
 
     // Double horizontal line
@@ -111,7 +150,8 @@ export function constructNode(
         if (displayMode === 'dim') {
             return line === MIDDLE_ROW ? `\x1b[2m═════\x1b[22m` : ' '.repeat(NODE_WIDTH)
         }
-        return line === MIDDLE_ROW ? '═════' : ' '.repeat(NODE_WIDTH)
+        const content = line === MIDDLE_ROW ? '═════' : ' '.repeat(NODE_WIDTH)
+        return useColor ? `${colorPrefix}${content}${colorReset}` : content
     }
 
     // Vertical line
@@ -119,7 +159,8 @@ export function constructNode(
         if (displayMode === 'dim') {
             return `\x1b[2m  │  \x1b[22m`
         }
-        return '  │  '
+        const content = '  │  '
+        return useColor ? `${colorPrefix}${content}${colorReset}` : content
     }
 
     // Double vertical line
@@ -127,7 +168,8 @@ export function constructNode(
         if (displayMode === 'dim') {
             return `\x1b[2m  ║  \x1b[22m`
         }
-        return '  ║  '
+        const content = '  ║  '
+        return useColor ? `${colorPrefix}${content}${colorReset}` : content
     }
 
     // Node with value to render
@@ -140,19 +182,28 @@ export function constructNode(
                 return `\x1b[1m${border}\x1b[22m`
             }
             if (displayMode === 'dim') {
-                return `\x1b[2m${border}\x1b[22m`
+                const dimmedBorder = `\x1b[2m${border}\x1b[22m`
+                if (validationState === 'valid' || validationState === 'invalid') {
+                    return `${colorPrefix}${dimmedBorder}${colorReset}`
+                }
+                return dimmedBorder
             }
-            return border
+            return useColor ? `${colorPrefix}${border}${colorReset}` : border
         } else if (line === MIDDLE_ROW) {
             const left = node.lineLeft === 2 ? '╡' : node.lineLeft === 1 ? '┤' : '│'
             const right = node.lineRight === 2 ? '╞' : node.lineRight === 1 ? '├' : '│'
+            const content = `${left} ${node.value} ${right}`
             if (displayMode === 'highlight') {
-                return `\x1b[1m${left} ${node.value} ${right}\x1b[22m`
+                return `\x1b[1m${content}\x1b[22m`
             }
             if (displayMode === 'dim') {
-                return `\x1b[2m${left} ${node.value} ${right}\x1b[22m`
+                const dimmedContent = `\x1b[2m${content}\x1b[22m`
+                if (validationState === 'valid' || validationState === 'invalid') {
+                    return `${colorPrefix}${dimmedContent}${colorReset}`
+                }
+                return dimmedContent
             }
-            return `${left} ${node.value} ${right}`
+            return useColor ? `${colorPrefix}${content}${colorReset}` : content
         } else if (line === BOTTOM_ROW) {
             const down = node.lineDown === 2 ? '╥' : node.lineDown === 1 ? '┬' : '─'
             const border = `╰─${down}─╯`
@@ -160,9 +211,13 @@ export function constructNode(
                 return `\x1b[1m${border}\x1b[22m`
             }
             if (displayMode === 'dim') {
-                return `\x1b[2m${border}\x1b[22m`
+                const dimmedBorder = `\x1b[2m${border}\x1b[22m`
+                if (validationState === 'valid' || validationState === 'invalid') {
+                    return `${colorPrefix}${dimmedBorder}${colorReset}`
+                }
+                return dimmedBorder
             }
-            return border
+            return useColor ? `${colorPrefix}${border}${colorReset}` : border
         }
     }
 
