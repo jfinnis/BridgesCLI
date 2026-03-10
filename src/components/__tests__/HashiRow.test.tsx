@@ -140,4 +140,29 @@ describe('HashiRow component', () => {
             )
         })
     })
+
+    describe('validation state colors', () => {
+        it('shows green on valid nodes in selected mode', () => {
+            const selectionState: SelectionState = {
+                mode: 'selected',
+                selectedNumber: 1,
+                direction: 'h',
+                matchingNodes: [{ row: 0, col: 0 }],
+                disambiguationLabels: [],
+                selectedNode: { row: 0, col: 0 },
+            }
+            const { lastFrame } = render(
+                <HashiRow
+                    nodes={[{ value: 1, lineRight: 1 }, { value: ' ' }, { value: 1, lineLeft: 1 }]}
+                    rowIndex={0}
+                    selectionState={selectionState}
+                />
+            )
+            expect(lastFrame()).toEqual(
+                ` \x1b[32m\x1b[1m╭───╮\x1b[22m\x1b[39m     \x1b[32m\x1b[2m╭───╮\x1b[22m\x1b[39m
+ \x1b[32m\x1b[1m│ 1 ├\x1b[22m\x1b[39m     \x1b[32m\x1b[2m┤ 1 │\x1b[22m\x1b[39m
+ \x1b[32m\x1b[1m╰───╯\x1b[22m\x1b[39m     \x1b[32m\x1b[2m╰───╯\x1b[22m\x1b[39m`
+            )
+        })
+    })
 })

@@ -142,7 +142,7 @@ export function constructNode(
             return line === MIDDLE_ROW ? `\x1b[2m─────\x1b[22m` : ' '.repeat(NODE_WIDTH)
         }
         const content = line === MIDDLE_ROW ? '─────' : ' '.repeat(NODE_WIDTH)
-        return useColor ? `${colorPrefix}${content}${colorReset}` : content
+        return useColor ? `${getColorPrefix()}${content}${colorReset}` : content
     }
 
     // Double horizontal line
@@ -151,7 +151,7 @@ export function constructNode(
             return line === MIDDLE_ROW ? `\x1b[2m═════\x1b[22m` : ' '.repeat(NODE_WIDTH)
         }
         const content = line === MIDDLE_ROW ? '═════' : ' '.repeat(NODE_WIDTH)
-        return useColor ? `${colorPrefix}${content}${colorReset}` : content
+        return useColor ? `${getColorPrefix()}${content}${colorReset}` : content
     }
 
     // Vertical line
@@ -160,7 +160,7 @@ export function constructNode(
             return `\x1b[2m  │  \x1b[22m`
         }
         const content = '  │  '
-        return useColor ? `${colorPrefix}${content}${colorReset}` : content
+        return useColor ? `${getColorPrefix()}${content}${colorReset}` : content
     }
 
     // Double vertical line
@@ -169,7 +169,7 @@ export function constructNode(
             return `\x1b[2m  ║  \x1b[22m`
         }
         const content = '  ║  '
-        return useColor ? `${colorPrefix}${content}${colorReset}` : content
+        return useColor ? `${getColorPrefix()}${content}${colorReset}` : content
     }
 
     // Node with value to render
@@ -179,45 +179,57 @@ export function constructNode(
             const label = disambiguationLabel ? disambiguationLabel : '─'
             const border = `╭${label}${up}─╮`
             if (displayMode === 'highlight') {
-                return `\x1b[1m${border}\x1b[22m`
+                const highlighted = `\x1b[1m${border}\x1b[22m`
+                if (validationState === 'valid' || validationState === 'invalid') {
+                    return `${getColorPrefix()}${highlighted}${colorReset}`
+                }
+                return highlighted
             }
             if (displayMode === 'dim') {
                 const dimmedBorder = `\x1b[2m${border}\x1b[22m`
                 if (validationState === 'valid' || validationState === 'invalid') {
-                    return `${colorPrefix}${dimmedBorder}${colorReset}`
+                    return `${getColorPrefix()}${dimmedBorder}${colorReset}`
                 }
                 return dimmedBorder
             }
-            return useColor ? `${colorPrefix}${border}${colorReset}` : border
+            return useColor ? `${getColorPrefix()}${border}${colorReset}` : border
         } else if (line === MIDDLE_ROW) {
             const left = node.lineLeft === 2 ? '╡' : node.lineLeft === 1 ? '┤' : '│'
             const right = node.lineRight === 2 ? '╞' : node.lineRight === 1 ? '├' : '│'
             const content = `${left} ${node.value} ${right}`
             if (displayMode === 'highlight') {
-                return `\x1b[1m${content}\x1b[22m`
+                const highlighted = `\x1b[1m${content}\x1b[22m`
+                if (validationState === 'valid' || validationState === 'invalid') {
+                    return `${getColorPrefix()}${highlighted}${colorReset}`
+                }
+                return highlighted
             }
             if (displayMode === 'dim') {
                 const dimmedContent = `\x1b[2m${content}\x1b[22m`
                 if (validationState === 'valid' || validationState === 'invalid') {
-                    return `${colorPrefix}${dimmedContent}${colorReset}`
+                    return `${getColorPrefix()}${dimmedContent}${colorReset}`
                 }
                 return dimmedContent
             }
-            return useColor ? `${colorPrefix}${content}${colorReset}` : content
+            return useColor ? `${getColorPrefix()}${content}${colorReset}` : content
         } else if (line === BOTTOM_ROW) {
             const down = node.lineDown === 2 ? '╥' : node.lineDown === 1 ? '┬' : '─'
             const border = `╰─${down}─╯`
             if (displayMode === 'highlight') {
-                return `\x1b[1m${border}\x1b[22m`
+                const highlighted = `\x1b[1m${border}\x1b[22m`
+                if (validationState === 'valid' || validationState === 'invalid') {
+                    return `${getColorPrefix()}${highlighted}${colorReset}`
+                }
+                return highlighted
             }
             if (displayMode === 'dim') {
                 const dimmedBorder = `\x1b[2m${border}\x1b[22m`
                 if (validationState === 'valid' || validationState === 'invalid') {
-                    return `${colorPrefix}${dimmedBorder}${colorReset}`
+                    return `${getColorPrefix()}${dimmedBorder}${colorReset}`
                 }
                 return dimmedBorder
             }
-            return useColor ? `${colorPrefix}${border}${colorReset}` : border
+            return useColor ? `${getColorPrefix()}${border}${colorReset}` : border
         }
     }
 
