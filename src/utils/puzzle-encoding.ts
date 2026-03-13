@@ -299,7 +299,10 @@ export const samplePuzzles: PuzzleData[] = [
         encoding: '9x9:4a3a3b3a.a1a3b3a2.4a2a2b2a.a1a1e.2a5a8a4a4.e2a2a.a3b3a2a6.1a2b2a1a.a4b4a2a3',
         solution: '9x9:4=3-3=a3a.#1-3-a3|2.4-2|2a#2#.|1|1#a#|#.2|5=8=4|4.||#a#2-2#.|3#a3|2=6.1#2a|2-1#.a4=a4-2-3',
     },
-    { encoding: '9x9:2b5b4a2.a1e1a.d1a3b.a4a8a2a3a.3a1a3a3a3.a2a2a2a6a.b2a2d.a2e3a.4a3b1b2' },
+    {
+        encoding: '9x9:2b5b4a2.a1e1a.d1a3b.a4a8a2a3a.3a1a3a3a3.a2a2a2a6a.b2a2d.a2e3a.4a3b1b2',
+        solution: '9x9:2-a5=a4-2.|1a#b|1|.||a#1-3||.|4=8=2|3|.3|1#3=3#3.#2|2|2=6#.#|2-2b##.#2-d3#.4=3-a1b2',
+    },
     { encoding: '9x9:3a1a1a3a3.a2a1e.b2a7a4b.3d2b5.a2b4a3b.h3.3a2a3a4b.a2a3a3b4.2a3d2a' },
     { encoding: '9x9:1a3b3b3.a2g.2a3a1a2a6.a4a1a3a3a.b1a2c4.3d3a6a.a4b6a1a3.e1a2a.3a3a5a5a3' },
     {
