@@ -307,7 +307,10 @@ export const samplePuzzles: PuzzleData[] = [
         encoding: '9x9:3a1a1a3a3.a2a1e.b2a7a4b.3d2b5.a2b4a3b.h3.3a2a3a4b.a2a3a3b4.2a3d2a',
         solution: '9x9:3-1a1a3-3.#2-1|a#a#.#|2=7=4a#.3|b#2=a5.|2-a4-3a|.|e#a3.3-2-3=4a#.|2=3-3=a4.2-3=c2a',
     },
-    { encoding: '9x9:1a3b3b3.a2g.2a3a1a2a6.a4a1a3a3a.b1a2c4.3d3a6a.a4b6a1a3.e1a2a.3a3a5a5a3' },
+    {
+        encoding: '9x9:1a3b3b3.a2g.2a3a1a2a6.a4a1a3a3a.b1a2c4.3d3a6a.a4b6a1a3.e1a2a.3a3a5a5a3',
+        solution: '9x9:1-3-a3-a3.a2|b|b#.2#3-1|2=6.#4|1-3-3#.##1a2b#4.3#b#3=6#.|4=a6|1#3|.|c#1|2|.3=3-5=5=3',
+    },
     {
         encoding:
             '9x16:a3a2a5a2a.2a3a2a2a2.e3c.a2b1a1b.4a4b4b4.a3b1a1b.2a2b5c.a4a4b2a4.d2d.3b5a3a2a.b1e3.d4b2a.3a3c2a4.a1a2e.1a2a3a3b.a2c2b3',
