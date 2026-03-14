@@ -317,7 +317,7 @@ export const samplePuzzles: PuzzleData[] = [
     },
     {
         encoding: '9x16:a2a2a3a3a.2a2a4a1a2.e2a3a.a3b5a3a5.5a3b2a3a.a2f2.b3a4b3a.a3a1e.2a1a4a3a2.a4a2e.3a1a2b3a.a5a2b3a3.3a3b1c.a2a2c3a.2a3a2a3a2.a2a6a3a2a',
-        solution: '9x16:a2a2a3a3a.2a2a4a1a2.e2a3a.a3b5a3a5.5a3b2a3a.a2f2.b3a4b3a.a3a1e.2a1a4a3a2.a4a2e.3a1a2b3a.a5a2b3a3.3a3b1c.a2a2c3a.2a3a2a3a2.a2a6a3a2a',
+        solution: '9x16:a2-2-3=3a.2|2=4-1|2.#|b|2=3#.#3=a5-3=5.5=3a|2=3|.|2|a|b|2.|#3-4-a3|.|3|1|b||.2|1|4=3|2.|4-2|a|||.3#1-2a|3|.#5-2-a3#3.3#3-a1|##.|2#2b|3#.2-3#2=3|2.a2=6=3-2a',
     },
     {
         encoding:
