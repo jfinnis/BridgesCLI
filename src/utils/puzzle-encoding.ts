@@ -324,8 +324,8 @@ export const samplePuzzles: PuzzleData[] = [
         solution: '9x16:2-3-a2-a2.|1|a2c|.2||a#a1-3.||4=8=a2|.2||1#a2=4.||||#1b|.1|1|4|a2|.a3-2#|a#2.2|b#3-3|.#5=a5|2=4.##a1||b|.3#2||2-a3.|2#|3-1a|.4=4||c3.|b|2-a1#.3=a4-a2-3.',
     },
     {
-        encoding:
-            '13x22:1a2b2b3a2a2.i1a2a.3b3b3a3a1b.a3c1f2.b3c4b1c.3g2b4a.b5b2f3.i2a3a.3a4a1a1a1a1a5.e3c4c.a3a3c1d3.2d2c4a1a.c5c2e.2a1a3a3a3a5a4.a4a2i.3f3b4b.a4b3g2.3b3b3c2b.g4c2a.b1a1a2b3b4.a1a1i.2a2a3b3b2a3',
+        encoding: '13x22:1a2b2b3a2a2.i1a2a.3b3b3a3a1b.a3c1f2.b3c4b1c.3g2b4a.b5b2f3.i2a3a.3a4a1a1a1a1a5.e3c4c.a3a3c1d3.2d2c4a1a.c5c2e.2a1a3a3a3a5a4.a4a2i.3f3b4b.a4b3g2.3b3b3c2b.g4c2a.b1a1a2b3b4.a1a1i.2a2a3b3b2a3',
+        solution: '13x22:1-2-a2-a3-2-2.h|1-2|.3=a3-a3-3-1||.|3-b1|d|2.|#3-b4-a1a||.3##c|a2-a4|.##5-a2|a|b#3.###b||a|2-3#.3#4-1|1a1|1-5.|#|b3=b4b#.|3|3-b1a|b3.2||#a2=b4-1|.|||5=b2d|.2|1|3-3-3=5=4.|4-2#a|c|a|.3#b#a|3-a4a|.#4-a3a|#b#a2.3|a3=a3#b2a|.||a|c4=b2|.||1|1a2=a3-a4.|1|1|g#.2-2a3=a3-a2-3',
     },
     { encoding: '9x9:3b3b4a2.a2c1c.b1a4a2b.3d2b3.a2b5b1a.4b2a2b2.b1a3b2a.a1c2b1.2a3d3a' },
     { encoding: '9x9:4b4b4a4.b1a1d.2b1d3.d2a2b.4a4b3b4.a4b4b2a.2a1c2a2.a2e1a.2a4a3a4a2' },
