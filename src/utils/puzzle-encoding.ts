@@ -320,8 +320,8 @@ export const samplePuzzles: PuzzleData[] = [
         solution: '9x16:a2-2-3=3a.2|2=4-1|2.#|b|2=3#.#3=a5-3=5.5=3a|2=3|.|2|a|b|2.|#3-4-a3|.|3|1|b||.2|1|4=3|2.|4-2|a|||.3#1-2a|3|.#5-2-a3#3.3#3-a1|##.|2#2b|3#.2-3#2=3|2.a2=6=3-2a',
     },
     {
-        encoding:
-            '9x16:2a3b2b2.a1b2d.2e1a3.b4a8b2a.2b1b2a4.e1c.1a1a4b2a.a3a2d2.2d3a3a.a5b5a2a4.c1e.3a2b2b3.a2b3a1b.4a4e3.d2b1a.3b4b2a3.',
+        encoding: '9x16:2a3b2b2.a1b2d.2e1a3.b4a8b2a.2b1b2a4.e1c.1a1a4b2a.a3a2d2.2d3a3a.a5b5a2a4.c1e.3a2b2b3.a2b3a1b.4a4e3.d2b1a.3b4b2a3.',
+        solution: '9x16:2-3-a2-a2.|1|a2c|.2||a#a1-3.||4=8=a2|.2||1#a2=4.||||#1b|.1|1|4|a2|.a3-2#|a#2.2|b#3-3|.#5=a5|2=4.##a1||b|.3#2||2-a3.|2#|3-1a|.4=4||c3.|b|2-a1#.3=a4-a2-3.',
     },
     {
         encoding:
