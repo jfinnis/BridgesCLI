@@ -331,9 +331,12 @@ export const samplePuzzles: PuzzleData[] = [
         encoding: '9x9:3b3b4a2.a2c1c.b1a4a2b.3d2b3.a2b5b1a.4b2a2b2.b1a3b2a.a1c2b1.2a3d3a',
         solution: '9x9:3-a3=a4-2.#2-b1|a|.#|1-4-2a|.3|b#2-a3.|2-a5|a1|.4=a2#2a|2.|a1-3|a2|.|1-b2a|1.2-3=c3a',
     },
-    { encoding: '9x9:4b4b4a4.b1a1d.2b1d3.d2a2b.4a4b3b4.a4b4b2a.2a1c2a2.a2e1a.2a4a3a4a2' },
     {
-        encoding:
-            '21x35:a1a3b4a2a2a4b3a2b2.3c2b1e4b6a2b.b4c3a2c3d2a2a.a2a4a5a3b2b4a2d2.3a2a2a4a3c2c2d.a4a3a3a2b5b4a4a3a1a.3c4f4b3a3a2b.a2a2b3a4a3a2b5a4b5.4a2b4a1a3a7b2a1a1b.a2a3b5a4d1a3a3b4.3c4f2i.a2a2b4b5b5a3a3a4a4.e5b3a4f2a2a.4a3a5i1a2a2a3.a3a2a3a3a4b6b3a3a4a.3a2a3a2a2a4b2b4a3a3.a2a3e4k.4a4a2c2a3a5a3b5b3.a1a3b3b6c2b3d.1a3b3a3b1g2a2.a3a4b2b4b6b2a4c.2g2b2b2a2a3a2.a2a6a4a6d2b1a4c.5a4a4a2a2b4b8a3a1a2.a1a4a2a7b4b4a2a5a3a.b4e2b3b4c2b.3c6b7a3c2a2a1b3.a3a2o2a.3a5a5a3b3a4b5b2b3.e2a3e1d4b.3b2b3b2d2b2a',
+        encoding: '9x9:4b4b4a4.b1a1d.2b1d3.d2a2b.4a4b3b4.a4b4b2a.2a1c2a2.a2e1a.2a4a3a4a2',
+        solution: '9x9:4=a4-a4=4.#a1|1a|a#.2a|1|a|a3.b|a2-2a|.4=4-a3=a4.#4=a4-a2|.2#1a|a2|2.a2|a|a#1|.2=4-3-4-2',
+    },
+    {
+        encoding: '21x35:a1a3b4a2a2a4b3a2b2.3c2b1e4b6a2b.b4c3a2c3d2a2a.a2a4a5a3b2b4a2d2.3a2a2a4a3c2c2d.a4a3a3a2b5b4a4a3a1a.3c4f4b3a3a2b.a2a2b3a4a3a2b5a4b5.4a2b4a1a3a7b2a1a1b.a2a3b5a4d1a3a3b4.3c4f2i.a2a2b4b5b5a3a3a4a4.e5b3a4f2a2a.4a3a5i1a2a2a3.a3a2a3a3a4b6b3a3a4a.3a2a3a2a2a4b2b4a3a3.a2a3e4k.4a4a2c2a3a5a3b5b3.a1a3b3b6c2b3d.1a3b3a3b1g2a2.a3a4b2b4b6b2a4c.2g2b2b2a2a3a2.a2a6a4a6d2b1a4c.5a4a4a2a2b4b8a3a1a2.a1a4a2a7b4b4a2a5a3a.b4e2b3b4c2b.3c6b7a3c2a2a1b3.a3a2o2a.3a5a5a3b3a4b5b2b3.e2a3e1d4b.3b2b3b2d2b2a3a.b2b3a3c5a5b5a5a3.4c1a3a3a3a2a2b1a4a.a3a5a5a3a2a3a4b2a1a2.4a4a4a4a3a3a3a4b4a4a',
+        solution: '21x35:a1-3=a4-2a2-4=a3-2-a2.3=b2a|1|a|a|4=a6=2a|.|a4=b3|2a|a3#b#2-2|.|2#4=5=3|a2a#4-2#|a|2.3#2#2|4=3a|a2|a|2|a||.#4-3#3#2-a5=a4-4=3a1|.3|b4##|b|4=a3-3=2a|.|2-2##3|4=3#2=a5-4=a5.4=2|#4|1#3-7=a2#1|1a#.|2-3##5=4#a#a1-3|3|a4.3|a|4##b#a2d|#|a#.#2-2##4=a5-a5=3-3#4-4.#c#5-a3=4a#c|2#2|.4-3=5#d#a#a1-2a2#3.|3-2|3-3=4#a6=a3-3=4#.3#2|3-2-2#4a#2=a4=3-3.#2#3|c|4#a#h.4-4#2-b2#3a5=3-a5=a3.|1|3-a3=a6|a|2=a3#b|.1|3=a3-3a#1a|c|#2-2.a3-4=a2#a4=a6-a2|4|b.2|a|c#2-a2#a2|2#3-2.#2-6=4=6|b|2a#1|4|a|.5=4#4=2#2-a4=a8=3#1a2.|1#4#2=7=a4=a4#2-5=3|.||4##b|2=a3a#4|b2||.3|##6=a7=3a|a2#2-1#|3.#3#2#b#a|a|b#c#2#.3#5-5-3#a3a4-a5-a2#|3.|##a|2#3a#a#a1|b|4||.3##2|#3|a2a#a|2-a2#3|.##2#|3|3=b5-5-a5=5#3.4#a#1|3=3-3=2#2a#1|4#.#3-5=5=3-2-3=4#a2|1#2.4=4=4=4=3-3=3-4-a4=4a',
     },
 ]
