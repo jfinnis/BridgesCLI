@@ -119,7 +119,8 @@ export function constructNode(
     line: 0 | 1 | 2,
     displayMode: HashiNodeDisplayMode = 'normal',
     disambiguationLabel?: string,
-    validationState?: NodeFilledState | null
+    validationState?: NodeFilledState | null,
+    showSolution?: boolean
 ): string {
     // Determine color prefix based on validation state
     const getColorPrefix = (): string => {
@@ -142,6 +143,9 @@ export function constructNode(
             return line === MIDDLE_ROW ? `\x1b[2m─────\x1b[22m` : ' '.repeat(NODE_WIDTH)
         }
         const content = line === MIDDLE_ROW ? '─────' : ' '.repeat(NODE_WIDTH)
+        if (showSolution) {
+            return `\x1b[32m${content}\x1b[39m`
+        }
         return useColor ? `${getColorPrefix()}${content}${colorReset}` : content
     }
 
@@ -151,6 +155,9 @@ export function constructNode(
             return line === MIDDLE_ROW ? `\x1b[2m═════\x1b[22m` : ' '.repeat(NODE_WIDTH)
         }
         const content = line === MIDDLE_ROW ? '═════' : ' '.repeat(NODE_WIDTH)
+        if (showSolution) {
+            return `\x1b[32m${content}\x1b[39m`
+        }
         return useColor ? `${getColorPrefix()}${content}${colorReset}` : content
     }
 
@@ -160,6 +167,9 @@ export function constructNode(
             return `\x1b[2m  │  \x1b[22m`
         }
         const content = '  │  '
+        if (showSolution) {
+            return `\x1b[32m${content}\x1b[39m`
+        }
         return useColor ? `${getColorPrefix()}${content}${colorReset}` : content
     }
 
@@ -169,6 +179,9 @@ export function constructNode(
             return `\x1b[2m  ║  \x1b[22m`
         }
         const content = '  ║  '
+        if (showSolution) {
+            return `\x1b[32m${content}\x1b[39m`
+        }
         return useColor ? `${getColorPrefix()}${content}${colorReset}` : content
     }
 

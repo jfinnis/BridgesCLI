@@ -17,6 +17,7 @@ type HashiRowProps = {
     highlightedNode?: number
     rowIndex: number
     selectionState?: SelectionState
+    showSolution?: boolean
 }
 
 export default function HashiRow({
@@ -24,6 +25,7 @@ export default function HashiRow({
     highlightedNode,
     rowIndex,
     selectionState,
+    showSolution,
 }: HashiRowProps) {
     // Each row consists of multiple lines of terminal output
     const lines: React.ReactNode[] = []
@@ -62,7 +64,16 @@ export default function HashiRow({
             )
             const label = disambiguationMap[i]
             const filledState = getNodeFilledState(node)
-            rowItems.push(constructNode(node, line as 0 | 1 | 2, displayMode, label, filledState))
+            rowItems.push(
+                constructNode(
+                    node,
+                    line as 0 | 1 | 2,
+                    displayMode,
+                    label,
+                    filledState,
+                    showSolution
+                )
+            )
 
             // Add space between columns except the last
             if (i < nodes.length - 1) {

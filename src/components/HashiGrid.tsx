@@ -85,6 +85,7 @@ export default function HashiGrid({
                         rowIndex={i}
                         highlightedNode={selectionState?.selectedNumber ?? undefined}
                         selectionState={selectionState}
+                        showSolution={showSolution}
                     />
                 ))}
             </Box>
