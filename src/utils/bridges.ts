@@ -132,7 +132,7 @@ export function constructNode(
         return ''
     }
 
-    const colorReset = '\x1b[0m'
+    const colorReset = '\x1b[39m'
     const colorPrefix = displayMode === 'dim' ? '' : getColorPrefix()
     const useColor = colorPrefix !== ''
 

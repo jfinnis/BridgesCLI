@@ -9,6 +9,16 @@ const TEST_PUZZLE = { encoding: '3x3:1a1.c.2a2' }
 const TEST_PUZZLE_2 = { encoding: '3x3:3a3.c.1a1' }
 const SMALL_PUZZLE_3X3 = { encoding: '3x3:2a3.c.1a2' }
 
+/**
+ * Note on ANSI sequences:
+ * \x1b[1m - bold (selected node)
+ * \x1b[2m - dim (inactive/unselected nodes)
+ * \x1b[22m - normal (turns off bold/dim)
+ * \x1b[31m - red (error - too many bridges)
+ * \x1b[32m - green (success - correct number of bridges)
+ * \x1b[39m - reset all (default foreground + bold/dim off)
+ * \x1b[39m - reset foreground only (used in some tests for clarity)
+ */
 describe('Game', () => {
     beforeEach(() => {
         Object.defineProperty(process.stdin, 'isTTY', {
@@ -648,6 +658,52 @@ q: Quit`)
             // Verify the bridge was actually erased (grid shows no bridge)
             expect(lastFrame()).not.toContain('╞═════')
             expect(lastFrame()).not.toContain('═╡')
+        })
+    })
+
+    describe('game controls - success/error coloring on nodes and bridges', () => {
+        it('highlights as success the completed node (connected to an incomplete)', () => {
+            const puzzleCompleted = { encoding: '3x1:2=4' }
+            const { lastFrame } = render(
+                <Game puzzles={[puzzleCompleted]} hasCustomPuzzle={false} />
+            )
+
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Type a number [2-4] to select a node
+
+┌─────────────────┐
+│ [32m╭───╮[39m     ╭───╮ │
+│ [32m│ 2 ╞[39m═════╡ 4 │ │
+│ [32m╰───╯[39m     ╰───╯ │
+└─────────────────┘
+
+Controls:
+p: Previous puzzle
+n: Next puzzle
+s: Show solution
+q: Quit`)
+        })
+
+        it('highlights as error a node with too many bridges', () => {
+            const puzzleWithError = { encoding: '3x1:1=3' }
+            const { lastFrame } = render(
+                <Game puzzles={[puzzleWithError]} hasCustomPuzzle={false} />
+            )
+
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Type a number [1-3] to select a node
+
+┌─────────────────┐
+│ [31m╭───╮[39m     ╭───╮ │
+│ [31m│ 1 ╞[39m═════╡ 3 │ │
+│ [31m╰───╯[39m     ╰───╯ │
+└─────────────────┘
+
+Controls:
+p: Previous puzzle
+n: Next puzzle
+s: Show solution
+q: Quit`)
         })
     })
 })
