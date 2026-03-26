@@ -64,27 +64,27 @@ q: Quit`)
 • Viewing solution (press s to return to puzzle)
 
 ┌─────────────────────────────────────┐
-│ \x1b[32m╭───╮\x1b[39m     \x1b[32m╭───╮\x1b[39m     \x1b[32m╭───╮\x1b[39m     \x1b[32m╭───╮\x1b[39m │
-│ \x1b[32m│ 4 ╞\x1b[39m═════\x1b[32m╡ 3 ├\x1b[39m─────\x1b[32m┤ 3 ╞\x1b[39m═════\x1b[32m╡ 3 │\x1b[39m │
-│ \x1b[32m╰─╥─╯\x1b[39m     \x1b[32m╰───╯\x1b[39m     \x1b[32m╰───╯\x1b[39m     \x1b[32m╰─┬─╯\x1b[39m │
-│   ║  \x1b[32m╭───╮\x1b[39m               \x1b[32m╭───╮\x1b[39m  │   │
-│   ║  \x1b[32m│ 2 ╞\x1b[39m═══════════════\x1b[32m╡ 4 │\x1b[39m  │   │
-│   ║  \x1b[32m╰───╯\x1b[39m               \x1b[32m╰─╥─╯\x1b[39m  │   │
-│ \x1b[32m╭─╨─╮\x1b[39m          \x1b[32m╭───╮\x1b[39m       ║  \x1b[32m╭─┴─╮\x1b[39m │
-│ \x1b[32m│ 3 ├\x1b[39m──────────\x1b[32m┤ 3 │\x1b[39m       ║  \x1b[32m│ 3 │\x1b[39m │
-│ \x1b[32m╰───╯\x1b[39m          \x1b[32m╰─╥─╯\x1b[39m       ║  \x1b[32m╰─╥─╯\x1b[39m │
+│ [32m╭───╮[39m     [32m╭───╮[39m     [32m╭───╮[39m     [32m╭───╮[39m │
+│ [32m│ 4 ╞[39m═════[32m╡ 3 ├[39m─────[32m┤ 3 ╞[39m═════[32m╡ 3 │[39m │
+│ [32m╰─╥─╯[39m     [32m╰───╯[39m     [32m╰───╯[39m     [32m╰─┬─╯[39m │
+│   ║  [32m╭───╮[39m               [32m╭───╮[39m  │   │
+│   ║  [32m│ 2 ╞[39m═══════════════[32m╡ 4 │[39m  │   │
+│   ║  [32m╰───╯[39m               [32m╰─╥─╯[39m  │   │
+│ [32m╭─╨─╮[39m          [32m╭───╮[39m       ║  [32m╭─┴─╮[39m │
+│ [32m│ 3 ├[39m──────────[32m┤ 3 │[39m       ║  [32m│ 3 │[39m │
+│ [32m╰───╯[39m          [32m╰─╥─╯[39m       ║  [32m╰─╥─╯[39m │
 │                  ║         ║    ║   │
 │                  ║         ║    ║   │
 │                  ║         ║    ║   │
-│ \x1b[32m╭───╮\x1b[39m          \x1b[32m╭─╨─╮\x1b[39m     \x1b[32m╭─╨─╮\x1b[39m  ║   │
-│ \x1b[32m│ 2 ╞\x1b[39m══════════\x1b[32m╡ 8 ╞\x1b[39m═════\x1b[32m╡ 4 │\x1b[39m  ║   │
-│ \x1b[32m╰───╯\x1b[39m          \x1b[32m╰─╥─╯\x1b[39m     \x1b[32m╰───╯\x1b[39m  ║   │
-│                  ║  \x1b[32m╭───╮\x1b[39m     \x1b[32m╭─╨─╮\x1b[39m │
-│                  ║  \x1b[32m│ 1 ├\x1b[39m─────\x1b[32m┤ 3 │\x1b[39m │
-│                  ║  \x1b[32m╰───╯\x1b[39m     \x1b[32m╰───╯\x1b[39m │
-│      \x1b[32m╭───╮\x1b[39m     \x1b[32m╭─╨─╮\x1b[39m     \x1b[32m╭───╮\x1b[39m      │
-│      \x1b[32m│ 1 ├\x1b[39m─────\x1b[32m┤ 4 ├\x1b[39m─────\x1b[32m┤ 1 │\x1b[39m      │
-│      \x1b[32m╰───╯\x1b[39m     \x1b[32m╰───╯\x1b[39m     \x1b[32m╰───╯\x1b[39m      │
+│ [32m╭───╮[39m          [32m╭─╨─╮[39m     [32m╭─╨─╮[39m  ║   │
+│ [32m│ 2 ╞[39m══════════[32m╡ 8 ╞[39m═════[32m╡ 4 │[39m  ║   │
+│ [32m╰───╯[39m          [32m╰─╥─╯[39m     [32m╰───╯[39m  ║   │
+│                  ║  [32m╭───╮[39m     [32m╭─╨─╮[39m │
+│                  ║  [32m│ 1 ├[39m─────[32m┤ 3 │[39m │
+│                  ║  [32m╰───╯[39m     [32m╰───╯[39m │
+│      [32m╭───╮[39m     [32m╭─╨─╮[39m     [32m╭───╮[39m      │
+│      [32m│ 1 ├[39m─────[32m┤ 4 ├[39m─────[32m┤ 1 │[39m      │
+│      [32m╰───╯[39m     [32m╰───╯[39m     [32m╰───╯[39m      │
 └─────────────────────────────────────┘
 
 Controls:
@@ -453,7 +453,7 @@ q: Quit`)
 
             // Note: Escape key handling may not work in test environment
             // Testing that we entered disambiguation mode successfully
-            stdin.write('\x1b')
+            stdin.write('')
             await setTimeout(5)
             expect(lastFrame()).toContain('Type a number')
         })
@@ -477,15 +477,15 @@ q: Quit`)
 • Drew horizontal bridge
 
 ┌─────────────────┐
-│ \x1b[2m╭───╮\x1b[22m     \x1b[1m╭───╮\x1b[22m │
-│ \x1b[2m│ 2 ├─────\x1b[22m\x1b[1m┤ 3 │\x1b[22m │
-│ \x1b[2m╰───╯\x1b[22m     \x1b[1m╰───╯\x1b[22m │
+│ [2m╭───╮[22m     [1m╭───╮[22m │
+│ [2m│ 2 ├─────[22m[1m┤ 3 │[22m │
+│ [2m╰───╯[22m     [1m╰───╯[22m │
 │                 │
 │                 │
 │                 │
-│ \x1b[2m╭───╮\x1b[22m     \x1b[2m╭───╮\x1b[22m │
-│ \x1b[2m│ 3 │\x1b[22m     \x1b[2m│ 4 │\x1b[22m │
-│ \x1b[2m╰───╯\x1b[22m     \x1b[2m╰───╯\x1b[22m │
+│ [2m╭───╮[22m     [2m╭───╮[22m │
+│ [2m│ 3 │[22m     [2m│ 4 │[22m │
+│ [2m╰───╯[22m     [2m╰───╯[22m │
 └─────────────────┘
 
 Controls:
@@ -508,15 +508,15 @@ q: Quit`)
 • Drew vertical bridge
 
 ┌─────────────────┐
-│ \x1b[1m╭───╮\x1b[22m     \x1b[2m╭───╮\x1b[22m │
-│ \x1b[1m│ 2 │\x1b[22m     \x1b[2m│ 3 │\x1b[22m │
-│ \x1b[1m╰─┬─╯\x1b[22m     \x1b[2m╰───╯\x1b[22m │
-│ \x1b[2m  │  \x1b[22m           │
-│ \x1b[2m  │  \x1b[22m           │
-│ \x1b[2m  │  \x1b[22m           │
-│ \x1b[2m╭─┴─╮\x1b[22m     \x1b[2m╭───╮\x1b[22m │
-│ \x1b[2m│ 3 │\x1b[22m     \x1b[2m│ 4 │\x1b[22m │
-│ \x1b[2m╰───╯\x1b[22m     \x1b[2m╰───╯\x1b[22m │
+│ [1m╭───╮[22m     [2m╭───╮[22m │
+│ [1m│ 2 │[22m     [2m│ 3 │[22m │
+│ [1m╰─┬─╯[22m     [2m╰───╯[22m │
+│ [2m  │  [22m           │
+│ [2m  │  [22m           │
+│ [2m  │  [22m           │
+│ [2m╭─┴─╮[22m     [2m╭───╮[22m │
+│ [2m│ 3 │[22m     [2m│ 4 │[22m │
+│ [2m╰───╯[22m     [2m╰───╯[22m │
 └─────────────────┘
 
 Controls:
@@ -527,31 +527,28 @@ q: Quit`)
         })
 
         it('draws a double horizontal bridge', async () => {
-            const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
+            const puzzleWithEachBridge = { encoding: '3x3:3a4.c.2a4' }
             const { stdin, lastFrame } = render(
                 <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} />
             )
             stdin.write('3')
             await setTimeout(5)
-            expect(lastFrame()).toContain('Press label shown to select that node')
-            stdin.write('a')
-            await setTimeout(5)
             expect(lastFrame()).toContain('Select direction with h/j/k/l')
-            stdin.write('H')
+            stdin.write('L')
             await setTimeout(5)
             expect(lastFrame()).toEqual(`Bridges: Puzzle #1
 • Drew double horizontal bridge
 
 ┌─────────────────┐
-│ \x1b[2m╭───╮\x1b[22m     \x1b[1m╭───╮\x1b[22m │
-│ \x1b[2m│ 2 ╞═════\x1b[22m\x1b[1m╡ 3 │\x1b[22m │
-│ \x1b[2m╰───╯\x1b[22m     \x1b[1m╰───╯\x1b[22m │
+│ [1m╭───╮[22m     [2m╭───╮[22m │
+│ [1m│ 3 ╞[22m[2m═════╡ 4 │[22m │
+│ [1m╰───╯[22m     [2m╰───╯[22m │
 │                 │
 │                 │
 │                 │
-│ \x1b[2m╭───╮\x1b[22m     \x1b[2m╭───╮\x1b[22m │
-│ \x1b[2m│ 3 │\x1b[22m     \x1b[2m│ 4 │\x1b[22m │
-│ \x1b[2m╰───╯\x1b[22m     \x1b[2m╰───╯\x1b[22m │
+│ [2m╭───╮[22m     [2m╭───╮[22m │
+│ [2m│ 2 │[22m     [2m│ 4 │[22m │
+│ [2m╰───╯[22m     [2m╰───╯[22m │
 └─────────────────┘
 
 Controls:
@@ -562,11 +559,11 @@ q: Quit`)
         })
 
         it('draws a double vertical bridge', async () => {
-            const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
+            const puzzleWithEachBridge = { encoding: '3x3:3a2.c.4a2' }
             const { stdin, lastFrame } = render(
                 <Game puzzles={[puzzleWithEachBridge]} hasCustomPuzzle={false} />
             )
-            stdin.write('2')
+            stdin.write('3')
             await setTimeout(5)
             stdin.write('J')
             await setTimeout(5)
@@ -574,15 +571,15 @@ q: Quit`)
 • Drew double vertical bridge
 
 ┌─────────────────┐
-│ \x1b[1m╭───╮\x1b[22m     \x1b[2m╭───╮\x1b[22m │
-│ \x1b[1m│ 2 │\x1b[22m     \x1b[2m│ 3 │\x1b[22m │
-│ \x1b[1m╰─╥─╯\x1b[22m     \x1b[2m╰───╯\x1b[22m │
-│ \x1b[2m  ║  \x1b[22m           │
-│ \x1b[2m  ║  \x1b[22m           │
-│ \x1b[2m  ║  \x1b[22m           │
-│ \x1b[2m╭─╨─╮\x1b[22m     \x1b[2m╭───╮\x1b[22m │
-│ \x1b[2m│ 3 │\x1b[22m     \x1b[2m│ 4 │\x1b[22m │
-│ \x1b[2m╰───╯\x1b[22m     \x1b[2m╰───╯\x1b[22m │
+│ [1m╭───╮[22m     [2m╭───╮[22m │
+│ [1m│ 3 │[22m     [2m│ 2 │[22m │
+│ [1m╰─╥─╯[22m     [2m╰───╯[22m │
+│ [2m  ║  [22m           │
+│ [2m  ║  [22m           │
+│ [2m  ║  [22m           │
+│ [2m╭─╨─╮[22m     [2m╭───╮[22m │
+│ [2m│ 4 │[22m     [2m│ 2 │[22m │
+│ [2m╰───╯[22m     [2m╰───╯[22m │
 └─────────────────┘
 
 Controls:
