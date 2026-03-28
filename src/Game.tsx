@@ -114,7 +114,12 @@ export default function Game({ puzzles, hasCustomPuzzle }: GameProps) {
         setShowSolution(false)
     }, [])
     const handleToggleSolution = useCallback(() => {
-        setShowSolution(s => !s)
+        setShowSolution(s => {
+            if (!s) {
+                setUserBridges([])
+            }
+            return !s
+        })
     }, [])
 
     const handleBridgePlaced = useCallback(
