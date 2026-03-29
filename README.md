@@ -22,6 +22,7 @@ bun start
 
 ### CLI Options
 - `-p, --puzzle <identifier>` - Render a puzzle via shorthand encoding (see `samplePuzzles.ts`)
+- `--enable-solutions` - Enable the show solution toggle in the game (disabled by default)
 
 ### Run tests and linter
 ``` bash

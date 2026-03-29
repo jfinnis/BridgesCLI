@@ -8,27 +8,46 @@ type LegendItem = {
     disabled?: boolean
 }
 
-export function legendItems(hasSolution: boolean, isSelecting: boolean): LegendItem[] {
-    return [
+export function legendItems(
+    hasSolution: boolean,
+    enableSolutions: boolean,
+    isSelecting: boolean
+): LegendItem[] {
+    const items: LegendItem[] = [
         { key: 'p', description: 'Previous puzzle', disabled: isSelecting },
         { key: 'n', description: 'Next puzzle', disabled: isSelecting },
-        { key: 's', description: 'Show solution', disabled: isSelecting || !hasSolution },
-        { key: 'q', description: 'Quit' },
     ]
+
+    if (enableSolutions) {
+        items.push({
+            key: 's',
+            description: 'Show solution',
+            disabled: isSelecting || !hasSolution,
+        })
+    }
+
+    items.push({ key: 'q', description: 'Quit' })
+
+    return items
 }
 
 type MessagesProps = {
     hasSolution?: boolean
+    enableSolutions?: boolean
     selectionState?: SelectionState
 }
 
-export default function Messages({ hasSolution = false, selectionState }: MessagesProps) {
+export default function Messages({
+    hasSolution = false,
+    enableSolutions = false,
+    selectionState,
+}: MessagesProps) {
     const isSelecting = selectionState !== undefined && selectionState.mode !== 'idle'
 
     return (
         <Box flexDirection="column" marginTop={1}>
             <Text bold>Controls:</Text>
-            {legendItems(hasSolution, isSelecting).map(item => (
+            {legendItems(hasSolution, enableSolutions, isSelecting).map(item => (
                 <Box key={item.key}>
                     <Text bold color={item.disabled ? 'gray' : undefined}>
                         {item.key}

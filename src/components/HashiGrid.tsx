@@ -30,6 +30,8 @@ type HashiGridProps = {
     hasSolution?: boolean
     /** Whether to show the solution */
     showSolution?: boolean
+    /** Whether to enable the solution feature */
+    enableSolutions?: boolean
     /** Current selection state for highlighting */
     selectionState?: SelectionState
     /** Minimum number value in the puzzle */
@@ -47,6 +49,7 @@ export default function HashiGrid({
     isCustomPuzzle = false,
     hasSolution = false,
     showSolution = false,
+    enableSolutions = false,
     selectionState,
     minNumber,
     maxNumber,
@@ -90,7 +93,11 @@ export default function HashiGrid({
                 ))}
             </Box>
             {showInstructions ? (
-                <Messages hasSolution={hasSolution} selectionState={selectionState} />
+                <Messages
+                    hasSolution={hasSolution}
+                    enableSolutions={enableSolutions}
+                    selectionState={selectionState}
+                />
             ) : null}
         </Box>
     )

@@ -8,6 +8,7 @@ import usePuzzleInput from './utils/usePuzzleInput.ts'
 type GameProps = {
     puzzles: PuzzleData[]
     hasCustomPuzzle: boolean
+    enableSolutions: boolean
 }
 
 // Compares two bridges for equality, treating bridges in either direction as equivalent.
@@ -100,7 +101,7 @@ function mergeBridges(originalRows: HashiNodeData[][], bridges: PlacedBridge[]):
     return rows
 }
 
-export default function Game({ puzzles, hasCustomPuzzle }: GameProps) {
+export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: GameProps) {
     const [puzzleIndex, setPuzzleIndex] = useState(0)
     const [showSolution, setShowSolution] = useState(false)
     const [userBridges, setUserBridges] = useState<PlacedBridge[]>([])
@@ -164,6 +165,7 @@ export default function Game({ puzzles, hasCustomPuzzle }: GameProps) {
               puzzlesLength: puzzles.length,
               rows: rows,
               showSolution,
+              enableSolutions,
               onPrev: handlePrev,
               onNext: handleNext,
               onToggleSolution: handleToggleSolution,
@@ -181,6 +183,7 @@ export default function Game({ puzzles, hasCustomPuzzle }: GameProps) {
             isCustomPuzzle={hasCustomPuzzle && puzzleIndex === 0}
             hasSolution={!!puzzle.solution}
             showSolution={showSolution}
+            enableSolutions={enableSolutions}
             selectionState={selectionState}
             minNumber={minNumber}
             maxNumber={maxNumber}

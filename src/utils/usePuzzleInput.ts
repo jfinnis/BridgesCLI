@@ -8,6 +8,7 @@ type UsePuzzleInputProps = {
     puzzlesLength: number
     rows: { value: number | '-' | '=' | '#' | ' ' | '|' }[][]
     showSolution: boolean
+    enableSolutions: boolean
     onPrev: () => void
     onNext: () => void
     onToggleSolution: () => void
@@ -136,6 +137,7 @@ export default function usePuzzleInput({
     puzzlesLength,
     rows,
     showSolution,
+    enableSolutions,
     onPrev,
     onNext,
     onToggleSolution,
@@ -280,7 +282,7 @@ export default function usePuzzleInput({
                     onPrev()
                     resetSelection()
                     return
-                } else if (input === 's') {
+                } else if (input === 's' && enableSolutions) {
                     onToggleSolution()
                     resetSelection()
                     return
@@ -366,7 +368,7 @@ export default function usePuzzleInput({
             onNext()
         } else if (input === 'p' && puzzleIndexRef.current - 1 >= 0) {
             onPrev()
-        } else if (input === 's') {
+        } else if (input === 's' && enableSolutions) {
             onToggleSolution()
         } else if (input >= '1' && input <= '8') {
             if (showSolutionRef.current) return
