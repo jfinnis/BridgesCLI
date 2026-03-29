@@ -53,6 +53,150 @@ export function validateGrid({ rows, numNodes }: HashiGridValidationProps): void
 }
 
 /**
+ * Check if the puzzle is solved - all numbered nodes have the correct number of bridges
+ * and all nodes form a connected graph.
+ */
+export function checkSolution(rows: HashiNodeData[][]): boolean {
+    for (const row of rows) {
+        for (const node of row) {
+            const state = getNodeFilledState(node)
+            if (state !== null && state !== 'valid') {
+                return false
+            }
+        }
+    }
+
+    if (!isGraphConnected(rows)) {
+        return false
+    }
+
+    return true
+}
+
+/**
+ * Check if all numbered nodes have the correct number of bridges (regardless of connectivity).
+ */
+export function areAllNodesFilled(rows: HashiNodeData[][]): boolean {
+    for (const row of rows) {
+        for (const node of row) {
+            const state = getNodeFilledState(node)
+            if (state !== null && state !== 'valid') {
+                return false
+            }
+        }
+    }
+    return true
+}
+
+/**
+ * Check if the graph is connected (regardless of whether nodes have correct bridge counts).
+ */
+export function isConnected(rows: HashiNodeData[][]): boolean {
+    return isGraphConnected(rows)
+}
+
+/**
+ * Check if all numbered nodes form a connected graph using BFS.
+ */
+function isGraphConnected(rows: HashiNodeData[][]): boolean {
+    const numRows = rows.length
+    if (numRows === 0) return true
+    const numCols = rows[0].length
+
+    const numberedNodes: [number, number][] = []
+    for (let r = 0; r < numRows; r++) {
+        for (let c = 0; c < numCols; c++) {
+            if (typeof rows[r][c].value === 'number') {
+                numberedNodes.push([r, c])
+            }
+        }
+    }
+
+    if (numberedNodes.length === 0) return true
+
+    const visited = new Set<string>()
+    const queue: [number, number][] = [[numberedNodes[0][0], numberedNodes[0][1]]]
+    visited.add(`${numberedNodes[0][0]},${numberedNodes[0][1]}`)
+
+    while (queue.length > 0) {
+        const next = queue.shift()
+        if (!next) continue
+        const [r, c] = next
+        const node = rows[r]?.[c]
+        if (!node) continue
+
+        if (node.lineRight === 1 || node.lineRight === 2) {
+            const dest = findNodeInDirection(rows, r, c, 0, 1)
+            if (dest) {
+                const key = `${dest[0]},${dest[1]}`
+                if (!visited.has(key)) {
+                    visited.add(key)
+                    queue.push(dest)
+                }
+            }
+        }
+
+        if (node.lineLeft === 1 || node.lineLeft === 2) {
+            const dest = findNodeInDirection(rows, r, c, 0, -1)
+            if (dest) {
+                const key = `${dest[0]},${dest[1]}`
+                if (!visited.has(key)) {
+                    visited.add(key)
+                    queue.push(dest)
+                }
+            }
+        }
+
+        if (node.lineDown === 1 || node.lineDown === 2) {
+            const dest = findNodeInDirection(rows, r, c, 1, 0)
+            if (dest) {
+                const key = `${dest[0]},${dest[1]}`
+                if (!visited.has(key)) {
+                    visited.add(key)
+                    queue.push(dest)
+                }
+            }
+        }
+
+        if (node.lineUp === 1 || node.lineUp === 2) {
+            const dest = findNodeInDirection(rows, r, c, -1, 0)
+            if (dest) {
+                const key = `${dest[0]},${dest[1]}`
+                if (!visited.has(key)) {
+                    visited.add(key)
+                    queue.push(dest)
+                }
+            }
+        }
+    }
+
+    return visited.size === numberedNodes.length
+}
+
+function findNodeInDirection(
+    rows: HashiNodeData[][],
+    startR: number,
+    startC: number,
+    dRow: number,
+    dCol: number
+): [number, number] | null {
+    const numRows = rows.length
+    const numCols = rows[0].length
+    let r = startR + dRow
+    let c = startC + dCol
+
+    while (r >= 0 && r < numRows && c >= 0 && c < numCols) {
+        if (typeof rows[r][c].value === 'number') {
+            return [r, c]
+        }
+        r += dRow
+        c += dCol
+    }
+
+    return null
+}
+
+/**
  * Determines if a node has the correct number of bridges, too many, or too few.
  */
 export function getNodeFilledState(node: HashiNodeData): NodeFilledState | null {

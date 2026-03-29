@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 
 import HashiGrid from './components/HashiGrid.tsx'
 import type { HashiNodeData, PlacedBridge } from './types.ts'
+import { areAllNodesFilled, isConnected } from './utils/bridges.ts'
 import { type PuzzleData, parsePuzzle } from './utils/puzzle-encoding.ts'
 import usePuzzleInput from './utils/usePuzzleInput.ts'
 
@@ -105,32 +106,31 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
     const [puzzleIndex, setPuzzleIndex] = useState(0)
     const [showSolution, setShowSolution] = useState(false)
     const [userBridges, setUserBridges] = useState<PlacedBridge[]>([])
+    const [solutionReached, setSolutionReached] = useState(false)
+    const [gridNotConnected, setGridNotConnected] = useState(false)
 
     const handlePrev = useCallback(() => {
         setPuzzleIndex(i => i - 1)
         setShowSolution(false)
+        setSolutionReached(false)
+        setGridNotConnected(false)
     }, [])
     const handleNext = useCallback(() => {
         setPuzzleIndex(i => i + 1)
         setShowSolution(false)
+        setSolutionReached(false)
+        setGridNotConnected(false)
     }, [])
     const handleToggleSolution = useCallback(() => {
         setShowSolution(s => {
             if (!s) {
                 setUserBridges([])
+                setSolutionReached(false)
+                setGridNotConnected(false)
             }
             return !s
         })
     }, [])
-
-    const handleBridgePlaced = useCallback(
-        (bridge: PlacedBridge) => {
-            const result = toggleBridge(userBridges, bridge)
-            setUserBridges(result.bridges)
-            return result.erased
-        },
-        [userBridges]
-    )
 
     const puzzle = puzzles[puzzleIndex]
     if (!puzzle) throw new Error('HashiGrid: no puzzle found')
@@ -142,6 +142,22 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
     const originalRows = useMemo(() => parsePuzzle(encoding), [encoding])
 
     const rows = useMemo(() => mergeBridges(originalRows, userBridges), [originalRows, userBridges])
+
+    const handleBridgePlaced = useCallback(
+        (bridge: PlacedBridge) => {
+            const result = toggleBridge(userBridges, bridge)
+            setUserBridges(result.bridges)
+
+            const mergedRows = mergeBridges(originalRows, result.bridges)
+            const allFilled = areAllNodesFilled(mergedRows)
+            const connected = isConnected(mergedRows)
+            setSolutionReached(allFilled && connected)
+            setGridNotConnected(allFilled && !connected)
+
+            return result.erased
+        },
+        [userBridges, originalRows]
+    )
 
     // Compute min and max numbers in the puzzle
     const { minNumber, maxNumber } = useMemo(() => {
@@ -187,6 +203,8 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
             selectionState={selectionState}
             minNumber={minNumber}
             maxNumber={maxNumber}
+            solutionReached={solutionReached}
+            gridNotConnected={gridNotConnected}
         />
     )
 }

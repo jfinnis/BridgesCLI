@@ -35,17 +35,31 @@ type MessagesProps = {
     hasSolution?: boolean
     enableSolutions?: boolean
     selectionState?: SelectionState
+    solutionReached?: boolean
+    gridNotConnected?: boolean
 }
 
 export default function Messages({
     hasSolution = false,
     enableSolutions = false,
     selectionState,
+    solutionReached = false,
+    gridNotConnected = false,
 }: MessagesProps) {
     const isSelecting = selectionState !== undefined && selectionState.mode !== 'idle'
 
     return (
         <Box flexDirection="column" marginTop={1}>
+            {solutionReached ? (
+                <Text bold color="green">
+                    Solution reached!
+                </Text>
+            ) : null}
+            {gridNotConnected ? (
+                <Text bold color="yellow">
+                    Grid is not fully connected
+                </Text>
+            ) : null}
             <Text bold>Controls:</Text>
             {legendItems(hasSolution, enableSolutions, isSelecting).map(item => (
                 <Box key={item.key}>

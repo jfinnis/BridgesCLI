@@ -716,6 +716,101 @@ q: Quit`)
         })
     })
 
+    describe('game controls - solving puzzles', () => {
+        it('detects a valid solution', async () => {
+            const puzzle = { encoding: '3x3:2a1.c.2a1' }
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[puzzle]} hasCustomPuzzle={false} enableSolutions={false} />
+            )
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Type a number [1-2] to select a node
+
+┌─────────────────┐
+│ ╭───╮     ╭───╮ │
+│ │ 2 │     │ 1 │ │
+│ ╰───╯     ╰───╯ │
+│                 │
+│                 │
+│                 │
+│ ╭───╮     ╭───╮ │
+│ │ 2 │     │ 1 │ │
+│ ╰───╯     ╰───╯ │
+└─────────────────┘
+
+Controls:
+p: Previous puzzle
+n: Next puzzle
+q: Quit`)
+
+            // Draw bridges to solve the puzzle
+            stdin.write('2')
+            await setTimeout(5)
+            stdin.write('a') // select top-left node
+            await setTimeout(5)
+            stdin.write('l') // draw bridge to right
+            await setTimeout(5)
+
+            stdin.write('2')
+            await setTimeout(5)
+            stdin.write('b') // select bottom-left node
+            await setTimeout(5)
+            stdin.write('l') // draw bridge to right
+            await setTimeout(5)
+
+            stdin.write('2')
+            await setTimeout(5)
+            stdin.write('a') // select top-left node
+            await setTimeout(5)
+            stdin.write('j') // draw bridge down
+            await setTimeout(5)
+
+            expect(lastFrame()).toContain('Solution reached')
+        })
+
+        it('shows a warning when grid is not fully connected but the nodes are filled', async () => {
+            const puzzle = { encoding: '3x3:2a1.c.2a1' }
+            const { stdin, lastFrame } = render(
+                <Game puzzles={[puzzle]} hasCustomPuzzle={false} enableSolutions={false} />
+            )
+            expect(lastFrame()).toEqual(`Bridges: Puzzle #1
+• Type a number [1-2] to select a node
+
+┌─────────────────┐
+│ ╭───╮     ╭───╮ │
+│ │ 2 │     │ 1 │ │
+│ ╰───╯     ╰───╯ │
+│                 │
+│                 │
+│                 │
+│ ╭───╮     ╭───╮ │
+│ │ 2 │     │ 1 │ │
+│ ╰───╯     ╰───╯ │
+└─────────────────┘
+
+Controls:
+p: Previous puzzle
+n: Next puzzle
+q: Quit`)
+
+            // Draw bridges to fill the nodes while having an unconnected grid
+            stdin.write('2')
+            await setTimeout(5)
+            stdin.write('a') // select top-left node
+            await setTimeout(5)
+            stdin.write('J') // draw double bridge down
+            await setTimeout(5)
+
+            stdin.write('1')
+            await setTimeout(5)
+            stdin.write('a') // select top-right node
+            await setTimeout(5)
+            stdin.write('j') // draw bridge down
+            await setTimeout(5)
+
+            expect(lastFrame()).toContain('Grid is not fully connected')
+        })
+    })
+
     describe('game controls - success/error coloring on nodes and bridges', () => {
         it('highlights as success the completed node (connected to an incomplete)', () => {
             const puzzleCompleted = { encoding: '3x1:2=4' }

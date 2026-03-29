@@ -38,6 +38,10 @@ type HashiGridProps = {
     minNumber?: number
     /** Maximum number value in the puzzle */
     maxNumber?: number
+    /** Whether the puzzle solution has been reached */
+    solutionReached?: boolean
+    /** Whether the grid is not fully connected but all nodes are filled */
+    gridNotConnected?: boolean
 }
 
 export default function HashiGrid({
@@ -53,6 +57,8 @@ export default function HashiGrid({
     selectionState,
     minNumber,
     maxNumber,
+    solutionReached = false,
+    gridNotConnected = false,
 }: HashiGridProps) {
     validateGrid({ rows, numNodes })
 
@@ -97,6 +103,8 @@ export default function HashiGrid({
                     hasSolution={hasSolution}
                     enableSolutions={enableSolutions}
                     selectionState={selectionState}
+                    solutionReached={solutionReached}
+                    gridNotConnected={gridNotConnected}
                 />
             ) : null}
         </Box>
