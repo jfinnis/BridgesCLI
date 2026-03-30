@@ -1,6 +1,12 @@
+import { Box } from 'ink'
 import { useCallback, useMemo, useState } from 'react'
-
-import HashiGrid from './components/HashiGrid.tsx'
+import Controls from './components/Controls.tsx'
+import GameBoard from './components/GameBoard.tsx'
+import Messages from './components/Messages.tsx'
+import type { PuzzleState } from './components/PuzzleProgress.tsx'
+import PuzzleProgress from './components/PuzzleProgress.tsx'
+import Status from './components/Status.tsx'
+import Title from './components/Title.tsx'
 import { useGameState } from './gameState/index.ts'
 import { type PuzzleData, parsePuzzle } from './utils/puzzle-encoding.ts'
 import usePuzzleInput from './utils/usePuzzleInput.ts'
@@ -9,9 +15,15 @@ type GameProps = {
     puzzles: PuzzleData[]
     hasCustomPuzzle: boolean
     enableSolutions: boolean
+    puzzleStates?: PuzzleState[]
 }
 
-export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: GameProps) {
+export default function Game({
+    puzzles,
+    hasCustomPuzzle,
+    enableSolutions,
+    puzzleStates,
+}: GameProps) {
     const [puzzleIndex, setPuzzleIndex] = useState(0)
     const [showSolution, setShowSolution] = useState(false)
 
@@ -30,7 +42,7 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
     }, [])
 
     const puzzle = puzzles[puzzleIndex]
-    if (!puzzle) throw new Error('HashiGrid: no puzzle found')
+    if (!puzzle) throw new Error('Bridges: no puzzle found')
 
     const encoding = showSolution && puzzle.solution ? puzzle.solution : puzzle.encoding
     const dimensions = encoding.split(':')[0] ?? '5x5'
@@ -112,21 +124,35 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
     }, [rows])
 
     return (
-        <HashiGrid
-            numNodes={numNodes}
-            rows={rows}
-            showInstructions={true}
-            puzzleIndex={puzzleIndex}
-            puzzle={encoding}
-            isCustomPuzzle={hasCustomPuzzle && puzzleIndex === 0}
-            hasSolution={!!puzzle.solution}
-            showSolution={showSolution}
-            enableSolutions={enableSolutions}
-            selectionState={selectionState}
-            minNumber={minNumber}
-            maxNumber={maxNumber}
-            solutionReached={solutionReached}
-            gridNotConnected={gridNotConnected}
-        />
+        <Box flexDirection="row">
+            <Box flexDirection="column" marginRight={3}>
+                <Title
+                    puzzleIndex={puzzleIndex}
+                    puzzle={encoding}
+                    isCustomPuzzle={hasCustomPuzzle && puzzleIndex === 0}
+                />
+                {puzzleStates ? <PuzzleProgress states={puzzleStates} columns={5} /> : null}
+                <Controls
+                    hasSolution={!!puzzle.solution}
+                    enableSolutions={enableSolutions}
+                    selectionState={selectionState}
+                />
+            </Box>
+            <Box flexDirection="column">
+                <Status
+                    showSolution={showSolution}
+                    selectionState={selectionState}
+                    minNumber={minNumber}
+                    maxNumber={maxNumber}
+                />
+                <GameBoard
+                    numNodes={numNodes}
+                    rows={rows}
+                    showSolution={showSolution}
+                    selectionState={selectionState}
+                />
+                <Messages solutionReached={solutionReached} gridNotConnected={gridNotConnected} />
+            </Box>
+        </Box>
     )
 }

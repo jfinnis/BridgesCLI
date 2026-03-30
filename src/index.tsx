@@ -56,5 +56,37 @@ render(
         puzzles={puzzles}
         hasCustomPuzzle={hasCustomPuzzle}
         enableSolutions={options.enableSolutions}
+        puzzleStates={[
+            'solved',
+            'solved',
+            'solved',
+            'solved',
+            'solved',
+            'in-progress',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+            'not-started',
+        ]}
     />
 )

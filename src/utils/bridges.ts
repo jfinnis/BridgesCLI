@@ -33,12 +33,12 @@ export type HashiGridValidationProps = {
  */
 export function validateGrid({ rows, numNodes }: HashiGridValidationProps): void {
     if (!rows || rows.length === 0) {
-        throw new Error('HashiGrid: empty data supplied')
+        throw new Error('Bridges: empty data supplied')
     }
 
     let rowCount = 0
     for (const nodes of rows) {
-        const prefix = `HashiGrid row ${rowCount}: `
+        const prefix = `Bridges: row ${rowCount}: `
 
         if (nodes.length !== numNodes) {
             throw new Error(`${prefix}expected ${numNodes} nodes, got ${nodes.length}`)
@@ -113,12 +113,14 @@ export function isConnected(rows: HashiNodeData[][]): boolean {
 function isGraphConnected(rows: HashiNodeData[][]): boolean {
     const numRows = rows.length
     if (numRows === 0) return true
-    const numCols = rows[0]!.length
+    const firstRow = rows[0]
+    if (!firstRow) return true
+    const numCols = firstRow.length
 
     const numberedNodes: [number, number][] = []
     for (let r = 0; r < numRows; r++) {
         for (let c = 0; c < numCols; c++) {
-            if (typeof rows[r]![c]!.value === 'number') {
+            if (typeof rows[r]?.[c]?.value === 'number') {
                 numberedNodes.push([r, c])
             }
         }
@@ -126,7 +128,9 @@ function isGraphConnected(rows: HashiNodeData[][]): boolean {
 
     if (numberedNodes.length === 0) return true
 
-    const [startR, startC] = numberedNodes[0]!
+    const firstNode = numberedNodes[0]
+    if (!firstNode) return true
+    const [startR, startC] = firstNode
     const visited = new Set<string>()
     const queue: [number, number][] = [[startR, startC]]
     visited.add(`${startR},${startC}`)
@@ -194,12 +198,14 @@ function findNextNumberedNode(
     dCol: number
 ): [number, number] | null {
     const numRows = rows.length
-    const numCols = rows[0]!.length
+    const firstRow = rows[0]
+    if (!firstRow) return null
+    const numCols = firstRow.length
     let r = startR + dRow
     let c = startC + dCol
 
     while (r >= 0 && r < numRows && c >= 0 && c < numCols) {
-        if (typeof rows[r]![c]!.value === 'number') {
+        if (typeof rows[r]?.[c]?.value === 'number') {
             return [r, c]
         }
         r += dRow
@@ -263,6 +269,7 @@ export function getDisplayMode(
     return 'dim'
 }
 
+/**
 /**
  * Get the ANSI color code for a validation state.
  */
@@ -447,7 +454,7 @@ export function renderNumberedNode(
 }
 
 /**
- * Build the HashiGrid node as a complete cell (all 3 lines).
+ * Build the Bridges node with its value and borders. Options:
  *   - node with a value (always 1 digit)
  *   - empty node - render just spaces
  *   - horizontal line - single and double

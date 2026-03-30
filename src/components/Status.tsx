@@ -2,10 +2,7 @@ import { Box, Text } from 'ink'
 
 import type { SelectionState } from '../gameState/types.ts'
 
-type HeaderProps = {
-    puzzleIndex: number
-    puzzle: string
-    isCustomPuzzle?: boolean
+type StatusProps = {
     showSolution?: boolean
     selectionState?: SelectionState
     minNumber?: number
@@ -19,19 +16,12 @@ const directionNames: Record<string, string> = {
     l: 'right',
 }
 
-export default function Header({
-    puzzleIndex,
-    puzzle,
-    isCustomPuzzle = false,
+export default function Status({
     showSolution = false,
     selectionState,
     minNumber,
     maxNumber,
-}: HeaderProps) {
-    const title = isCustomPuzzle
-        ? `Bridges: Puzzle - ${puzzle}`
-        : `Bridges: Puzzle #${puzzleIndex + 1}`
-
+}: StatusProps) {
     let statusText = ''
     if (selectionState) {
         const { mode, selectedNumber, direction, bridgeErased, isDoubleBridge } = selectionState
@@ -59,13 +49,8 @@ export default function Header({
           : 'Type a number to select a node'
 
     return (
-        <Box flexDirection="column" marginBottom={1}>
-            <Text bold>{title}</Text>
-            {statusText ? (
-                <Text dimColor>• {statusText}</Text>
-            ) : (
-                <Text dimColor>• {idleMessage}</Text>
-            )}
+        <Box>
+            <Text dimColor>• {statusText || idleMessage}</Text>
         </Box>
     )
 }

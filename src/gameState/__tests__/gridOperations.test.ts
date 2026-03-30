@@ -4,12 +4,14 @@ import {
     findReachableNodeInDirection,
     generateLabels,
 } from '../gridOperations.ts'
-
-type GridCell = { value: number | string | null }
-type Grid = GridCell[][]
+import type { Grid } from '../types.ts'
 
 const makeGrid = (rows: (number | string | null)[][]): Grid =>
-    rows.map(row => row.map(cell => (cell === null ? null : { value: cell })))
+    rows.map(row =>
+        row.map(cell =>
+            cell === null ? { value: ' ' } : { value: cell as number | '-' | '=' | '#' | '|' }
+        )
+    )
 
 describe('findMatchingNodes', () => {
     it('returns empty array for empty grid', () => {

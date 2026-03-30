@@ -1,82 +1,26 @@
 import { render } from 'ink-testing-library'
 import { describe, expect, it } from 'vitest'
 
-import Messages, { legendItems } from '../Messages.tsx'
+import Messages from '../Messages.tsx'
 
 describe('Messages', () => {
-    it('does not show solution option when enableSolutions is false', () => {
-        const { lastFrame } = render(<Messages enableSolutions={false} />)
-        expect(lastFrame()).toContain('Controls:')
-        expect(lastFrame()).toContain('p: Previous puzzle')
-        expect(lastFrame()).toContain('n: Next puzzle')
-        expect(lastFrame()).not.toContain('s: Show solution')
-        expect(lastFrame()).toContain('q: Quit')
+    it('shows congratulations when solution is reached', () => {
+        const { lastFrame } = render(<Messages solutionReached={true} />)
+        expect(lastFrame()).toContain('Congratulations! Puzzle solved!')
     })
 
-    it('shows solution option when enableSolutions is true', () => {
-        const { lastFrame } = render(<Messages enableSolutions={true} />)
-        expect(lastFrame()).toContain('Controls:')
-        expect(lastFrame()).toContain('p: Previous puzzle')
-        expect(lastFrame()).toContain('n: Next puzzle')
-        expect(lastFrame()).toContain('s: Show solution')
-        expect(lastFrame()).toContain('q: Quit')
+    it('does not show congratulations when solution is not reached', () => {
+        const { lastFrame } = render(<Messages solutionReached={false} />)
+        expect(lastFrame()).not.toContain('Congratulations! Puzzle solved!')
     })
 
-    describe('legendItems', () => {
-        describe('when enableSolutions is false', () => {
-            it('shows n/p as enabled when idle', () => {
-                const items = legendItems(true, false, false)
-                const p = items.find(i => i.key === 'p')
-                const n = items.find(i => i.key === 'n')
-                const s = items.find(i => i.key === 's')
-                expect(p?.disabled).toBe(false)
-                expect(n?.disabled).toBe(false)
-                expect(s).toBeUndefined()
-            })
+    it('shows grid not connected warning when grid is not connected', () => {
+        const { lastFrame } = render(<Messages gridNotConnected={true} />)
+        expect(lastFrame()).toContain('Grid is not fully connected')
+    })
 
-            it('shows n/p as disabled in selecting-node mode', () => {
-                const items = legendItems(true, false, true)
-                const p = items.find(i => i.key === 'p')
-                const n = items.find(i => i.key === 'n')
-                const s = items.find(i => i.key === 's')
-                expect(p?.disabled).toBe(true)
-                expect(n?.disabled).toBe(true)
-                expect(s).toBeUndefined()
-            })
-        })
-
-        describe('when enableSolutions is true', () => {
-            it('shows n/p/s as enabled when idle', () => {
-                const items = legendItems(true, true, false)
-                const p = items.find(i => i.key === 'p')
-                const n = items.find(i => i.key === 'n')
-                const s = items.find(i => i.key === 's')
-                expect(p?.disabled).toBe(false)
-                expect(n?.disabled).toBe(false)
-                expect(s?.disabled).toBe(false)
-            })
-
-            it('shows n/p/s as disabled in selecting-node mode', () => {
-                const items = legendItems(true, true, true)
-                const p = items.find(i => i.key === 'p')
-                const n = items.find(i => i.key === 'n')
-                const s = items.find(i => i.key === 's')
-                expect(p?.disabled).toBe(true)
-                expect(n?.disabled).toBe(true)
-                expect(s?.disabled).toBe(true)
-            })
-
-            it('shows s as disabled when no solution exists', () => {
-                const items = legendItems(false, true, false)
-                const s = items.find(i => i.key === 's')
-                expect(s?.disabled).toBe(true)
-            })
-
-            it('shows s as enabled when solution exists', () => {
-                const items = legendItems(true, true, false)
-                const s = items.find(i => i.key === 's')
-                expect(s?.disabled).toBe(false)
-            })
-        })
+    it('does not show grid warning when grid is connected', () => {
+        const { lastFrame } = render(<Messages gridNotConnected={false} />)
+        expect(lastFrame()).not.toContain('Grid is not fully connected')
     })
 })

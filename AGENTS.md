@@ -27,4 +27,6 @@ these codes directly in the test expectation around the nodes.
 - Add comments to separate code blocks. Don't remove existing comments.
 - Add a comment above functions that explain the intention of the function.
 - Don't re-export imports - no barrel files
+- Do not remove comments from code that have valid information.
+- Do not remove unit tests unless they're for functionality that is also removed.
 

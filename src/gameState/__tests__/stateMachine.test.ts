@@ -16,20 +16,18 @@ import {
     transitionSelectedOrInvalid,
     transitionSelectingNode,
 } from '../stateMachine.ts'
-
-type GridCell = { value: number | '-' | '=' | '#' | ' ' | '|' }
-type Grid = GridCell[][]
+import type { Grid, SelectionState } from '../types.ts'
 
 const makeGrid = (rows: (number | string | null)[][]): Grid =>
     rows.map(row =>
         row.map(cell =>
-            cell === null ? null : { value: cell as number | '-' | '=' | '#' | ' ' | '|' }
+            cell === null ? { value: ' ' } : { value: cell as number | '-' | '=' | '#' | '|' }
         )
     )
 
 const emptyGrid: Grid = []
 
-const makeState = (overrides: Partial<Parameters<typeof getInitialSelectionState>[0]> = {}) => ({
+const makeState = (overrides: Partial<SelectionState> = {}): SelectionState => ({
     ...getInitialSelectionState(),
     ...overrides,
 })
@@ -479,7 +477,7 @@ describe('transition (main)', () => {
     })
 
     it('returns none for unrecognized input in any mode', () => {
-        const modes: Parameters<typeof makeState>[0]['mode'][] = [
+        const modes: SelectionState['mode'][] = [
             'idle',
             'disambiguation',
             'selecting-node',

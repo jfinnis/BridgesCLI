@@ -1,19 +1,37 @@
 import { render } from 'ink-testing-library'
 import { describe, expect, it } from 'vitest'
 import type { SelectionState } from '../../gameState/types.ts'
-import Header from '../Header.tsx'
+import Status from '../Status.tsx'
+import Title from '../Title.tsx'
 
-describe('Header', () => {
+describe('Title', () => {
+    it('shows puzzle number for indexed puzzles', () => {
+        const { lastFrame } = render(<Title puzzleIndex={2} puzzle="5x5:1a1" />)
+        expect(lastFrame()).toContain('Bridges: Puzzle #3')
+    })
+
+    it('shows custom puzzle label for custom puzzles', () => {
+        const { lastFrame } = render(
+            <Title puzzleIndex={0} puzzle="5x5:1a1" isCustomPuzzle={true} />
+        )
+        expect(lastFrame()).toContain('Bridges: Puzzle - 5x5:1a1')
+    })
+})
+
+describe('Status', () => {
     it('shows idle message when no selection state and no number range', () => {
-        const { lastFrame } = render(<Header puzzleIndex={0} puzzle="5x5:1a1" />)
+        const { lastFrame } = render(<Status />)
         expect(lastFrame()).toContain('Type a number to select a node')
     })
 
     it('shows dynamic number range when provided', () => {
-        const { lastFrame } = render(
-            <Header puzzleIndex={0} puzzle="5x5:1a1" minNumber={2} maxNumber={7} />
-        )
+        const { lastFrame } = render(<Status minNumber={2} maxNumber={7} />)
         expect(lastFrame()).toContain('Type a number [2-7] to select a node')
+    })
+
+    it('shows solution message when showSolution is true', () => {
+        const { lastFrame } = render(<Status showSolution={true} />)
+        expect(lastFrame()).toContain('Viewing solution (press s to return to puzzle)')
     })
 
     describe('selection state messages', () => {
@@ -29,9 +47,7 @@ describe('Header', () => {
                 disambiguationLabels: [],
                 selectedNode: { row: 0, col: 0 },
             }
-            const { lastFrame } = render(
-                <Header puzzleIndex={0} puzzle="5x5:1a1" selectionState={selectionState} />
-            )
+            const { lastFrame } = render(<Status selectionState={selectionState} />)
             expect(lastFrame()).toContain(`Select direction with`)
         })
 
@@ -47,9 +63,7 @@ describe('Header', () => {
                 disambiguationLabels: ['a', 'b'],
                 selectedNode: null,
             }
-            const { lastFrame } = render(
-                <Header puzzleIndex={0} puzzle="5x5:1a1" selectionState={selectionState} />
-            )
+            const { lastFrame } = render(<Status selectionState={selectionState} />)
             expect(lastFrame()).toContain('Press label shown to select that node')
         })
 
@@ -65,9 +79,7 @@ describe('Header', () => {
                 disambiguationLabels: ['a', 'b'],
                 selectedNode: null,
             }
-            const { lastFrame } = render(
-                <Header puzzleIndex={0} puzzle="5x5:1a1" selectionState={selectionState} />
-            )
+            const { lastFrame } = render(<Status selectionState={selectionState} />)
             expect(lastFrame()).toContain('Press label shown to select that node')
         })
 
@@ -80,9 +92,7 @@ describe('Header', () => {
                 disambiguationLabels: [],
                 selectedNode: { row: 0, col: 0 },
             }
-            const { lastFrame } = render(
-                <Header puzzleIndex={0} puzzle="5x5:1a1" selectionState={selectionState} />
-            )
+            const { lastFrame } = render(<Status selectionState={selectionState} />)
             expect(lastFrame()).toContain('Drew horizontal bridge')
         })
 
@@ -95,9 +105,7 @@ describe('Header', () => {
                 disambiguationLabels: [],
                 selectedNode: { row: 0, col: 0 },
             }
-            const { lastFrame } = render(
-                <Header puzzleIndex={0} puzzle="5x5:1a1" selectionState={selectionState} />
-            )
+            const { lastFrame } = render(<Status selectionState={selectionState} />)
             expect(lastFrame()).toContain('Drew vertical bridge')
         })
 
@@ -111,9 +119,7 @@ describe('Header', () => {
                 selectedNode: { row: 0, col: 0 },
                 bridgeErased: true,
             }
-            const { lastFrame } = render(
-                <Header puzzleIndex={0} puzzle="5x5:1a1" selectionState={selectionState} />
-            )
+            const { lastFrame } = render(<Status selectionState={selectionState} />)
             expect(lastFrame()).toContain('Erased bridge')
         })
 
@@ -126,31 +132,8 @@ describe('Header', () => {
                 disambiguationLabels: [],
                 selectedNode: { row: 0, col: 0 },
             }
-            const { lastFrame } = render(
-                <Header puzzleIndex={0} puzzle="5x5:1a1" selectionState={selectionState} />
-            )
+            const { lastFrame } = render(<Status selectionState={selectionState} />)
             expect(lastFrame()).toContain('Cannot draw bridge left from node')
-        })
-    })
-
-    describe('puzzle display', () => {
-        it('shows puzzle number for indexed puzzles', () => {
-            const { lastFrame } = render(<Header puzzleIndex={2} puzzle="5x5:1a1" />)
-            expect(lastFrame()).toContain('Bridges: Puzzle #3')
-        })
-
-        it('shows solution suffix when showSolution is true', () => {
-            const { lastFrame } = render(
-                <Header puzzleIndex={0} puzzle="5x5:1a1" showSolution={true} />
-            )
-            expect(lastFrame()).toContain('Viewing solution (press s to return to puzzle)')
-        })
-
-        it('shows custom puzzle label for custom puzzles', () => {
-            const { lastFrame } = render(
-                <Header puzzleIndex={0} puzzle="5x5:1a1" isCustomPuzzle={true} />
-            )
-            expect(lastFrame()).toContain('Bridges: Puzzle - 5x5:1a1')
         })
     })
 })
