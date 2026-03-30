@@ -1,6 +1,6 @@
 {
     "name": "bridges-cli",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Bridges CLI puzzle game",
     "bin": {
         "bridges": "src/index.tsx"
@@ -15,7 +15,7 @@
     "keywords": [
         "game",
         "puzzle",
-        "hashi",
+        "hashiwokakero",
         "bridges",
         "cli"
     ],
