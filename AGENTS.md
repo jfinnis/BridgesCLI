@@ -10,6 +10,10 @@ This is a CLI renderer for Hashiwokakero (Bridges) puzzles. It renders a grid of
 - `bun run typecheck` - typescript typechecker
 - `bun run lint` - Lint and format
 
+## Command Order
+
+Run `lint` before `typecheck` and `test` to catch style issues first.
+
 ## Testing
 
 - Tests use Vitest with `@testing-library/react` patterns via `ink-testing-library`.
