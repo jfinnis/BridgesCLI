@@ -41,7 +41,11 @@ function generateLabels(count: number): string[] {
     return labels
 }
 
-export function findNodeInDirection(
+/**
+ * Finds the next numbered node reachable from a position in a given direction.
+ * Stops if a bridge (| or #) is in the way — you can't place a bridge through another.
+ */
+export function findReachableNodeInDirection(
     rows: { value: number | '-' | '=' | '#' | ' ' | '|' }[][],
     fromRow: number,
     fromCol: number,
@@ -241,7 +245,7 @@ export default function usePuzzleInput({
                     const direction = input.toLowerCase() as Direction
                     const selectedNode = selectionStateRef.current.selectedNode
                     const targetNode = selectedNode
-                        ? findNodeInDirection(rows, selectedNode.row, selectedNode.col, direction)
+                        ? findReachableNodeInDirection(rows, selectedNode.row, selectedNode.col, direction)
                         : null
 
                     let erased = false
@@ -334,7 +338,7 @@ export default function usePuzzleInput({
                     if (prevNode) {
                         const isDouble = input === input.toUpperCase()
                         const direction = input.toLowerCase() as Direction
-                        const targetNode = findNodeInDirection(
+                        const targetNode = findReachableNodeInDirection(
                             rows,
                             prevNode.row,
                             prevNode.col,

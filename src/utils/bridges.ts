@@ -126,7 +126,7 @@ function isGraphConnected(rows: HashiNodeData[][]): boolean {
         if (!node) continue
 
         if (node.lineRight === 1 || node.lineRight === 2) {
-            const dest = findNodeInDirection(rows, r, c, 0, 1)
+            const dest = findNextNumberedNode(rows, r, c, 0, 1)
             if (dest) {
                 const key = `${dest[0]},${dest[1]}`
                 if (!visited.has(key)) {
@@ -137,7 +137,7 @@ function isGraphConnected(rows: HashiNodeData[][]): boolean {
         }
 
         if (node.lineLeft === 1 || node.lineLeft === 2) {
-            const dest = findNodeInDirection(rows, r, c, 0, -1)
+            const dest = findNextNumberedNode(rows, r, c, 0, -1)
             if (dest) {
                 const key = `${dest[0]},${dest[1]}`
                 if (!visited.has(key)) {
@@ -148,7 +148,7 @@ function isGraphConnected(rows: HashiNodeData[][]): boolean {
         }
 
         if (node.lineDown === 1 || node.lineDown === 2) {
-            const dest = findNodeInDirection(rows, r, c, 1, 0)
+            const dest = findNextNumberedNode(rows, r, c, 1, 0)
             if (dest) {
                 const key = `${dest[0]},${dest[1]}`
                 if (!visited.has(key)) {
@@ -159,7 +159,7 @@ function isGraphConnected(rows: HashiNodeData[][]): boolean {
         }
 
         if (node.lineUp === 1 || node.lineUp === 2) {
-            const dest = findNodeInDirection(rows, r, c, -1, 0)
+            const dest = findNextNumberedNode(rows, r, c, -1, 0)
             if (dest) {
                 const key = `${dest[0]},${dest[1]}`
                 if (!visited.has(key)) {
@@ -173,7 +173,7 @@ function isGraphConnected(rows: HashiNodeData[][]): boolean {
     return visited.size === numberedNodes.length
 }
 
-function findNodeInDirection(
+function findNextNumberedNode(
     rows: HashiNodeData[][],
     startR: number,
     startC: number,
