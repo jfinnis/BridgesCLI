@@ -19,27 +19,3 @@ export type HashiNodeOptions = {
     displayMode?: HashiNodeDisplayMode
     label?: string
 }
-
-/**
- * Game operation types
- */
-export type SelectionMode = 'idle' | 'selecting-node' | 'disambiguation' | 'selected' | 'invalid'
-
-export type Direction = 'h' | 'j' | 'k' | 'l'
-
-export type PlacedBridge = {
-    from: { row: number; col: number }
-    to: { row: number; col: number }
-    count?: number
-}
-
-export type SelectionState = {
-    mode: SelectionMode
-    selectedNumber: number | null
-    direction: Direction | null
-    matchingNodes: { row: number; col: number }[]
-    disambiguationLabels: string[]
-    selectedNode: { row: number; col: number } | null
-    bridgeErased?: boolean
-    isDoubleBridge?: boolean
-}

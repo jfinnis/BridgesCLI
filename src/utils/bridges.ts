@@ -2,6 +2,13 @@ import type { HashiNodeData, HashiNodeDisplayMode } from '../types.ts'
 
 export type NodeFilledState = 'valid' | 'invalid' | 'incomplete'
 
+/**
+ * Returns the total number of bridges connected to a node.
+ */
+export function getBridgeCount(node: HashiNodeData): number {
+    return (node.lineUp ?? 0) + (node.lineDown ?? 0) + (node.lineLeft ?? 0) + (node.lineRight ?? 0)
+}
+
 export const ROW_HEIGHT = 3
 export const NODE_WIDTH = 5
 export const SPACE_BETWEEN = 0
@@ -204,8 +211,7 @@ export function getNodeFilledState(node: HashiNodeData): NodeFilledState | null 
         return null
     }
 
-    const bridges =
-        (node.lineUp ?? 0) + (node.lineDown ?? 0) + (node.lineLeft ?? 0) + (node.lineRight ?? 0)
+    const bridges = getBridgeCount(node)
 
     if (bridges === node.value) {
         return 'valid'

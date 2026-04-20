@@ -1,8 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import HashiGrid from './components/HashiGrid.tsx'
-import type { HashiNodeData, PlacedBridge } from './types.ts'
-import { areAllNodesFilled, isConnected } from './utils/bridges.ts'
+import { useGameState } from './gameState/index.ts'
 import { type PuzzleData, parsePuzzle } from './utils/puzzle-encoding.ts'
 import usePuzzleInput from './utils/usePuzzleInput.ts'
 
@@ -12,124 +11,22 @@ type GameProps = {
     enableSolutions: boolean
 }
 
-// Compares two bridges for equality, treating bridges in either direction as equivalent.
-// A bridge from A→B is considered equal to a bridge from B→A.
-function bridgesEqual(a: PlacedBridge, b: PlacedBridge): boolean {
-    return (
-        (a.from.row === b.from.row &&
-            a.from.col === b.from.col &&
-            a.to.row === b.to.row &&
-            a.to.col === b.to.col) ||
-        (a.from.row === b.to.row &&
-            a.from.col === b.to.col &&
-            a.to.row === b.from.row &&
-            a.to.col === b.from.col)
-    )
-}
-
-// Toggles a bridge: removes it if it already exists, otherwise adds it.
-// Returns true if bridge was erased, false if it was added.
-function toggleBridge(
-    bridges: PlacedBridge[],
-    bridge: PlacedBridge
-): { bridges: PlacedBridge[]; erased: boolean } {
-    const exists = bridges.some(b => bridgesEqual(b, bridge))
-    if (exists) {
-        return { bridges: bridges.filter(b => !bridgesEqual(b, bridge)), erased: true }
-    }
-    return { bridges: [...bridges, bridge], erased: false }
-}
-
-// Merges user-placed bridges with the original puzzle rows.
-// Creates a new grid with both original bridges (from solution) and user-drawn bridges.
-// This preserves the original puzzle state for undo/reset functionality.
-function mergeBridges(originalRows: HashiNodeData[][], bridges: PlacedBridge[]): HashiNodeData[][] {
-    // Deep clone the rows
-    const rows = originalRows.map(row => row.map(cell => ({ ...cell })))
-
-    // Apply each bridge
-    for (const bridge of bridges) {
-        const { from, to } = bridge
-        const bridgeCount = bridge.count || 1
-
-        if (from.row === to.row) {
-            // Horizontal bridge
-            const row = rows[from.row]
-            if (!row) continue
-            const minCol = Math.min(from.col, to.col)
-            const maxCol = Math.max(from.col, to.col)
-
-            // Set lineRight on the left node
-            if (minCol >= 0 && minCol < row.length) {
-                const cell = row[minCol]
-                if (cell) cell.lineRight = bridgeCount as 1 | 2
-            }
-            // Set lineLeft on the right node
-            if (maxCol >= 0 && maxCol < row.length) {
-                const cell = row[maxCol]
-                if (cell) cell.lineLeft = bridgeCount as 1 | 2
-            }
-            // Fill in bridge cells
-            for (let c = minCol + 1; c < maxCol; c++) {
-                if (c >= 0 && c < row.length) {
-                    const cell = row[c]
-                    if (cell) cell.value = bridgeCount === 2 ? '=' : '-'
-                }
-            }
-        } else if (from.col === to.col) {
-            // Vertical bridge
-            const minRow = Math.min(from.row, to.row)
-            const maxRow = Math.max(from.row, to.row)
-
-            // Set lineDown on the top node
-            const topNode = rows[minRow]?.[from.col]
-            if (topNode) topNode.lineDown = bridgeCount as 1 | 2
-
-            // Set lineUp on the bottom node
-            const bottomNode = rows[maxRow]?.[from.col]
-            if (bottomNode) bottomNode.lineUp = bridgeCount as 1 | 2
-
-            // Fill in bridge cells
-            for (let r = minRow + 1; r < maxRow; r++) {
-                if (r >= 0 && r < rows.length) {
-                    const rowNode = rows[r]?.[from.col]
-                    if (rowNode) rowNode.value = bridgeCount === 2 ? '#' : '|'
-                }
-            }
-        }
-    }
-
-    return rows
-}
-
 export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: GameProps) {
     const [puzzleIndex, setPuzzleIndex] = useState(0)
     const [showSolution, setShowSolution] = useState(false)
-    const [userBridges, setUserBridges] = useState<PlacedBridge[]>([])
-    const [solutionReached, setSolutionReached] = useState(false)
-    const [gridNotConnected, setGridNotConnected] = useState(false)
 
     const handlePrev = useCallback(() => {
-        setPuzzleIndex(i => i - 1)
+        setPuzzleIndex(current => Math.max(0, current - 1))
         setShowSolution(false)
-        setSolutionReached(false)
-        setGridNotConnected(false)
     }, [])
+
     const handleNext = useCallback(() => {
-        setPuzzleIndex(i => i + 1)
+        setPuzzleIndex(current => Math.min(puzzles.length - 1, current + 1))
         setShowSolution(false)
-        setSolutionReached(false)
-        setGridNotConnected(false)
     }, [])
+
     const handleToggleSolution = useCallback(() => {
-        setShowSolution(s => {
-            if (!s) {
-                setUserBridges([])
-                setSolutionReached(false)
-                setGridNotConnected(false)
-            }
-            return !s
-        })
+        setShowSolution(s => !s)
     }, [])
 
     const puzzle = puzzles[puzzleIndex]
@@ -141,25 +38,51 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
 
     const originalRows = useMemo(() => parsePuzzle(encoding), [encoding])
 
-    const rows = useMemo(() => mergeBridges(originalRows, userBridges), [originalRows, userBridges])
+    const canUseInput = Boolean(process.stdin.isTTY)
 
-    const handleBridgePlaced = useCallback(
-        (bridge: PlacedBridge) => {
-            const result = toggleBridge(userBridges, bridge)
-            setUserBridges(result.bridges)
+    const { selectionState, rows, solutionReached, gridNotConnected, handleInput } = canUseInput
+        ? useGameState({
+              puzzleIndex,
+              puzzlesLength: puzzles.length,
+              originalRows,
+              onPrev: handlePrev,
+              onNext: handleNext,
+              onToggleSolution: handleToggleSolution,
+          })
+        : {
+              selectionState: undefined,
+              rows: originalRows,
+              solutionReached: false,
+              gridNotConnected: false,
+              handleInput: () => {},
+          }
 
-            const mergedRows = mergeBridges(originalRows, result.bridges)
-            const allFilled = areAllNodesFilled(mergedRows)
-            const connected = isConnected(mergedRows)
-            setSolutionReached(allFilled && connected)
-            setGridNotConnected(allFilled && !connected)
-
-            return result.erased
+    const handleKeyInput = useCallback(
+        (input: string, key: { escape?: boolean }) => {
+            if (input === 'q') return
+            if (input === 's' && enableSolutions) {
+                setShowSolution(s => !s)
+                return
+            }
+            if (input === 'p') {
+                setPuzzleIndex(i => Math.max(0, i - 1))
+                setShowSolution(false)
+                return
+            }
+            if (input === 'n') {
+                setPuzzleIndex(i => Math.min(puzzles.length - 1, i + 1))
+                setShowSolution(false)
+                return
+            }
+            handleInput(input, key)
         },
-        [userBridges, originalRows]
+        [handleInput, enableSolutions, puzzles.length]
     )
 
-    // Compute min and max numbers in the puzzle
+    if (canUseInput) {
+        usePuzzleInput({ onInput: handleKeyInput })
+    }
+
     const { minNumber, maxNumber } = useMemo(() => {
         let min = 9
         let max = 1
@@ -173,21 +96,6 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
         }
         return { minNumber: min, maxNumber: max }
     }, [rows])
-
-    const canUseInput = Boolean(process.stdin.isTTY)
-    const { selectionState } = canUseInput
-        ? usePuzzleInput({
-              puzzleIndex,
-              puzzlesLength: puzzles.length,
-              rows: rows,
-              showSolution,
-              enableSolutions,
-              onPrev: handlePrev,
-              onNext: handleNext,
-              onToggleSolution: handleToggleSolution,
-              onBridgePlaced: handleBridgePlaced,
-          })
-        : { selectionState: undefined }
 
     return (
         <HashiGrid

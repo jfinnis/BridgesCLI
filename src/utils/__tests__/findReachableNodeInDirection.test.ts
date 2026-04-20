@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { findReachableNodeInDirection } from '../usePuzzleInput.ts'
+import { findReachableNodeInDirection } from '../../gameState/gridOperations.ts'
 
 describe('findReachableNodeInDirection', () => {
     describe('1x2 grid (horizontal)', () => {
