@@ -10,9 +10,10 @@ export type UseGameStateProps = {
     puzzleIndex: number
     puzzlesLength: number
     originalRows: HashiNodeData[][]
-    onPrev?: () => void
-    onNext?: () => void
+    onPrev: () => void
+    onNext: () => void
     onToggleSolution?: () => void
+    onQuit: () => void
 }
 
 export type UseGameStateReturn = {
@@ -31,6 +32,7 @@ export function useGameState({
     onPrev,
     onNext,
     onToggleSolution,
+    onQuit,
 }: UseGameStateProps): UseGameStateReturn {
     const [userBridges, setUserBridges] = useState<PlacedBridge[]>([])
     const [solutionReached, setSolutionReached] = useState(false)
@@ -80,10 +82,6 @@ export function useGameState({
 
     const handleInput = useCallback(
         (input: string, key: { escape?: boolean }) => {
-            if (input === 'q') {
-                return
-            }
-
             const currentState = selectionStateRef.current
             const grid = mergedRows() as Grid
 
@@ -99,14 +97,15 @@ export function useGameState({
             )
 
             if (result.action.type === 'quit') {
+                onQuit()
                 return
             }
 
             if (result.action.type === 'navigate') {
                 if (result.action.direction === 'next') {
-                    onNext?.()
+                    onNext()
                 } else {
-                    onPrev?.()
+                    onPrev()
                 }
                 setSolutionReached(false)
                 setGridNotConnected(false)
@@ -135,6 +134,7 @@ export function useGameState({
             onPrev,
             onNext,
             onToggleSolution,
+            onQuit,
             resetSelection,
             clearResetTimeout,
         ]

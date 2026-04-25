@@ -48,6 +48,7 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
               onPrev: handlePrev,
               onNext: handleNext,
               onToggleSolution: handleToggleSolution,
+              onQuit: () => process.exit(0),
           })
         : {
               selectionState: undefined,
@@ -59,7 +60,6 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
 
     const handleKeyInput = useCallback(
         (input: string, key: { escape?: boolean }) => {
-            if (input === 'q') return
             if (input === 's' && enableSolutions) {
                 setShowSolution(s => !s)
                 return

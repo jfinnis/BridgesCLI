@@ -527,9 +527,9 @@ q: Quit`)
 • Drew horizontal bridge
 
 ┌─────────────────┐
-│ [2m╭───╮[22m     [1m╭───╮[22m │
+│ [2m╭───╮     [22m[1m╭───╮[22m │
 │ [2m│ 2 ├─────[22m[1m┤ 3 │[22m │
-│ [2m╰───╯[22m     [1m╰───╯[22m │
+│ [2m╰───╯     [22m[1m╰───╯[22m │
 │                 │
 │                 │
 │                 │
@@ -596,9 +596,9 @@ q: Quit`)
 • Drew double horizontal bridge
 
 ┌─────────────────┐
-│ [1m╭───╮[22m     [2m╭───╮[22m │
+│ [1m╭───╮[22m[2m     ╭───╮[22m │
 │ [1m│ 3 ╞[22m[2m═════╡ 4 │[22m │
-│ [1m╰───╯[22m     [2m╰───╯[22m │
+│ [1m╰───╯[22m[2m     ╰───╯[22m │
 │                 │
 │                 │
 │                 │
@@ -843,15 +843,32 @@ q: Quit`)
 • Type a number [1-3] to select a node
 
 ┌─────────────────┐
-│ [31m╭───╮[39m     ╭───╮ │
-│ [31m│ 1 ╞[39m═════╡ 3 │ │
-│ [31m╰───╯[39m     ╰───╯ │
+│ \x1b[31m╭───╮\x1b[39m     ╭───╮ │
+│ \x1b[31m│ 1 ╞\x1b[39m═════╡ 3 │ │
+│ \x1b[31m╰───╯\x1b[39m     ╰───╯ │
 └─────────────────┘
 
 Controls:
 p: Previous puzzle
 n: Next puzzle
 q: Quit`)
+        })
+    })
+
+    describe('game controls - quit', () => {
+        it('quits when q is pressed', async () => {
+            const exitMock = vi.fn()
+            // biome-ignore lint/suspicious/noExplicitAny: mocking process.exit requires any for mockImplementation
+            vi.spyOn(process, 'exit').mockImplementation(exitMock as any)
+
+            const { stdin } = render(
+                <Game puzzles={[TEST_PUZZLE]} hasCustomPuzzle={false} enableSolutions={false} />
+            )
+
+            stdin.write('q')
+            await setTimeout(5)
+
+            expect(exitMock).toHaveBeenCalledWith(0)
         })
     })
 })
