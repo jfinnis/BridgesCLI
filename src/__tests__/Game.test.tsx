@@ -764,7 +764,7 @@ q: Quit`)
             stdin.write('j') // draw bridge down
             await setTimeout(5)
 
-            expect(lastFrame()).toContain('Solution reached')
+            expect(lastFrame()).toContain('Congratulations! Puzzle solved!')
         })
 
         it('shows a warning when grid is not fully connected but the nodes are filled', async () => {

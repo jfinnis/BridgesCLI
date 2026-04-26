@@ -40,7 +40,15 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
 
     const canUseInput = Boolean(process.stdin.isTTY)
 
-    const { selectionState, rows, solutionReached, gridNotConnected, handleInput } = canUseInput
+    const {
+        selectionState,
+        rows,
+        solutionReached,
+        gridNotConnected,
+        handleInput,
+        resetSolutionReached,
+        resetBridges,
+    } = canUseInput
         ? useGameState({
               puzzleIndex,
               puzzlesLength: puzzles.length,
@@ -56,6 +64,8 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
               solutionReached: false,
               gridNotConnected: false,
               handleInput: () => {},
+              resetSolutionReached: () => {},
+              resetBridges: () => {},
           }
 
     const handleKeyInput = useCallback(
@@ -65,18 +75,22 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
                 return
             }
             if (input === 'p') {
+                resetSolutionReached()
+                resetBridges()
                 setPuzzleIndex(i => Math.max(0, i - 1))
                 setShowSolution(false)
                 return
             }
             if (input === 'n') {
+                resetSolutionReached()
+                resetBridges()
                 setPuzzleIndex(i => Math.min(puzzles.length - 1, i + 1))
                 setShowSolution(false)
                 return
             }
             handleInput(input, key)
         },
-        [handleInput, enableSolutions, puzzles.length]
+        [handleInput, enableSolutions, puzzles.length, resetSolutionReached, resetBridges]
     )
 
     if (canUseInput) {

@@ -23,6 +23,8 @@ export type UseGameStateReturn = {
     solutionReached: boolean
     gridNotConnected: boolean
     handleInput: (input: string, key: { escape?: boolean }) => void
+    resetSolutionReached: () => void
+    resetBridges: () => void
 }
 
 export function useGameState({
@@ -44,12 +46,15 @@ export function useGameState({
     selectionStateRef.current = selectionState
 
     const resetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    // Signals that the solution was just reached in this input cycle, skipping the normal post-bridge delay
+    const solutionJustReachedRef = useRef(false)
 
     const resetSelection = useCallback(() => {
         if (resetTimeoutRef.current) {
             clearTimeout(resetTimeoutRef.current)
             resetTimeoutRef.current = null
         }
+        solutionJustReachedRef.current = false
         setSelectionState(getInitialSelectionState())
     }, [])
 
@@ -72,8 +77,10 @@ export function useGameState({
             const merged = mergeBridges(originalRows, result.bridges)
             const allFilled = areAllNodesFilled(merged)
             const connected = isConnected(merged)
-            setSolutionReached(allFilled && connected)
+            const reached = allFilled && connected
+            setSolutionReached(reached)
             setGridNotConnected(allFilled && !connected)
+            solutionJustReachedRef.current = reached
 
             return result.erased
         },
@@ -82,6 +89,14 @@ export function useGameState({
 
     const handleInput = useCallback(
         (input: string, key: { escape?: boolean }) => {
+            // When solution is reached, only allow navigation, quit, and toggle-solution
+            if (solutionReached) {
+                const allowedInputs = ['p', 'n', 'q', 's']
+                if (!allowedInputs.includes(input.toLowerCase())) {
+                    return
+                }
+            }
+
             const currentState = selectionStateRef.current
             const grid = mergedRows() as Grid
 
@@ -123,7 +138,14 @@ export function useGameState({
                 (result.nextState.mode === 'selected' || result.nextState.mode === 'invalid')
             ) {
                 clearResetTimeout()
-                resetTimeoutRef.current = setTimeout(resetSelection, 1_500)
+                if (solutionJustReachedRef.current) {
+                    // Solution reached, reset immediately
+                    solutionJustReachedRef.current = false
+                    resetSelection()
+                    return
+                } else {
+                    resetTimeoutRef.current = setTimeout(resetSelection, 1_500)
+                }
             }
 
             setSelectionState(result.nextState)
@@ -137,8 +159,18 @@ export function useGameState({
             onQuit,
             resetSelection,
             clearResetTimeout,
+            puzzleIndex,
+            puzzlesLength,
         ]
     )
+
+    const resetSolutionReached = useCallback(() => {
+        setSolutionReached(false)
+    }, [])
+
+    const resetBridges = useCallback(() => {
+        setUserBridges([])
+    }, [])
 
     return {
         selectionState,
@@ -147,5 +179,7 @@ export function useGameState({
         solutionReached,
         gridNotConnected,
         handleInput,
+        resetSolutionReached,
+        resetBridges,
     }
 }

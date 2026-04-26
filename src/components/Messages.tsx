@@ -52,7 +52,7 @@ export default function Messages({
         <Box flexDirection="column" marginTop={1}>
             {solutionReached ? (
                 <Text bold color="green">
-                    Solution reached!
+                    Congratulations! Puzzle solved!
                 </Text>
             ) : null}
             {gridNotConnected ? (
