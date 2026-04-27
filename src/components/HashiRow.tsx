@@ -1,11 +1,12 @@
 import { Box, Text } from 'ink'
 import type React from 'react'
-
-import type { HashiNodeData, SelectionState } from '../types.ts'
+import type { SelectionState } from '../gameState/types.ts'
+import type { HashiNodeData } from '../types.ts'
 import {
     constructNode,
     getDisplayMode,
     getNodeFilledState,
+    type HashiCell,
     NODE_WIDTH,
     OUTER_PADDING,
     ROW_HEIGHT,
@@ -27,10 +28,6 @@ export default function HashiRow({
     selectionState,
     showSolution,
 }: HashiRowProps) {
-    // Each row consists of multiple lines of terminal output
-    const lines: React.ReactNode[] = []
-
-    // Build a map of col index to disambiguation label for this row
     const disambiguationMap: Record<number, string> = {}
     if (selectionState?.mode === 'disambiguation' && selectionState.matchingNodes) {
         for (let i = 0; i < selectionState.matchingNodes.length; i++) {
@@ -42,53 +39,41 @@ export default function HashiRow({
         }
     }
 
-    for (let line = 0; line < ROW_HEIGHT; line++) {
-        const rowItems: React.ReactNode[] = []
-
-        // Render each node into the terminal line output
-        for (let i = 0; i < nodes.length; i++) {
-            const node = nodes[i]
-
-            if (!node) {
-                rowItems.push(' '.repeat(NODE_WIDTH))
-                continue
-            }
-
-            const displayMode = getDisplayMode(
-                node,
-                highlightedNode,
-                rowIndex,
-                i,
-                selectionState?.selectedNode ?? null,
-                selectionState?.mode
-            )
-            const label = disambiguationMap[i]
-            const filledState = getNodeFilledState(node)
-            rowItems.push(
-                constructNode(
-                    node,
-                    line as 0 | 1 | 2,
-                    displayMode,
-                    label,
-                    filledState,
-                    showSolution
-                )
-            )
-
-            // Add space between columns except the last
-            if (i < nodes.length - 1) {
-                rowItems.push(' '.repeat(SPACE_BETWEEN))
-            }
+    const cells = nodes.map((node, i) => {
+        if (!node || node.value === ' ') {
+            const emptyLine = ' '.repeat(NODE_WIDTH)
+            return {
+                lines: [emptyLine, emptyLine, emptyLine] as [string, string, string],
+                width: NODE_WIDTH,
+            } as HashiCell
         }
 
-        const rowStr = (
-            <>
-                {' '.repeat(OUTER_PADDING)}
-                {rowItems}
-                {' '.repeat(OUTER_PADDING)}
-            </>
+        const displayMode = getDisplayMode(
+            node,
+            highlightedNode,
+            rowIndex,
+            i,
+            selectionState?.selectedNode ?? null,
+            selectionState?.mode
         )
-        lines.push(<Text key={line}>{rowStr}</Text>)
+        const label = disambiguationMap[i] as string | undefined
+        const filledState = getNodeFilledState(node)
+        return constructNode(node, displayMode, label, filledState, showSolution)
+    })
+
+    const lines: React.ReactNode[] = []
+    for (let lineIdx = 0; lineIdx < ROW_HEIGHT; lineIdx++) {
+        const lineParts: string[] = [' '.repeat(OUTER_PADDING)]
+        for (let i = 0; i < cells.length; i++) {
+            const cell = cells[i]
+            if (!cell) continue
+            lineParts.push(cell.lines[lineIdx as 0 | 1 | 2])
+            if (i < cells.length - 1) {
+                lineParts.push(' '.repeat(SPACE_BETWEEN))
+            }
+        }
+        lineParts.push(' '.repeat(OUTER_PADDING))
+        lines.push(<Text key={lineIdx}>{lineParts.join('')}</Text>)
     }
 
     return <Box flexDirection="column">{lines}</Box>

@@ -2,6 +2,11 @@ import type { HashiNodeData, HashiNodeDisplayMode } from '../types.ts'
 
 export type NodeFilledState = 'valid' | 'invalid' | 'incomplete'
 
+export type HashiCell = {
+    lines: [string, string, string]
+    width: number
+}
+
 /**
  * Returns the total number of bridges connected to a node.
  */
@@ -108,12 +113,12 @@ export function isConnected(rows: HashiNodeData[][]): boolean {
 function isGraphConnected(rows: HashiNodeData[][]): boolean {
     const numRows = rows.length
     if (numRows === 0) return true
-    const numCols = rows[0].length
+    const numCols = rows[0]!.length
 
     const numberedNodes: [number, number][] = []
     for (let r = 0; r < numRows; r++) {
         for (let c = 0; c < numCols; c++) {
-            if (typeof rows[r][c].value === 'number') {
+            if (typeof rows[r]![c]!.value === 'number') {
                 numberedNodes.push([r, c])
             }
         }
@@ -121,9 +126,10 @@ function isGraphConnected(rows: HashiNodeData[][]): boolean {
 
     if (numberedNodes.length === 0) return true
 
+    const [startR, startC] = numberedNodes[0]!
     const visited = new Set<string>()
-    const queue: [number, number][] = [[numberedNodes[0][0], numberedNodes[0][1]]]
-    visited.add(`${numberedNodes[0][0]},${numberedNodes[0][1]}`)
+    const queue: [number, number][] = [[startR, startC]]
+    visited.add(`${startR},${startC}`)
 
     while (queue.length > 0) {
         const next = queue.shift()
@@ -188,12 +194,12 @@ function findNextNumberedNode(
     dCol: number
 ): [number, number] | null {
     const numRows = rows.length
-    const numCols = rows[0].length
+    const numCols = rows[0]!.length
     let r = startR + dRow
     let c = startC + dCol
 
     while (r >= 0 && r < numRows && c >= 0 && c < numCols) {
-        if (typeof rows[r][c].value === 'number') {
+        if (typeof rows[r]![c]!.value === 'number') {
             return [r, c]
         }
         r += dRow
@@ -289,7 +295,7 @@ export function applyStyles(
         if (validateInDim && validationColor) {
             return `${validationColor}${dimmedContent}${colorReset}`
         }
-        return dimmedContent
+        return `${dimmedContent}${colorReset}`
     }
 
     // Handle highlight display mode
@@ -298,7 +304,7 @@ export function applyStyles(
         if (validationColor) {
             return `${validationColor}${highlightedContent}${colorReset}`
         }
-        return highlightedContent
+        return `${highlightedContent}${colorReset}`
     }
 
     // Normal display mode
@@ -335,99 +341,113 @@ export function isNumberedNode(node: HashiNodeData): boolean {
 }
 
 /**
- * Render horizontal bridge (single).
+ * Render horizontal bridge (single) as a complete cell.
  */
 export function renderHorizontalBridge(
-    line: 0 | 1 | 2,
     displayMode: HashiNodeDisplayMode,
     showSolution?: boolean,
     validationState?: NodeFilledState | null
-): string {
-    const content = line === MIDDLE_ROW ? '─────' : ' '.repeat(NODE_WIDTH)
-    return applyStyles(content, displayMode, validationState, showSolution, false)
+): HashiCell {
+    const styledMiddle = applyStyles('─────', displayMode, validationState, showSolution, false)
+    const styledEmpty = applyStyles(
+        ' '.repeat(NODE_WIDTH),
+        displayMode,
+        validationState,
+        showSolution,
+        false
+    )
+    return {
+        lines: [styledEmpty, styledMiddle, styledEmpty],
+        width: NODE_WIDTH,
+    }
 }
 
 /**
- * Render double horizontal bridge.
+ * Render double horizontal bridge as a complete cell.
  */
 export function renderDoubleHorizontalBridge(
-    line: 0 | 1 | 2,
     displayMode: HashiNodeDisplayMode,
     showSolution?: boolean,
     validationState?: NodeFilledState | null
-): string {
-    const content = line === MIDDLE_ROW ? '═════' : ' '.repeat(NODE_WIDTH)
-    return applyStyles(content, displayMode, validationState, showSolution, false)
+): HashiCell {
+    const styledMiddle = applyStyles('═════', displayMode, validationState, showSolution, false)
+    const styledEmpty = applyStyles(
+        ' '.repeat(NODE_WIDTH),
+        displayMode,
+        validationState,
+        showSolution,
+        false
+    )
+    return {
+        lines: [styledEmpty, styledMiddle, styledEmpty],
+        width: NODE_WIDTH,
+    }
 }
 
 /**
- * Render vertical bridge (single).
+ * Render vertical bridge (single) as a complete cell.
  */
 export function renderVerticalBridge(
     displayMode: HashiNodeDisplayMode,
     showSolution?: boolean,
     validationState?: NodeFilledState | null
-): string {
-    const content = '  │  '
-    return applyStyles(content, displayMode, validationState, showSolution, false)
+): HashiCell {
+    const styledContent = applyStyles('  │  ', displayMode, validationState, showSolution, false)
+    return {
+        lines: [styledContent, styledContent, styledContent],
+        width: NODE_WIDTH,
+    }
 }
 
 /**
- * Render double vertical bridge.
+ * Render double vertical bridge as a complete cell.
  */
 export function renderDoubleVerticalBridge(
     displayMode: HashiNodeDisplayMode,
     showSolution?: boolean,
     validationState?: NodeFilledState | null
-): string {
-    const content = '  ║  '
-    return applyStyles(content, displayMode, validationState, showSolution, false)
+): HashiCell {
+    const styledContent = applyStyles('  ║  ', displayMode, validationState, showSolution, false)
+    return {
+        lines: [styledContent, styledContent, styledContent],
+        width: NODE_WIDTH,
+    }
 }
 
 /**
- * Render top line of a numbered node.
+ * Render a numbered node as a complete cell (all 3 lines).
  */
-export function renderNumberedNodeTop(
+export function renderNumberedNode(
     node: HashiNodeData,
     displayMode: HashiNodeDisplayMode,
     disambiguationLabel?: string,
     validationState?: NodeFilledState | null
-): string {
+): HashiCell {
+    // Top line
     const up = node.lineUp === 2 ? '╨' : node.lineUp === 1 ? '┴' : '─'
     const label = disambiguationLabel ? disambiguationLabel : '─'
-    const border = `╭${label}${up}─╮`
-    return applyStyles(border, displayMode, validationState, false, true)
-}
+    const topBorder = `╭${label}${up}─╮`
+    const topLine = applyStyles(topBorder, displayMode, validationState, false, true)
 
-/**
- * Render middle line of a numbered node.
- */
-export function renderNumberedNodeMiddle(
-    node: HashiNodeData,
-    displayMode: HashiNodeDisplayMode,
-    validationState?: NodeFilledState | null
-): string {
+    // Middle line
     const left = node.lineLeft === 2 ? '╡' : node.lineLeft === 1 ? '┤' : '│'
     const right = node.lineRight === 2 ? '╞' : node.lineRight === 1 ? '├' : '│'
-    const content = `${left} ${node.value} ${right}`
-    return applyStyles(content, displayMode, validationState, false, true)
-}
+    const middleContent = `${left} ${node.value} ${right}`
+    const middleLine = applyStyles(middleContent, displayMode, validationState, false, true)
 
-/**
- * Render bottom line of a numbered node.
- */
-export function renderNumberedNodeBottom(
-    node: HashiNodeData,
-    displayMode: HashiNodeDisplayMode,
-    validationState?: NodeFilledState | null
-): string {
+    // Bottom line
     const down = node.lineDown === 2 ? '╥' : node.lineDown === 1 ? '┬' : '─'
-    const border = `╰─${down}─╯`
-    return applyStyles(border, displayMode, validationState, false, true)
+    const bottomBorder = `╰─${down}─╯`
+    const bottomLine = applyStyles(bottomBorder, displayMode, validationState, false, true)
+
+    return {
+        lines: [topLine, middleLine, bottomLine],
+        width: NODE_WIDTH,
+    }
 }
 
 /**
- * Build the HashiGrid node with its value and borders. Options:
+ * Build the HashiGrid node as a complete cell (all 3 lines).
  *   - node with a value (always 1 digit)
  *   - empty node - render just spaces
  *   - horizontal line - single and double
@@ -435,20 +455,19 @@ export function renderNumberedNodeBottom(
  */
 export function constructNode(
     node: HashiNodeData,
-    line: 0 | 1 | 2,
     displayMode: HashiNodeDisplayMode = 'normal',
     disambiguationLabel?: string,
     validationState?: NodeFilledState | null,
     showSolution?: boolean
-): string {
+): HashiCell {
     // Horizontal bridges
     if (isHorizontalBridge(node)) {
-        return renderHorizontalBridge(line, displayMode, showSolution, validationState)
+        return renderHorizontalBridge(displayMode, showSolution, validationState)
     }
 
     // Double horizontal bridges
     if (isDoubleHorizontalBridge(node)) {
-        return renderDoubleHorizontalBridge(line, displayMode, showSolution, validationState)
+        return renderDoubleHorizontalBridge(displayMode, showSolution, validationState)
     }
 
     // Vertical bridges
@@ -463,15 +482,13 @@ export function constructNode(
 
     // Numbered nodes
     if (isNumberedNode(node)) {
-        if (line === TOP_ROW) {
-            return renderNumberedNodeTop(node, displayMode, disambiguationLabel, validationState)
-        } else if (line === MIDDLE_ROW) {
-            return renderNumberedNodeMiddle(node, displayMode, validationState)
-        } else if (line === BOTTOM_ROW) {
-            return renderNumberedNodeBottom(node, displayMode, validationState)
-        }
+        return renderNumberedNode(node, displayMode, disambiguationLabel, validationState)
     }
 
     // Empty node or unhandled type
-    return ' '.repeat(NODE_WIDTH)
+    const emptyLine = ' '.repeat(NODE_WIDTH)
+    return {
+        lines: [emptyLine, emptyLine, emptyLine],
+        width: NODE_WIDTH,
+    }
 }

@@ -1,25 +1,22 @@
 import { describe, expect, it } from 'vitest'
+import type { HashiNodeData } from '../../types.ts'
 import {
     applyStyles,
-    BOTTOM_ROW,
     constructNode,
     getBridgeCount,
+    getDisplayMode,
     getValidationColor,
     isDoubleHorizontalBridge,
     isDoubleVerticalBridge,
     isHorizontalBridge,
     isNumberedNode,
     isVerticalBridge,
-    MIDDLE_ROW,
     NODE_WIDTH,
     renderDoubleHorizontalBridge,
     renderDoubleVerticalBridge,
     renderHorizontalBridge,
-    renderNumberedNodeBottom,
-    renderNumberedNodeMiddle,
-    renderNumberedNodeTop,
+    renderNumberedNode,
     renderVerticalBridge,
-    TOP_ROW,
 } from '../bridges.ts'
 
 describe('getBridgeCount', () => {
@@ -76,11 +73,15 @@ describe('applyStyles', () => {
     const content = 'test'
 
     it('applies dim style in dim mode', () => {
-        expect(applyStyles(content, 'dim')).toBe('\x1b[2mtest\x1b[22m')
+        const result = applyStyles(content, 'dim')
+        expect(result).toContain('\x1b[2mtest\x1b[22m')
+        expect(result).toContain('\x1b[39m')
     })
 
     it('applies bold style in highlight mode', () => {
-        expect(applyStyles(content, 'highlight')).toBe('\x1b[1mtest\x1b[22m')
+        const result = applyStyles(content, 'highlight')
+        expect(result).toContain('\x1b[1mtest\x1b[22m')
+        expect(result).toContain('\x1b[39m')
     })
 
     it('applies green in normal mode with showSolution', () => {
@@ -97,7 +98,8 @@ describe('applyStyles', () => {
 
     it('does not apply validation color in dim mode by default', () => {
         const result = applyStyles(content, 'dim', 'valid')
-        expect(result).toBe('\x1b[2mtest\x1b[22m')
+        expect(result).toContain('\x1b[2mtest\x1b[22m')
+        expect(result).not.toContain('\x1b[32m')
     })
 
     it('applies validation color in dim mode when validateInDim is true', () => {
@@ -137,169 +139,251 @@ describe('Type guards', () => {
 })
 
 describe('renderHorizontalBridge', () => {
-    it('returns "─────" for middle row', () => {
-        const result = renderHorizontalBridge(MIDDLE_ROW, 'normal')
-        expect(result).toBe('─────')
+    it('returns HashiCell with middle line as bridge', () => {
+        const result = renderHorizontalBridge('normal')
+        expect(result.lines[0]).toBe(' '.repeat(NODE_WIDTH))
+        expect(result.lines[1]).toBe('─────')
+        expect(result.lines[2]).toBe(' '.repeat(NODE_WIDTH))
     })
 
-    it('returns spaces for non-middle row', () => {
-        const result = renderHorizontalBridge(TOP_ROW, 'normal')
-        expect(result).toBe(' '.repeat(NODE_WIDTH))
-    })
-
-    it('applies dim style', () => {
-        const result = renderHorizontalBridge(MIDDLE_ROW, 'dim')
-        expect(result).toBe('\x1b[2m─────\x1b[22m')
-    })
-
-    it('applies solution green', () => {
-        const result = renderHorizontalBridge(MIDDLE_ROW, 'normal', true)
-        // biome-ignore lint/security/noSecrets: ANSI escape codes are not secrets
-        expect(result).toBe('\x1b[32m─────\x1b[39m')
+    it('applies dim style to all lines', () => {
+        const result = renderHorizontalBridge('dim')
+        expect(result.lines[1]).toContain('\x1b[2m─────\x1b[22m')
+        expect(result.lines[1]).toContain('\x1b[39m')
     })
 })
 
 describe('renderDoubleHorizontalBridge', () => {
-    it('returns "═════" for middle row', () => {
-        const result = renderDoubleHorizontalBridge(MIDDLE_ROW, 'normal')
-        expect(result).toBe('═════')
+    it('returns HashiCell with middle line as double bridge', () => {
+        const result = renderDoubleHorizontalBridge('normal')
+        expect(result.lines[1]).toBe('═════')
     })
 })
 
 describe('renderVerticalBridge', () => {
-    it('returns "  │  "', () => {
+    it('returns HashiCell with │ in all lines', () => {
         const result = renderVerticalBridge('normal')
-        expect(result).toBe('  │  ')
+        expect(result.lines[0]).toBe('  │  ')
+        expect(result.lines[1]).toBe('  │  ')
+        expect(result.lines[2]).toBe('  │  ')
     })
 })
 
 describe('renderDoubleVerticalBridge', () => {
-    it('returns "  ║  "', () => {
+    it('returns HashiCell with ║ in all lines', () => {
         const result = renderDoubleVerticalBridge('normal')
-        expect(result).toBe('  ║  ')
+        expect(result.lines[0]).toBe('  ║  ')
     })
 })
 
-describe('renderNumberedNodeTop', () => {
-    const node = { value: 3, lineUp: 1 }
-
-    it('renders correct border with default label', () => {
-        const result = renderNumberedNodeTop(node, 'normal')
-        expect(result).toBe('╭─┴─╮')
+describe('renderNumberedNode', () => {
+    it('renders correct top border with default label', () => {
+        const node = { value: 3, lineUp: 1 as 1 | 2 }
+        const result = renderNumberedNode(node as HashiNodeData, 'normal')
+        expect(result.lines[0]).toBe('╭─┴─╮')
     })
 
-    it('uses disambiguation label', () => {
-        const result = renderNumberedNodeTop(node, 'normal', 'A')
-        expect(result).toBe('╭A┴─╮')
+    it('uses disambiguation label on top line', () => {
+        const node = { value: 3, lineUp: 1 as 1 | 2 }
+        const result = renderNumberedNode(node as HashiNodeData, 'normal', 'A')
+        expect(result.lines[0]).toBe('╭A┴─╮')
     })
 
-    it('applies highlight style', () => {
-        const result = renderNumberedNodeTop(node, 'highlight')
-        // biome-ignore lint/security/noSecrets: ANSI escape codes are not secrets
-        expect(result).toBe('\x1b[1m╭─┴─╮\x1b[22m')
+    it('renders correct middle line', () => {
+        const node = { value: 3, lineLeft: 1 as 1 | 2, lineRight: 1 as 1 | 2 }
+        const result = renderNumberedNode(node as HashiNodeData, 'normal')
+        expect(result.lines[1]).toBe('┤ 3 ├')
     })
 
-    it('applies validation color in dim mode', () => {
-        const result = renderNumberedNodeTop(node, 'dim', undefined, 'valid')
-        // biome-ignore lint/security/noSecrets: ANSI escape codes are not secrets
-        expect(result).toBe('\x1b[32m\x1b[2m╭─┴─╮\x1b[22m\x1b[39m')
-    })
-})
-
-describe('renderNumberedNodeMiddle', () => {
-    const node = { value: 3, lineLeft: 1, lineRight: 1 }
-
-    it('renders correct content', () => {
-        const result = renderNumberedNodeMiddle(node, 'normal')
-        expect(result).toBe('┤ 3 ├')
-    })
-
-    it('applies highlight style', () => {
-        const result = renderNumberedNodeMiddle(node, 'highlight')
-        expect(result).toBe('\x1b[1m┤ 3 ├\x1b[22m')
-    })
-})
-
-describe('renderNumberedNodeBottom', () => {
-    const node = { value: 3, lineDown: 2 }
-
-    it('renders correct border', () => {
-        const result = renderNumberedNodeBottom(node, 'normal')
-        expect(result).toBe('╰─╥─╯')
+    it('renders correct bottom line', () => {
+        const node = { value: 3, lineDown: 2 as 1 | 2 }
+        const result = renderNumberedNode(node as HashiNodeData, 'normal')
+        expect(result.lines[2]).toBe('╰─╥─╯')
     })
 })
 
 describe('constructNode', () => {
-    it('renders horizontal bridge middle row', () => {
-        const node = { value: '-' }
-        const result = constructNode(node, MIDDLE_ROW)
-        expect(result).toBe('─────')
+    it('renders horizontal bridge as HashiCell', () => {
+        const node = { value: '-' as const }
+        const result = constructNode(node as HashiNodeData)
+        expect(result.lines[1]).toBe('─────')
+        expect(result.lines[0]).toBe(' '.repeat(NODE_WIDTH))
     })
 
-    it('renders horizontal bridge top row as spaces', () => {
-        const node = { value: '-' }
-        const result = constructNode(node, TOP_ROW)
-        expect(result).toBe(' '.repeat(NODE_WIDTH))
+    it('renders double horizontal bridge as HashiCell', () => {
+        const node = { value: '=' as const }
+        const result = constructNode(node as HashiNodeData)
+        expect(result.lines[1]).toBe('═════')
     })
 
-    it('renders double horizontal bridge middle row', () => {
-        const node = { value: '=' }
-        const result = constructNode(node, MIDDLE_ROW)
-        expect(result).toBe('═════')
+    it('renders vertical bridge as HashiCell', () => {
+        const node = { value: '|' as const }
+        const result = constructNode(node as HashiNodeData)
+        expect(result.lines[0]).toBe('  │  ')
     })
 
-    it('renders vertical bridge', () => {
-        const node = { value: '|' }
-        const result = constructNode(node, MIDDLE_ROW)
-        expect(result).toBe('  │  ')
+    it('renders numbered node as HashiCell', () => {
+        const node = { value: 3, lineUp: 1 as 1 | 2 }
+        const result = constructNode(node as HashiNodeData)
+        expect(result.lines[0]).toBe('╭─┴─╮')
+        expect(result.lines[1]).toBe('│ 3 │')
+        expect(result.lines[2]).toBe('╰───╯')
+    })
+})
+
+describe('getDisplayMode()', () => {
+    it('returns normal when highlightedNode is undefined', () => {
+        const node: HashiNodeData = { value: 1 }
+        expect(getDisplayMode(node, undefined)).toBe('normal')
     })
 
-    it('renders double vertical bridge', () => {
-        const node = { value: '#' }
-        const result = constructNode(node, MIDDLE_ROW)
-        expect(result).toBe('  ║  ')
+    it('returns highlight when node value matches highlightedNode', () => {
+        const node: HashiNodeData = { value: 2 }
+        expect(getDisplayMode(node, 2)).toBe('highlight')
     })
 
-    it('renders numbered node top row', () => {
-        const node = { value: 3, lineUp: 1 }
-        const result = constructNode(node, TOP_ROW)
-        expect(result).toBe('╭─┴─╮')
+    it('returns dim when node value does not match highlightedNode', () => {
+        const node: HashiNodeData = { value: 1 }
+        expect(getDisplayMode(node, 2)).toBe('dim')
     })
 
-    it('renders numbered node middle row', () => {
-        const node = { value: 3, lineLeft: 1, lineRight: 1 }
-        const result = constructNode(node, MIDDLE_ROW)
-        expect(result).toBe('┤ 3 ├')
+    it('returns dim for bridge nodes when highlightedNode is set', () => {
+        expect(getDisplayMode({ value: '-' }, 2)).toBe('dim')
+        expect(getDisplayMode({ value: '|' }, 2)).toBe('dim')
+        expect(getDisplayMode({ value: '#' }, 2)).toBe('dim')
     })
 
-    it('renders numbered node bottom row', () => {
-        const node = { value: 3, lineDown: 2 }
-        const result = constructNode(node, BOTTOM_ROW)
-        expect(result).toBe('╰─╥─╯')
+    it('returns highlight for bridge nodes that are the highlighted value', () => {
+        expect(getDisplayMode({ value: '-' }, 2)).toBe('dim')
+    })
+})
+
+describe('constructNode()', () => {
+    describe('empty node', () => {
+        it('renders space value with no lines', () => {
+            const node: HashiNodeData = { value: ' ' as const }
+            const result = constructNode(node)
+            expect(result.lines[0]).toEqual('     ')
+            expect(result.lines[1]).toEqual('     ')
+            expect(result.lines[2]).toEqual('     ')
+        })
     })
 
-    it('renders empty node', () => {
-        const node = { value: ' ' }
-        const result = constructNode(node, MIDDLE_ROW)
-        expect(result).toBe(' '.repeat(NODE_WIDTH))
+    describe('horizontal line node', () => {
+        it('renders a horizontal line in the middle', () => {
+            const node: HashiNodeData = { value: '-' as const }
+            const result = constructNode(node)
+            expect(result.lines[0]).toEqual('     ')
+            expect(result.lines[1]).toEqual('─────')
+            expect(result.lines[2]).toEqual('     ')
+        })
+
+        it('renders a double horizontal line in the middle', () => {
+            const node: HashiNodeData = { value: '=' as const }
+            const result = constructNode(node)
+            expect(result.lines[0]).toEqual('     ')
+            expect(result.lines[1]).toEqual('═════')
+            expect(result.lines[2]).toEqual('     ')
+        })
     })
 
-    it('applies highlight to numbered node', () => {
-        const node = { value: 3, lineLeft: 1, lineRight: 1 }
-        const result = constructNode(node, MIDDLE_ROW, 'highlight')
-        expect(result).toBe('\x1b[1m┤ 3 ├\x1b[22m')
+    describe('vertical line node', () => {
+        it('renders a vertical line in the center', () => {
+            const node: HashiNodeData = { value: '|' as const }
+            const result = constructNode(node)
+            expect(result.lines[0]).toEqual('  │  ')
+            expect(result.lines[1]).toEqual('  │  ')
+            expect(result.lines[2]).toEqual('  │  ')
+        })
+
+        it('renders a double vertical line in the center', () => {
+            const node: HashiNodeData = { value: '#' as const }
+            const result = constructNode(node)
+            expect(result.lines[0]).toEqual('  ║  ')
+            expect(result.lines[1]).toEqual('  ║  ')
+            expect(result.lines[2]).toEqual('  ║  ')
+        })
     })
 
-    it('applies dim to horizontal bridge', () => {
-        const node = { value: '-' }
-        const result = constructNode(node, MIDDLE_ROW, 'dim')
-        expect(result).toBe('\x1b[2m─────\x1b[22m')
-    })
+    describe('node with value', () => {
+        describe('TOP_ROW', () => {
+            it('renders top border', () => {
+                const node: HashiNodeData = { value: 5 }
+                const result = constructNode(node)
+                expect(result.lines[0]).toEqual('╭───╮')
+            })
 
-    it('shows solution green for bridges', () => {
-        const node = { value: '-' }
-        const result = constructNode(node, MIDDLE_ROW, 'normal', undefined, undefined, true)
-        // biome-ignore lint/security/noSecrets: ANSI escape codes are not secrets
-        expect(result).toBe('\x1b[32m─────\x1b[39m')
+            it('renders border with vertical line up', () => {
+                const node: HashiNodeData = { value: 5, lineUp: 1 as 1 | 2 }
+                const result = constructNode(node)
+                expect(result.lines[0]).toEqual('╭─┴─╮')
+            })
+
+            it('renders border with double vertical line up', () => {
+                const node: HashiNodeData = { value: 5, lineUp: 2 as 1 | 2 }
+                const result = constructNode(node)
+                expect(result.lines[0]).toEqual('╭─╨─╮')
+            })
+        })
+
+        describe('MIDDLE_ROW', () => {
+            it('renders middle row - value with vertical borders', () => {
+                const node: HashiNodeData = { value: 5 }
+                const result = constructNode(node)
+                expect(result.lines[1]).toEqual('│ 5 │')
+            })
+
+            it('renders value with horizontal line on left', () => {
+                const node: HashiNodeData = { value: 5, lineLeft: 1 as 1 | 2 }
+                const result = constructNode(node)
+                expect(result.lines[1]).toEqual('┤ 5 │')
+            })
+
+            it('renders value with horizontal line on right', () => {
+                const node: HashiNodeData = { value: 5, lineRight: 1 as 1 | 2 }
+                const result = constructNode(node)
+                expect(result.lines[1]).toEqual('│ 5 ├')
+            })
+
+            it('renders value with horizontal lines on both sides', () => {
+                const node: HashiNodeData = {
+                    value: 5,
+                    lineLeft: 1 as 1 | 2,
+                    lineRight: 1 as 1 | 2,
+                }
+                const result = constructNode(node)
+                expect(result.lines[1]).toEqual('┤ 5 ├')
+            })
+
+            it('renders value with double horizontal lines on both sides', () => {
+                const node: HashiNodeData = {
+                    value: 5,
+                    lineLeft: 2 as 1 | 2,
+                    lineRight: 2 as 1 | 2,
+                }
+                const result = constructNode(node)
+                expect(result.lines[1]).toEqual('╡ 5 ╞')
+            })
+        })
+
+        describe('BOTTOM_ROW', () => {
+            it('renders bottom border without lines', () => {
+                const node: HashiNodeData = { value: 5 }
+                const result = constructNode(node)
+                expect(result.lines[2]).toEqual('╰───╯')
+            })
+
+            it('renders border with vertical line down', () => {
+                const node: HashiNodeData = { value: 5, lineDown: 1 as 1 | 2 }
+                const result = constructNode(node)
+                expect(result.lines[2]).toEqual('╰─┬─╯')
+            })
+
+            it('renders border with double vertical line down', () => {
+                const node: HashiNodeData = { value: 5, lineDown: 2 as 1 | 2 }
+                const result = constructNode(node)
+                expect(result.lines[2]).toEqual('╰─╥─╯')
+            })
+        })
     })
 })

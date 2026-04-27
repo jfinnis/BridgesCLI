@@ -1,6 +1,6 @@
 import { Box } from 'ink'
-
-import type { HashiNodeData, SelectionState } from '../types.ts'
+import type { SelectionState } from '../gameState/types.ts'
+import type { HashiNodeData } from '../types.ts'
 import {
     NODE_WIDTH,
     OUTER_PADDING,

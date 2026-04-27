@@ -1,6 +1,6 @@
 import { Box, Text } from 'ink'
 
-import type { SelectionState } from '../types.ts'
+import type { SelectionState } from '../gameState/types.ts'
 
 type LegendItem = {
     key: string

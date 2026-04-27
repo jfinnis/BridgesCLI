@@ -1,6 +1,6 @@
 import { render } from 'ink-testing-library'
 import { describe, expect, it } from 'vitest'
-import type { SelectionState } from '../../types.ts'
+import type { SelectionState } from '../../gameState/types.ts'
 import Header from '../Header.tsx'
 
 describe('Header', () => {
