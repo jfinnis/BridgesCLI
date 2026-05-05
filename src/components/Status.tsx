@@ -7,6 +7,7 @@ type StatusProps = {
     selectionState?: SelectionState
     minNumber?: number
     maxNumber?: number
+    solutionReached?: boolean
 }
 
 const directionNames: Record<string, string> = {
@@ -21,7 +22,15 @@ export default function Status({
     selectionState,
     minNumber,
     maxNumber,
+    solutionReached = false,
 }: StatusProps) {
+    if (solutionReached) {
+        return (
+            <Box>
+                <Text> </Text>
+            </Box>
+        )
+    }
     let statusText = ''
     if (selectionState) {
         const { mode, selectedNumber, direction, bridgeErased, isDoubleBridge } = selectionState

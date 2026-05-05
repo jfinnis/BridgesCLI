@@ -144,6 +144,7 @@ export default function Game({
                     selectionState={selectionState}
                     minNumber={minNumber}
                     maxNumber={maxNumber}
+                    solutionReached={solutionReached}
                 />
                 <GameBoard
                     numNodes={numNodes}

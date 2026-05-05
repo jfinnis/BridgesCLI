@@ -13,7 +13,7 @@ export default function Messages({
     gridNotConnected = false,
 }: MessagesProps) {
     return (
-        <Box flexDirection="column" marginTop={1}>
+        <Box flexDirection="column">
             {solutionReached ? (
                 <Text bold color="green">
                     Congratulations! Puzzle solved!
