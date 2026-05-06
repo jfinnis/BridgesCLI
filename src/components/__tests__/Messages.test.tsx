@@ -4,13 +4,18 @@ import { describe, expect, it } from 'vitest'
 import Messages from '../Messages.tsx'
 
 describe('Messages', () => {
-    it('shows congratulations when solution is reached', () => {
-        const { lastFrame } = render(<Messages solutionReached={true} />)
+    it('shows congratulations when puzzle is just solved', () => {
+        const { lastFrame } = render(<Messages isJustSolved={true} />)
         expect(lastFrame()).toContain('Congratulations! Puzzle solved!')
     })
 
-    it('does not show congratulations when solution is not reached', () => {
-        const { lastFrame } = render(<Messages solutionReached={false} />)
+    it('shows puzzle completed for solved puzzles', () => {
+        const { lastFrame } = render(<Messages isPuzzleCompleted={true} />)
+        expect(lastFrame()).toContain('Puzzle completed')
+    })
+
+    it('does not show congratulations when not just solved', () => {
+        const { lastFrame } = render(<Messages isJustSolved={false} />)
         expect(lastFrame()).not.toContain('Congratulations! Puzzle solved!')
     })
 

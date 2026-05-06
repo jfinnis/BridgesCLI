@@ -1,22 +1,25 @@
 import { Box, Text } from 'ink'
 
-import type { SelectionState } from '../gameState/types.ts'
-
 type MessagesProps = {
-    selectionState?: SelectionState
-    solutionReached?: boolean
     gridNotConnected?: boolean
+    isJustSolved?: boolean
+    isPuzzleCompleted?: boolean
 }
 
 export default function Messages({
-    solutionReached = false,
     gridNotConnected = false,
+    isJustSolved = false,
+    isPuzzleCompleted = false,
 }: MessagesProps) {
     return (
         <Box flexDirection="column">
-            {solutionReached ? (
+            {isJustSolved ? (
                 <Text bold color="green">
                     Congratulations! Puzzle solved!
+                </Text>
+            ) : isPuzzleCompleted ? (
+                <Text bold color="green">
+                    Puzzle completed
                 </Text>
             ) : null}
             {gridNotConnected ? (

@@ -11,11 +11,13 @@ type LegendItem = {
 export function legendItems(
     hasSolution: boolean,
     enableSolutions: boolean,
-    isSelecting: boolean
+    isSelecting: boolean,
+    canGoNext: boolean,
+    canGoPrevious: boolean
 ): LegendItem[] {
     const items: LegendItem[] = [
-        { key: 'p', description: 'Previous puzzle', disabled: isSelecting },
-        { key: 'n', description: 'Next puzzle', disabled: isSelecting },
+        { key: 'p', description: 'Previous puzzle', disabled: isSelecting || !canGoPrevious },
+        { key: 'n', description: 'Next puzzle', disabled: isSelecting || !canGoNext },
     ]
 
     if (enableSolutions) {
@@ -35,26 +37,32 @@ type ControlsProps = {
     hasSolution?: boolean
     enableSolutions?: boolean
     selectionState?: SelectionState
+    canGoNext?: boolean
+    canGoPrevious?: boolean
 }
 
 export default function Controls({
     hasSolution = false,
     enableSolutions = false,
     selectionState,
+    canGoNext = true,
+    canGoPrevious = true,
 }: ControlsProps) {
     const isSelecting = selectionState !== undefined && selectionState.mode !== 'idle'
 
     return (
         <Box flexDirection="column" marginTop={1}>
             <Text bold>Controls:</Text>
-            {legendItems(hasSolution, enableSolutions, isSelecting).map(item => (
-                <Box key={item.key}>
-                    <Text bold color={item.disabled ? 'gray' : undefined}>
-                        {item.key}
-                    </Text>
-                    <Text color={item.disabled ? 'gray' : undefined}>: {item.description}</Text>
-                </Box>
-            ))}
+            {legendItems(hasSolution, enableSolutions, isSelecting, canGoNext, canGoPrevious).map(
+                item => (
+                    <Box key={item.key}>
+                        <Text bold color={item.disabled ? 'gray' : undefined}>
+                            {item.key}
+                        </Text>
+                        <Text color={item.disabled ? 'gray' : undefined}>: {item.description}</Text>
+                    </Box>
+                )
+            )}
         </Box>
     )
 }

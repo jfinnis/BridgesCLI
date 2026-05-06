@@ -9,6 +9,9 @@ const TEST_PUZZLE = { encoding: '3x3:1a1.c.2a2' }
 const TEST_PUZZLE_2 = { encoding: '3x3:3a3.c.1a1' }
 const SMALL_PUZZLE_3X3 = { encoding: '3x3:2a3.c.1a2' }
 
+// Create 5 identical puzzles for tests (divisible by 5 for PuzzleProgress)
+const TEST_PUZZLES_5 = [TEST_PUZZLE, TEST_PUZZLE_2, SMALL_PUZZLE_3X3, TEST_PUZZLE, TEST_PUZZLE_2]
+
 describe('Game', () => {
     beforeEach(() => {
         Object.defineProperty(process.stdin, 'isTTY', {
@@ -19,12 +22,10 @@ describe('Game', () => {
 
     describe('game controls - toggle solution', () => {
         it('pressing s toggles the solution on and off', async () => {
+            const puzzle = samplePuzzles[0] as PuzzleData
+            const puzzles = Array(5).fill(puzzle)
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[samplePuzzles[0] as PuzzleData]}
-                    hasCustomPuzzle={false}
-                    enableSolutions={true}
-                />
+                <Game puzzles={puzzles} hasCustomPuzzle={false} enableSolutions={true} />
             )
 
             const frame = lastFrame()
@@ -56,11 +57,7 @@ describe('Game', () => {
     describe('game controls - next/previous', () => {
         it('navigates to next puzzle with n key when interactive', async () => {
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[TEST_PUZZLE, TEST_PUZZLE_2]}
-                    hasCustomPuzzle={false}
-                    enableSolutions={false}
-                />
+                <Game puzzles={TEST_PUZZLES_5} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
             expect(lastFrame()).toContain('Bridges: Puzzle #1')
@@ -72,11 +69,7 @@ describe('Game', () => {
 
         it('navigates to previous puzzle with p key when interactive', async () => {
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[TEST_PUZZLE, TEST_PUZZLE_2]}
-                    hasCustomPuzzle={false}
-                    enableSolutions={false}
-                />
+                <Game puzzles={TEST_PUZZLES_5} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
             stdin.write('n')
@@ -90,17 +83,30 @@ describe('Game', () => {
 
         it('does not navigate past last puzzle', async () => {
             const { stdin, lastFrame } = render(
-                <Game puzzles={[TEST_PUZZLE]} hasCustomPuzzle={false} enableSolutions={false} />
+                <Game puzzles={TEST_PUZZLES_5} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
+            // Navigate to last puzzle (index 4)
             stdin.write('n')
             await setTimeout(5)
-            expect(lastFrame()).toContain('Bridges: Puzzle #1')
+            stdin.write('n')
+            await setTimeout(5)
+            stdin.write('n')
+            await setTimeout(5)
+            stdin.write('n')
+            await setTimeout(5)
+
+            // Try to go past last puzzle
+            stdin.write('n')
+            await setTimeout(5)
+
+            // Should still be on last puzzle
+            expect(lastFrame()).toContain('Bridges: Puzzle #5')
         })
 
         it('does not navigate before first puzzle', async () => {
             const { stdin, lastFrame } = render(
-                <Game puzzles={[TEST_PUZZLE]} hasCustomPuzzle={false} enableSolutions={false} />
+                <Game puzzles={TEST_PUZZLES_5} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
             stdin.write('p')
@@ -111,12 +117,15 @@ describe('Game', () => {
 
     describe('game controls - node selection', () => {
         it('selects node immediately when there is only one of that number', async () => {
+            const puzzles = [
+                SMALL_PUZZLE_3X3,
+                TEST_PUZZLE,
+                TEST_PUZZLE_2,
+                TEST_PUZZLE,
+                TEST_PUZZLE_2,
+            ]
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[SMALL_PUZZLE_3X3]}
-                    hasCustomPuzzle={false}
-                    enableSolutions={false}
-                />
+                <Game puzzles={puzzles} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
             stdin.write('3')
@@ -126,12 +135,15 @@ describe('Game', () => {
         })
 
         it('shows disambiguation labels when multiple nodes have the same number', async () => {
+            const puzzles = [
+                SMALL_PUZZLE_3X3,
+                TEST_PUZZLE,
+                TEST_PUZZLE_2,
+                TEST_PUZZLE,
+                TEST_PUZZLE_2,
+            ]
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[SMALL_PUZZLE_3X3]}
-                    hasCustomPuzzle={false}
-                    enableSolutions={false}
-                />
+                <Game puzzles={puzzles} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
             stdin.write('2')
@@ -142,12 +154,15 @@ describe('Game', () => {
         })
 
         it('selects a specific node when disambiguation label is pressed', async () => {
+            const puzzles = [
+                SMALL_PUZZLE_3X3,
+                TEST_PUZZLE,
+                TEST_PUZZLE_2,
+                TEST_PUZZLE,
+                TEST_PUZZLE_2,
+            ]
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[SMALL_PUZZLE_3X3]}
-                    hasCustomPuzzle={false}
-                    enableSolutions={false}
-                />
+                <Game puzzles={puzzles} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
             stdin.write('1')
@@ -158,12 +173,15 @@ describe('Game', () => {
         })
 
         it('draws a bridge when a valid direction is selected', async () => {
+            const puzzles = [
+                SMALL_PUZZLE_3X3,
+                TEST_PUZZLE,
+                TEST_PUZZLE_2,
+                TEST_PUZZLE,
+                TEST_PUZZLE_2,
+            ]
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[SMALL_PUZZLE_3X3]}
-                    hasCustomPuzzle={false}
-                    enableSolutions={false}
-                />
+                <Game puzzles={puzzles} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
             stdin.write('1')
@@ -176,12 +194,15 @@ describe('Game', () => {
         })
 
         it('shows an invalid message for a bad bridge direction off the grid', async () => {
+            const puzzles = [
+                SMALL_PUZZLE_3X3,
+                TEST_PUZZLE,
+                TEST_PUZZLE_2,
+                TEST_PUZZLE,
+                TEST_PUZZLE_2,
+            ]
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[SMALL_PUZZLE_3X3]}
-                    hasCustomPuzzle={false}
-                    enableSolutions={false}
-                />
+                <Game puzzles={puzzles} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
             stdin.write('1')
@@ -197,12 +218,9 @@ describe('Game', () => {
     describe('game controls - drawing each kind of bridge', () => {
         it('draws horizontal bridge', async () => {
             const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
+            const puzzles = Array(5).fill(puzzleWithEachBridge)
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[puzzleWithEachBridge]}
-                    hasCustomPuzzle={false}
-                    enableSolutions={false}
-                />
+                <Game puzzles={puzzles} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
             stdin.write('3')
@@ -217,12 +235,9 @@ describe('Game', () => {
 
         it('draws a vertical bridge', async () => {
             const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
+            const puzzles = Array(5).fill(puzzleWithEachBridge)
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[puzzleWithEachBridge]}
-                    hasCustomPuzzle={false}
-                    enableSolutions={false}
-                />
+                <Game puzzles={puzzles} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
             stdin.write('2')
@@ -235,12 +250,9 @@ describe('Game', () => {
 
         it('draws a double horizontal bridge', async () => {
             const puzzleWithEachBridge = { encoding: '3x3:3a4.c.2a4' }
+            const puzzles = Array(5).fill(puzzleWithEachBridge)
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[puzzleWithEachBridge]}
-                    hasCustomPuzzle={false}
-                    enableSolutions={false}
-                />
+                <Game puzzles={puzzles} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
             stdin.write('3')
@@ -253,12 +265,9 @@ describe('Game', () => {
 
         it('draws a double vertical bridge', async () => {
             const puzzleWithEachBridge = { encoding: '3x3:3a2.c.4a2' }
+            const puzzles = Array(5).fill(puzzleWithEachBridge)
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[puzzleWithEachBridge]}
-                    hasCustomPuzzle={false}
-                    enableSolutions={false}
-                />
+                <Game puzzles={puzzles} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
             stdin.write('3')
@@ -271,12 +280,9 @@ describe('Game', () => {
 
         it('erases a bridge', async () => {
             const puzzleWithBridge = { encoding: '3x3:2a1.b.2a1' }
+            const puzzles = Array(5).fill(puzzleWithBridge)
             const { stdin, lastFrame } = render(
-                <Game
-                    puzzles={[puzzleWithBridge]}
-                    hasCustomPuzzle={false}
-                    enableSolutions={false}
-                />
+                <Game puzzles={puzzles} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
             stdin.write('2')
@@ -300,8 +306,9 @@ describe('Game', () => {
     describe('game controls - solving puzzles', () => {
         it('detects a valid solution', async () => {
             const puzzle = { encoding: '3x3:2a1.c.2a1' }
+            const puzzles = Array(5).fill(puzzle)
             const { stdin, lastFrame } = render(
-                <Game puzzles={[puzzle]} hasCustomPuzzle={false} enableSolutions={false} />
+                <Game puzzles={puzzles} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
             stdin.write('2')
@@ -323,7 +330,7 @@ describe('Game', () => {
             stdin.write('a')
             await setTimeout(5)
             stdin.write('j')
-            await setTimeout(5)
+            await setTimeout(50)
 
             expect(lastFrame()).toContain('Congratulations! Puzzle solved!')
         })
@@ -335,7 +342,7 @@ describe('Game', () => {
             vi.spyOn(process, 'exit').mockImplementation(exitMock as any)
 
             const { stdin } = render(
-                <Game puzzles={[TEST_PUZZLE]} hasCustomPuzzle={false} enableSolutions={false} />
+                <Game puzzles={TEST_PUZZLES_5} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
             stdin.write('q')

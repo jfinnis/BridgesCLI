@@ -1,5 +1,5 @@
 import { Box } from 'ink'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Controls from './components/Controls.tsx'
 import GameBoard from './components/GameBoard.tsx'
 import Messages from './components/Messages.tsx'
@@ -15,17 +15,27 @@ type GameProps = {
     puzzles: PuzzleData[]
     hasCustomPuzzle: boolean
     enableSolutions: boolean
-    puzzleStates?: PuzzleState[]
 }
 
-export default function Game({
-    puzzles,
-    hasCustomPuzzle,
-    enableSolutions,
-    puzzleStates,
-}: GameProps) {
+export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: GameProps) {
     const [puzzleIndex, setPuzzleIndex] = useState(0)
     const [showSolution, setShowSolution] = useState(false)
+
+    // Progress only tracks sample puzzles (exclude custom puzzle if present)
+    const sampleOffset = hasCustomPuzzle ? 1 : 0
+    const sampleCount = puzzles.length - sampleOffset
+
+    // Initialize puzzle states: first sample puzzle is in-progress, rest are not-started
+    // Pad to be divisible by 5 for PuzzleProgress grid
+    const progressCount = Math.ceil(sampleCount / 5) * 5
+    const [puzzleStates, setPuzzleStates] = useState<PuzzleState[]>(() =>
+        Array(progressCount)
+            .fill('not-started')
+            .map((_, i) => (i === 0 ? 'in-progress' : 'not-started'))
+    )
+
+    // Track which puzzle was last solved to detect first-time solves
+    const [lastSolvedPuzzle, setLastSolvedPuzzle] = useState<number | null>(null)
 
     const handlePrev = useCallback(() => {
         setPuzzleIndex(current => Math.max(0, current - 1))
@@ -52,6 +62,21 @@ export default function Game({
 
     const canUseInput = Boolean(process.stdin.isTTY)
 
+    // Map puzzleIndex to progress index (excluding custom puzzle)
+    const isSamplePuzzle = puzzleIndex >= sampleOffset
+    const progressIndex = isSamplePuzzle ? puzzleIndex - sampleOffset : -1
+
+    // Compute read-only state: solved puzzles are read-only
+    const isReadOnly = progressIndex >= 0 && puzzleStates[progressIndex] === 'solved'
+
+    // Compute navigation permissions
+    const canGoPrevious = puzzleIndex > 0
+    const canGoNext =
+        puzzleIndex < puzzles.length - 1 &&
+        (progressIndex < 0 ||
+            (progressIndex + 1 < puzzleStates.length &&
+                puzzleStates[progressIndex + 1] !== 'not-started'))
+
     const {
         selectionState,
         rows,
@@ -69,6 +94,7 @@ export default function Game({
               onNext: handleNext,
               onToggleSolution: handleToggleSolution,
               onQuit: () => process.exit(0),
+              isReadOnly,
           })
         : {
               selectionState: undefined,
@@ -79,6 +105,41 @@ export default function Game({
               resetSolutionReached: () => {},
               resetBridges: () => {},
           }
+
+    // Update progress when puzzle is solved
+    useEffect(() => {
+        if (solutionReached && progressIndex >= 0) {
+            setPuzzleStates(current => {
+                // Only act if this puzzle is currently in-progress
+                if (current[progressIndex] !== 'in-progress') return current
+                const next = [...current]
+                // Mark current puzzle as solved
+                next[progressIndex] = 'solved'
+                // Mark next puzzle as in-progress if it exists and is not-started
+                if (progressIndex + 1 < next.length && next[progressIndex + 1] === 'not-started') {
+                    next[progressIndex + 1] = 'in-progress'
+                }
+                return next
+            })
+            setLastSolvedPuzzle(puzzleIndex)
+        }
+    }, [solutionReached, progressIndex, puzzleIndex])
+
+    // Reset lastSolvedPuzzle when navigating away from a solved puzzle
+    useEffect(() => {
+        if (progressIndex < 0) {
+            setLastSolvedPuzzle(null)
+            return
+        }
+        if (puzzleStates[progressIndex] !== 'solved' || lastSolvedPuzzle !== puzzleIndex) {
+            setLastSolvedPuzzle(null)
+        }
+    }, [puzzleIndex, progressIndex, puzzleStates, lastSolvedPuzzle])
+
+    // Determine message to show
+    const isJustSolved = solutionReached && lastSolvedPuzzle === puzzleIndex
+    const isPuzzleCompleted =
+        progressIndex >= 0 && puzzleStates[progressIndex] === 'solved' && !isJustSolved
 
     const handleKeyInput = useCallback(
         (input: string, key: { escape?: boolean }) => {
@@ -93,16 +154,28 @@ export default function Game({
                 setShowSolution(false)
                 return
             }
-            if (input === 'n') {
+            if (input === 'n' && canGoNext) {
                 resetSolutionReached()
                 resetBridges()
                 setPuzzleIndex(i => Math.min(puzzles.length - 1, i + 1))
                 setShowSolution(false)
                 return
             }
+            // Ignore bridge-related input on solved puzzles
+            if (isReadOnly) {
+                return
+            }
             handleInput(input, key)
         },
-        [handleInput, enableSolutions, puzzles.length, resetSolutionReached, resetBridges]
+        [
+            handleInput,
+            enableSolutions,
+            puzzles.length,
+            resetSolutionReached,
+            resetBridges,
+            isReadOnly,
+            canGoNext,
+        ]
     )
 
     if (canUseInput) {
@@ -131,11 +204,16 @@ export default function Game({
                     puzzle={encoding}
                     isCustomPuzzle={hasCustomPuzzle && puzzleIndex === 0}
                 />
-                {puzzleStates ? <PuzzleProgress states={puzzleStates} columns={5} /> : null}
+                <PuzzleProgress
+                    states={puzzleStates}
+                    columns={5}
+                />
                 <Controls
                     hasSolution={!!puzzle.solution}
                     enableSolutions={enableSolutions}
                     selectionState={selectionState}
+                    canGoNext={canGoNext}
+                    canGoPrevious={canGoPrevious}
                 />
             </Box>
             <Box flexDirection="column">
@@ -152,7 +230,11 @@ export default function Game({
                     showSolution={showSolution}
                     selectionState={selectionState}
                 />
-                <Messages solutionReached={solutionReached} gridNotConnected={gridNotConnected} />
+                <Messages
+                    gridNotConnected={gridNotConnected}
+                    isJustSolved={isJustSolved}
+                    isPuzzleCompleted={isPuzzleCompleted}
+                />
             </Box>
         </Box>
     )

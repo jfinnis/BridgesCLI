@@ -25,7 +25,7 @@ describe('Controls', () => {
     describe('legendItems', () => {
         describe('when enableSolutions is false', () => {
             it('shows n/p as enabled when idle', () => {
-                const items = legendItems(true, false, false)
+                const items = legendItems(true, false, false, true, true)
                 const p = items.find(i => i.key === 'p')
                 const n = items.find(i => i.key === 'n')
                 const s = items.find(i => i.key === 's')
@@ -35,7 +35,7 @@ describe('Controls', () => {
             })
 
             it('shows n/p as disabled in selecting-node mode', () => {
-                const items = legendItems(true, false, true)
+                const items = legendItems(true, false, true, true, true)
                 const p = items.find(i => i.key === 'p')
                 const n = items.find(i => i.key === 'n')
                 const s = items.find(i => i.key === 's')
@@ -47,7 +47,7 @@ describe('Controls', () => {
 
         describe('when enableSolutions is true', () => {
             it('shows n/p/s as enabled when idle', () => {
-                const items = legendItems(true, true, false)
+                const items = legendItems(true, true, false, true, true)
                 const p = items.find(i => i.key === 'p')
                 const n = items.find(i => i.key === 'n')
                 const s = items.find(i => i.key === 's')
@@ -57,7 +57,7 @@ describe('Controls', () => {
             })
 
             it('shows n/p/s as disabled in selecting-node mode', () => {
-                const items = legendItems(true, true, true)
+                const items = legendItems(true, true, true, true, true)
                 const p = items.find(i => i.key === 'p')
                 const n = items.find(i => i.key === 'n')
                 const s = items.find(i => i.key === 's')
@@ -67,13 +67,13 @@ describe('Controls', () => {
             })
 
             it('shows s as disabled when no solution exists', () => {
-                const items = legendItems(false, true, false)
+                const items = legendItems(false, true, false, true, true)
                 const s = items.find(i => i.key === 's')
                 expect(s?.disabled).toBe(true)
             })
 
             it('shows s as enabled when solution exists', () => {
-                const items = legendItems(true, true, false)
+                const items = legendItems(true, true, false, true, true)
                 const s = items.find(i => i.key === 's')
                 expect(s?.disabled).toBe(false)
             })

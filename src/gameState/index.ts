@@ -14,6 +14,7 @@ export type UseGameStateProps = {
     onNext: () => void
     onToggleSolution?: () => void
     onQuit: () => void
+    isReadOnly: boolean
 }
 
 export type UseGameStateReturn = {
@@ -35,6 +36,7 @@ export function useGameState({
     onNext,
     onToggleSolution,
     onQuit,
+    isReadOnly,
 }: UseGameStateProps): UseGameStateReturn {
     const [userBridges, setUserBridges] = useState<PlacedBridge[]>([])
     const [solutionReached, setSolutionReached] = useState(false)
@@ -89,8 +91,16 @@ export function useGameState({
 
     const handleInput = useCallback(
         (input: string, key: { escape?: boolean }) => {
-            // When solution is reached, only allow navigation, quit, and toggle-solution
-            if (solutionReached) {
+            // When read-only, only allow navigation and quit
+            if (isReadOnly) {
+                const allowedInputs = ['p', 'n', 'q']
+                if (!allowedInputs.includes(input.toLowerCase())) {
+                    return
+                }
+            }
+
+            // When solution is reached (but not read-only), only allow navigation, quit, and toggle-solution
+            if (solutionReached && !isReadOnly) {
                 const allowedInputs = ['p', 'n', 'q', 's']
                 if (!allowedInputs.includes(input.toLowerCase())) {
                     return
@@ -161,6 +171,8 @@ export function useGameState({
             clearResetTimeout,
             puzzleIndex,
             puzzlesLength,
+            isReadOnly,
+            solutionReached,
         ]
     )
 
