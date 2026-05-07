@@ -12,7 +12,6 @@ const packageJson = JSON.parse(readFileSync(resolve(__dirname, '../package.json'
 
 type CliOptions = {
     puzzle: string | undefined
-    enableSolutions: boolean
 }
 
 const program = new Command()
@@ -39,7 +38,6 @@ program
   Example (3x3 with corner islands):
     --puzzle "3x3:1a2.c.1a2"`
     )
-    .option('--enable-solutions', 'Enable the solution viewing feature', false)
     .parse(process.argv)
 
 const options = program.opts<CliOptions>()
@@ -51,10 +49,4 @@ if (options.puzzle) {
     puzzles = [{ encoding: options.puzzle }, ...samplePuzzles]
 }
 
-render(
-    <Game
-        puzzles={puzzles}
-        hasCustomPuzzle={hasCustomPuzzle}
-        enableSolutions={options.enableSolutions}
-    />
-)
+render(<Game puzzles={puzzles} hasCustomPuzzle={hasCustomPuzzle} />)

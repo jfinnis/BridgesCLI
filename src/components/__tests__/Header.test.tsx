@@ -29,11 +29,6 @@ describe('Status', () => {
         expect(lastFrame()).toContain('Type a number [2-7] to select a node')
     })
 
-    it('shows solution message when showSolution is true', () => {
-        const { lastFrame } = render(<Status showSolution={true} />)
-        expect(lastFrame()).toContain('Viewing solution (press s to return to puzzle)')
-    })
-
     describe('selection state messages', () => {
         it('shows "select direction" message after we disambiguate which node', () => {
             const selectionState: SelectionState = {

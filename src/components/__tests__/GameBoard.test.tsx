@@ -191,26 +191,6 @@ describe('GameBoard', () => {
         })
     })
 
-    describe('solution mode coloring', () => {
-        it('renders nodes in solution mode', () => {
-            const { lastFrame } = render(
-                <GameBoard
-                    numNodes={2}
-                    rows={[
-                        [
-                            { value: 2, lineRight: 2 },
-                            { value: 2, lineLeft: 2 },
-                        ],
-                    ]}
-                    showSolution={true}
-                />
-            )
-
-            // Solution mode renders with green coloring on valid nodes
-            expect(lastFrame()).toContain('\x1b[32m')
-        })
-    })
-
     describe('disambiguation labels', () => {
         it('shows disambiguation labels for multiple nodes with same number', () => {
             const { lastFrame } = render(

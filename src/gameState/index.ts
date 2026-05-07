@@ -12,7 +12,6 @@ export type UseGameStateProps = {
     originalRows: HashiNodeData[][]
     onPrev: () => void
     onNext: () => void
-    onToggleSolution?: () => void
     onQuit: () => void
     isReadOnly: boolean
 }
@@ -34,7 +33,6 @@ export function useGameState({
     originalRows,
     onPrev,
     onNext,
-    onToggleSolution,
     onQuit,
     isReadOnly,
 }: UseGameStateProps): UseGameStateReturn {
@@ -99,9 +97,9 @@ export function useGameState({
                 }
             }
 
-            // When solution is reached (but not read-only), only allow navigation, quit, and toggle-solution
+            // When solution is reached (but not read-only), only allow navigation and quit
             if (solutionReached && !isReadOnly) {
-                const allowedInputs = ['p', 'n', 'q', 's']
+                const allowedInputs = ['p', 'n', 'q']
                 if (!allowedInputs.includes(input.toLowerCase())) {
                     return
                 }
@@ -138,11 +136,6 @@ export function useGameState({
                 return
             }
 
-            if (result.action.type === 'toggle-solution') {
-                onToggleSolution?.()
-                return
-            }
-
             if (
                 result.action.type === 'select-direction' &&
                 (result.nextState.mode === 'selected' || result.nextState.mode === 'invalid')
@@ -165,7 +158,6 @@ export function useGameState({
             handleBridgePlaced,
             onPrev,
             onNext,
-            onToggleSolution,
             onQuit,
             resetSelection,
             clearResetTimeout,

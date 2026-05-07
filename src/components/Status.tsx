@@ -3,11 +3,9 @@ import { Box, Text } from 'ink'
 import type { SelectionState } from '../gameState/types.ts'
 
 type StatusProps = {
-    showSolution?: boolean
     selectionState?: SelectionState
     minNumber?: number
     maxNumber?: number
-    solutionReached?: boolean
 }
 
 const directionNames: Record<string, string> = {
@@ -17,20 +15,7 @@ const directionNames: Record<string, string> = {
     l: 'right',
 }
 
-export default function Status({
-    showSolution = false,
-    selectionState,
-    minNumber,
-    maxNumber,
-    solutionReached = false,
-}: StatusProps) {
-    if (solutionReached) {
-        return (
-            <Box>
-                <Text> </Text>
-            </Box>
-        )
-    }
+export default function Status({ selectionState, minNumber, maxNumber }: StatusProps) {
     let statusText = ''
     if (selectionState) {
         const { mode, selectedNumber, direction, bridgeErased, isDoubleBridge } = selectionState
@@ -51,11 +36,10 @@ export default function Status({
         }
     }
 
-    const idleMessage = showSolution
-        ? 'Viewing solution (press s to return to puzzle)'
-        : minNumber !== undefined && maxNumber !== undefined
-          ? `Type a number [${minNumber}-${maxNumber}] to select a node`
-          : 'Type a number to select a node'
+    const idleMessage =
+        minNumber !== undefined && maxNumber !== undefined
+            ? `Type a number [${minNumber}-${maxNumber}] to select a node`
+            : 'Type a number to select a node'
 
     return (
         <Box>

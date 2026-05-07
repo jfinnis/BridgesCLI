@@ -14,12 +14,10 @@ import usePuzzleInput from './utils/usePuzzleInput.ts'
 type GameProps = {
     puzzles: PuzzleData[]
     hasCustomPuzzle: boolean
-    enableSolutions: boolean
 }
 
-export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: GameProps) {
+export default function Game({ puzzles, hasCustomPuzzle }: GameProps) {
     const [puzzleIndex, setPuzzleIndex] = useState(0)
-    const [showSolution, setShowSolution] = useState(false)
 
     // Progress only tracks sample puzzles (exclude custom puzzle if present)
     const sampleOffset = hasCustomPuzzle ? 1 : 0
@@ -37,22 +35,16 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
 
     const handlePrev = useCallback(() => {
         setPuzzleIndex(current => Math.max(0, current - 1))
-        setShowSolution(false)
     }, [])
 
     const handleNext = useCallback(() => {
         setPuzzleIndex(current => Math.min(puzzles.length - 1, current + 1))
-        setShowSolution(false)
-    }, [])
-
-    const handleToggleSolution = useCallback(() => {
-        setShowSolution(s => !s)
     }, [])
 
     const puzzle = puzzles[puzzleIndex]
     if (!puzzle) throw new Error('Bridges: no puzzle found')
 
-    const encoding = showSolution && puzzle.solution ? puzzle.solution : puzzle.encoding
+    const encoding = puzzle.encoding
     const dimensions = encoding.split(':')[0] ?? '5x5'
     const numNodes = Number(dimensions.split('x')[0]) || 5
 
@@ -90,7 +82,6 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
               originalRows,
               onPrev: handlePrev,
               onNext: handleNext,
-              onToggleSolution: handleToggleSolution,
               onQuit: () => process.exit(0),
               isReadOnly,
           })
@@ -137,15 +128,10 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
 
     const handleKeyInput = useCallback(
         (input: string, key: { escape?: boolean }) => {
-            if (input === 's' && enableSolutions) {
-                setShowSolution(s => !s)
-                return
-            }
             if (input === 'p') {
                 resetSolutionReached()
                 resetBridges()
                 setPuzzleIndex(i => Math.max(0, i - 1))
-                setShowSolution(false)
                 return
             }
             if (input === 'n') {
@@ -171,7 +157,6 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
                         })
                     }
                     setPuzzleIndex(newIndex)
-                    setShowSolution(false)
                 }
                 return
             }
@@ -181,15 +166,7 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
             }
             handleInput(input, key)
         },
-        [
-            handleInput,
-            enableSolutions,
-            puzzles.length,
-            resetSolutionReached,
-            resetBridges,
-            isReadOnly,
-            canGoNext,
-        ]
+        [handleInput, puzzles.length, resetSolutionReached, resetBridges, isReadOnly, canGoNext]
     )
 
     if (canUseInput) {
@@ -220,8 +197,6 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
                 />
                 <PuzzleProgress states={puzzleStates} columns={5} />
                 <Controls
-                    hasSolution={!!puzzle.solution}
-                    enableSolutions={enableSolutions}
                     selectionState={selectionState}
                     canGoNext={canGoNext}
                     canGoPrevious={canGoPrevious}
@@ -229,18 +204,11 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
             </Box>
             <Box flexDirection="column">
                 <Status
-                    showSolution={showSolution}
                     selectionState={selectionState}
                     minNumber={minNumber}
                     maxNumber={maxNumber}
-                    solutionReached={solutionReached}
                 />
-                <GameBoard
-                    numNodes={numNodes}
-                    rows={rows}
-                    showSolution={showSolution}
-                    selectionState={selectionState}
-                />
+                <GameBoard numNodes={numNodes} rows={rows} selectionState={selectionState} />
                 <Messages
                     gridNotConnected={gridNotConnected}
                     isJustSolved={isJustSolved}

@@ -84,11 +84,6 @@ describe('applyStyles', () => {
         expect(result).toContain('\x1b[39m')
     })
 
-    it('applies green in normal mode with showSolution', () => {
-        // biome-ignore lint/security/noSecrets: ANSI escape codes are not secrets
-        expect(applyStyles(content, 'normal', undefined, true)).toBe('\x1b[32mtest\x1b[39m')
-    })
-
     it('applies validation color in normal mode', () => {
         // biome-ignore lint/security/noSecrets: ANSI escape codes are not secrets
         expect(applyStyles(content, 'normal', 'valid')).toBe('\x1b[32mtest\x1b[39m')
@@ -103,7 +98,7 @@ describe('applyStyles', () => {
     })
 
     it('applies validation color in dim mode when validateInDim is true', () => {
-        const result = applyStyles(content, 'dim', 'valid', false, true)
+        const result = applyStyles(content, 'dim', 'valid', true)
         // biome-ignore lint/security/noSecrets: ANSI escape codes are not secrets
         expect(result).toBe('\x1b[32m\x1b[2mtest\x1b[22m\x1b[39m')
     })

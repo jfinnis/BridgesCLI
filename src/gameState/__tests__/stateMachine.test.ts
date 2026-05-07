@@ -99,10 +99,6 @@ describe('resolveNavigationAction', () => {
         expect(resolveNavigationAction('p', 1, 3)).toEqual({ type: 'navigate', direction: 'prev' })
     })
 
-    it('returns toggle-solution for s', () => {
-        expect(resolveNavigationAction('s', 0, 3)).toEqual({ type: 'toggle-solution' })
-    })
-
     it('returns null when n is pressed on last puzzle', () => {
         expect(resolveNavigationAction('n', 2, 3)).toBeNull()
     })

@@ -18,7 +18,6 @@ type HashiRowProps = {
     highlightedNode?: number
     rowIndex: number
     selectionState?: SelectionState
-    showSolution?: boolean
 }
 
 export default function HashiRow({
@@ -26,7 +25,6 @@ export default function HashiRow({
     highlightedNode,
     rowIndex,
     selectionState,
-    showSolution,
 }: HashiRowProps) {
     const disambiguationMap: Record<number, string> = {}
     if (selectionState?.mode === 'disambiguation' && selectionState.matchingNodes) {
@@ -58,7 +56,7 @@ export default function HashiRow({
         )
         const label = disambiguationMap[i] as string | undefined
         const filledState = getNodeFilledState(node)
-        return constructNode(node, displayMode, label, filledState, showSolution)
+        return constructNode(node, displayMode, label, filledState)
     })
 
     const lines: React.ReactNode[] = []

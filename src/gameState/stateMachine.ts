@@ -9,7 +9,6 @@ export type InputAction =
     | { type: 'none' }
     | { type: 'quit' }
     | { type: 'navigate'; direction: 'next' | 'prev' }
-    | { type: 'toggle-solution' }
     | { type: 'select-number'; number: number }
     | { type: 'select-label'; labelIndex: number }
     | { type: 'select-direction'; direction: Direction; isDouble: boolean }
@@ -57,9 +56,6 @@ export function resolveNavigationAction(
     }
     if (input === 'p' && puzzleIndex - 1 >= 0) {
         return { type: 'navigate', direction: 'prev' }
-    }
-    if (input === 's') {
-        return { type: 'toggle-solution' }
     }
     return null
 }

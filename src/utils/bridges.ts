@@ -290,7 +290,6 @@ export function applyStyles(
     content: string,
     displayMode: HashiNodeDisplayMode,
     validationState?: NodeFilledState | null,
-    showSolution?: boolean,
     validateInDim: boolean = false
 ): string {
     const colorReset = '\x1b[39m'
@@ -315,9 +314,6 @@ export function applyStyles(
     }
 
     // Normal display mode
-    if (showSolution) {
-        return `\x1b[32m${content}${colorReset}`
-    }
     if (validationColor) {
         return `${validationColor}${content}${colorReset}`
     }
@@ -352,17 +348,10 @@ export function isNumberedNode(node: HashiNodeData): boolean {
  */
 export function renderHorizontalBridge(
     displayMode: HashiNodeDisplayMode,
-    showSolution?: boolean,
     validationState?: NodeFilledState | null
 ): HashiCell {
-    const styledMiddle = applyStyles('─────', displayMode, validationState, showSolution, false)
-    const styledEmpty = applyStyles(
-        ' '.repeat(NODE_WIDTH),
-        displayMode,
-        validationState,
-        showSolution,
-        false
-    )
+    const styledMiddle = applyStyles('─────', displayMode, validationState, false)
+    const styledEmpty = applyStyles(' '.repeat(NODE_WIDTH), displayMode, validationState, false)
     return {
         lines: [styledEmpty, styledMiddle, styledEmpty],
         width: NODE_WIDTH,
@@ -374,17 +363,10 @@ export function renderHorizontalBridge(
  */
 export function renderDoubleHorizontalBridge(
     displayMode: HashiNodeDisplayMode,
-    showSolution?: boolean,
     validationState?: NodeFilledState | null
 ): HashiCell {
-    const styledMiddle = applyStyles('═════', displayMode, validationState, showSolution, false)
-    const styledEmpty = applyStyles(
-        ' '.repeat(NODE_WIDTH),
-        displayMode,
-        validationState,
-        showSolution,
-        false
-    )
+    const styledMiddle = applyStyles('═════', displayMode, validationState, false)
+    const styledEmpty = applyStyles(' '.repeat(NODE_WIDTH), displayMode, validationState, false)
     return {
         lines: [styledEmpty, styledMiddle, styledEmpty],
         width: NODE_WIDTH,
@@ -396,10 +378,9 @@ export function renderDoubleHorizontalBridge(
  */
 export function renderVerticalBridge(
     displayMode: HashiNodeDisplayMode,
-    showSolution?: boolean,
     validationState?: NodeFilledState | null
 ): HashiCell {
-    const styledContent = applyStyles('  │  ', displayMode, validationState, showSolution, false)
+    const styledContent = applyStyles('  │  ', displayMode, validationState, false)
     return {
         lines: [styledContent, styledContent, styledContent],
         width: NODE_WIDTH,
@@ -411,10 +392,9 @@ export function renderVerticalBridge(
  */
 export function renderDoubleVerticalBridge(
     displayMode: HashiNodeDisplayMode,
-    showSolution?: boolean,
     validationState?: NodeFilledState | null
 ): HashiCell {
-    const styledContent = applyStyles('  ║  ', displayMode, validationState, showSolution, false)
+    const styledContent = applyStyles('  ║  ', displayMode, validationState, false)
     return {
         lines: [styledContent, styledContent, styledContent],
         width: NODE_WIDTH,
@@ -434,18 +414,18 @@ export function renderNumberedNode(
     const up = node.lineUp === 2 ? '╨' : node.lineUp === 1 ? '┴' : '─'
     const label = disambiguationLabel ? disambiguationLabel : '─'
     const topBorder = `╭${label}${up}─╮`
-    const topLine = applyStyles(topBorder, displayMode, validationState, false, true)
+    const topLine = applyStyles(topBorder, displayMode, validationState, true)
 
     // Middle line
     const left = node.lineLeft === 2 ? '╡' : node.lineLeft === 1 ? '┤' : '│'
     const right = node.lineRight === 2 ? '╞' : node.lineRight === 1 ? '├' : '│'
     const middleContent = `${left} ${node.value} ${right}`
-    const middleLine = applyStyles(middleContent, displayMode, validationState, false, true)
+    const middleLine = applyStyles(middleContent, displayMode, validationState, true)
 
     // Bottom line
     const down = node.lineDown === 2 ? '╥' : node.lineDown === 1 ? '┬' : '─'
     const bottomBorder = `╰─${down}─╯`
-    const bottomLine = applyStyles(bottomBorder, displayMode, validationState, false, true)
+    const bottomLine = applyStyles(bottomBorder, displayMode, validationState, true)
 
     return {
         lines: [topLine, middleLine, bottomLine],
@@ -464,27 +444,26 @@ export function constructNode(
     node: HashiNodeData,
     displayMode: HashiNodeDisplayMode = 'normal',
     disambiguationLabel?: string,
-    validationState?: NodeFilledState | null,
-    showSolution?: boolean
+    validationState?: NodeFilledState | null
 ): HashiCell {
     // Horizontal bridges
     if (isHorizontalBridge(node)) {
-        return renderHorizontalBridge(displayMode, showSolution, validationState)
+        return renderHorizontalBridge(displayMode, validationState)
     }
 
     // Double horizontal bridges
     if (isDoubleHorizontalBridge(node)) {
-        return renderDoubleHorizontalBridge(displayMode, showSolution, validationState)
+        return renderDoubleHorizontalBridge(displayMode, validationState)
     }
 
     // Vertical bridges
     if (isVerticalBridge(node)) {
-        return renderVerticalBridge(displayMode, showSolution, validationState)
+        return renderVerticalBridge(displayMode, validationState)
     }
 
     // Double vertical bridges
     if (isDoubleVerticalBridge(node)) {
-        return renderDoubleVerticalBridge(displayMode, showSolution, validationState)
+        return renderDoubleVerticalBridge(displayMode, validationState)
     }
 
     // Numbered nodes

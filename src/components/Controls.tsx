@@ -9,8 +9,6 @@ type LegendItem = {
 }
 
 export function legendItems(
-    hasSolution: boolean,
-    enableSolutions: boolean,
     isSelecting: boolean,
     canGoNext: boolean,
     canGoPrevious: boolean
@@ -18,32 +16,19 @@ export function legendItems(
     const items: LegendItem[] = [
         { key: 'p', description: 'Previous puzzle', disabled: isSelecting || !canGoPrevious },
         { key: 'n', description: 'Next puzzle', disabled: isSelecting || !canGoNext },
+        { key: 'q', description: 'Quit' },
     ]
-
-    if (enableSolutions) {
-        items.push({
-            key: 's',
-            description: 'Show solution',
-            disabled: isSelecting || !hasSolution,
-        })
-    }
-
-    items.push({ key: 'q', description: 'Quit' })
 
     return items
 }
 
 type ControlsProps = {
-    hasSolution?: boolean
-    enableSolutions?: boolean
     selectionState?: SelectionState
     canGoNext?: boolean
     canGoPrevious?: boolean
 }
 
 export default function Controls({
-    hasSolution = false,
-    enableSolutions = false,
     selectionState,
     canGoNext = true,
     canGoPrevious = true,
@@ -53,16 +38,14 @@ export default function Controls({
     return (
         <Box flexDirection="column" marginTop={1}>
             <Text bold>Controls:</Text>
-            {legendItems(hasSolution, enableSolutions, isSelecting, canGoNext, canGoPrevious).map(
-                item => (
-                    <Box key={item.key}>
-                        <Text bold color={item.disabled ? 'gray' : undefined}>
-                            {item.key}
-                        </Text>
-                        <Text color={item.disabled ? 'gray' : undefined}>: {item.description}</Text>
-                    </Box>
-                )
-            )}
+            {legendItems(isSelecting, canGoNext, canGoPrevious).map(item => (
+                <Box key={item.key}>
+                    <Text bold color={item.disabled ? 'gray' : undefined}>
+                        {item.key}
+                    </Text>
+                    <Text color={item.disabled ? 'gray' : undefined}>: {item.description}</Text>
+                </Box>
+            ))}
         </Box>
     )
 }

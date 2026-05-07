@@ -13,16 +13,10 @@ import HashiRow from './HashiRow.tsx'
 type GameBoardProps = {
     rows: HashiNodeData[][]
     numNodes: number
-    showSolution?: boolean
     selectionState?: SelectionState
 }
 
-export default function GameBoard({
-    rows,
-    numNodes,
-    showSolution = false,
-    selectionState,
-}: GameBoardProps) {
+export default function GameBoard({ rows, numNodes, selectionState }: GameBoardProps) {
     validateGrid({ rows, numNodes })
 
     const height = rows.length * ROW_HEIGHT + 2
@@ -48,7 +42,6 @@ export default function GameBoard({
                         rowIndex={i}
                         highlightedNode={selectionState?.selectedNumber ?? undefined}
                         selectionState={selectionState}
-                        showSolution={showSolution}
                     />
                 ))}
             </Box>
