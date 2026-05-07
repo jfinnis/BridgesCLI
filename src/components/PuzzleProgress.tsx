@@ -12,10 +12,11 @@ const IN_PROGRESS = '⏳'
 const NOT_STARTED = '⬜'
 
 function validateStates(states: PuzzleState[], columns: number): void {
-    if (states.length % columns !== 0) {
-        throw new Error(
-            `PuzzleProgress: states length (${states.length}) must be divisible by columns (${columns})`
-        )
+    if (states.length === 0) {
+        throw new Error('PuzzleProgress: states must not be empty')
+    }
+    if (columns < 1) {
+        throw new Error(`PuzzleProgress: columns must be at least 1, got ${columns}`)
     }
 
     const inProgressCount = states.filter(s => s === 'in-progress').length
@@ -40,8 +41,41 @@ function renderTopBorder(columns: number): string {
     return renderBorder(columns, '┌', '┬', '┐')
 }
 
-function renderSeparatorRow(columns: number): string {
-    return renderBorder(columns, '├', '┼', '┤')
+function renderSeparatorBetweenRows(
+    rowAbove: PuzzleState[],
+    rowBelow: PuzzleState[] | undefined
+): string {
+    const colsBelow = rowBelow?.length ?? 0
+
+    // Left edge
+    let line = colsBelow > 0 ? '├' : '└'
+
+    // Middle: horizontal segments and junctions for columns in rowAbove
+    for (let i = 0; i < rowAbove.length; i++) {
+        const hasBelow = i < colsBelow
+
+        // Horizontal segment for this column
+        line += '──'
+
+        // Junction after this column (if not last column in rowAbove)
+        if (i < rowAbove.length - 1) {
+            if (hasBelow) {
+                line += '┼' // column continues below
+            } else {
+                line += '┴' // column ends here
+            }
+        }
+    }
+
+    // Right edge: based on last column in rowAbove
+    const lastCol = rowAbove.length - 1
+    if (lastCol >= 0 && lastCol < colsBelow) {
+        line += '┤'
+    } else {
+        line += '┘'
+    }
+
+    return line
 }
 
 function renderBottomBorder(columns: number): string {
@@ -63,25 +97,28 @@ function renderIconsLine(rowStates: PuzzleState[]): string {
 export default function PuzzleProgress({ states, columns = 5 }: PuzzleProgressProps) {
     validateStates(states, columns)
 
-    const numRows = states.length / columns
+    const numRows = Math.ceil(states.length / columns)
     const rows = Array.from({ length: numRows }, (_, i) =>
         states.slice(i * columns, (i + 1) * columns)
     )
 
     return (
         <Box flexDirection="column">
-            <Text>{renderTopBorder(columns)}</Text>
+            <Text>{renderTopBorder(rows[0]?.length ?? columns)}</Text>
             {rows.map((row, rowIndex) => {
                 const startIndex = rowIndex * columns
+                const isLastRow = rowIndex === rows.length - 1
                 return (
                     <Box key={rowIndex} flexDirection="column">
                         <Text>{renderNumbersLine(row, startIndex)}</Text>
                         <Text>{renderIconsLine(row)}</Text>
-                        {rowIndex < rows.length - 1 && <Text>{renderSeparatorRow(columns)}</Text>}
+                        {!isLastRow && (
+                            <Text>{renderSeparatorBetweenRows(row, rows[rowIndex + 1])}</Text>
+                        )}
                     </Box>
                 )
             })}
-            <Text>{renderBottomBorder(columns)}</Text>
+            <Text>{renderBottomBorder(rows[rows.length - 1]?.length ?? columns)}</Text>
         </Box>
     )
 }

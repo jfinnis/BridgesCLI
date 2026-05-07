@@ -81,12 +81,13 @@ describe('PuzzleProgress', () => {
         )
     })
 
-    it('throws error when states length is not divisible by columns', () => {
+    it('renders correctly when last row has fewer columns', () => {
         const states: PuzzleState[] = ['solved', 'not-started', 'not-started']
 
         const { lastFrame } = render(<PuzzleProgress states={states} columns={5} />)
-        expect(lastFrame()).toContain(
-            'PuzzleProgress: states length (3) must be divisible by columns (5)'
-        )
+        expect(lastFrame()).toEqual(`┌──┬──┬──┐
+│01│02│03│
+│✅│⬜│⬜│
+└──┴──┴──┘`)
     })
 })

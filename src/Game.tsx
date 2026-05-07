@@ -26,10 +26,8 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
     const sampleCount = puzzles.length - sampleOffset
 
     // Initialize puzzle states: first sample puzzle is in-progress, rest are not-started
-    // Pad to be divisible by 5 for PuzzleProgress grid
-    const progressCount = Math.ceil(sampleCount / 5) * 5
     const [puzzleStates, setPuzzleStates] = useState<PuzzleState[]>(() =>
-        Array(progressCount)
+        Array(sampleCount)
             .fill('not-started')
             .map((_, i) => (i === 0 ? 'in-progress' : 'not-started'))
     )
