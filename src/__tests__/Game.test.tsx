@@ -68,6 +68,44 @@ describe('Game', () => {
             expect(lastFrame()).toContain('Bridges: Puzzle #1')
         })
 
+        it('navigates to next puzzle with n key after solving current puzzle', async () => {
+            const puzzle = { encoding: '3x3:2a1.c.2a1' }
+            const puzzles = Array(5).fill(puzzle)
+            const { stdin, lastFrame } = render(
+                <Game puzzles={puzzles} hasCustomPuzzle={false} enableSolutions={false} />
+            )
+
+            // Solve puzzle 1
+            stdin.write('2')
+            await setTimeout(5)
+            stdin.write('a')
+            await setTimeout(5)
+            stdin.write('l')
+            await setTimeout(5)
+
+            stdin.write('2')
+            await setTimeout(5)
+            stdin.write('b')
+            await setTimeout(5)
+            stdin.write('l')
+            await setTimeout(5)
+
+            stdin.write('2')
+            await setTimeout(5)
+            stdin.write('a')
+            await setTimeout(5)
+            stdin.write('j')
+            await setTimeout(50)
+
+            expect(lastFrame()).toContain('Congratulations! Puzzle solved!')
+
+            // Now navigate to puzzle 2 - it should become in-progress
+            stdin.write('n')
+            await setTimeout(50)
+
+            expect(lastFrame()).toContain('Bridges: Puzzle #2')
+        })
+
         it('navigates to previous puzzle with p key when interactive', async () => {
             const { stdin, lastFrame } = render(
                 <Game puzzles={TEST_PUZZLES_5} hasCustomPuzzle={false} enableSolutions={false} />
@@ -80,18 +118,51 @@ describe('Game', () => {
         })
 
         it('does not navigate past last puzzle', async () => {
+            const puzzle = { encoding: '3x3:2a1.c.2a1' }
+            const puzzles = Array(5).fill(puzzle)
             const { stdin, lastFrame } = render(
-                <Game puzzles={TEST_PUZZLES_5} hasCustomPuzzle={false} enableSolutions={false} />
+                <Game puzzles={puzzles} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
-            // Try to go past last puzzle (should stay on #1 since not solved)
-            stdin.write('n')
-            await setTimeout(5)
-            stdin.write('n')
-            await setTimeout(5)
+            // Navigate to last puzzle (puzzle 5) by solving each puzzle and pressing 'n'
+            for (let i = 0; i < 4; i++) {
+                // Solve the current puzzle
+                stdin.write('2')
+                await setTimeout(5)
+                stdin.write('a')
+                await setTimeout(5)
+                stdin.write('l')
+                await setTimeout(5)
 
-            // Should still be on first puzzle
-            expect(lastFrame()).toContain('Bridges: Puzzle #1')
+                stdin.write('2')
+                await setTimeout(5)
+                stdin.write('b')
+                await setTimeout(5)
+                stdin.write('l')
+                await setTimeout(5)
+
+                stdin.write('2')
+                await setTimeout(5)
+                stdin.write('a')
+                await setTimeout(5)
+                stdin.write('j')
+                await setTimeout(50)
+
+                expect(lastFrame()).toContain('Congratulations! Puzzle solved!')
+
+                // Navigate to next puzzle (marks it as in-progress)
+                stdin.write('n')
+                await setTimeout(50)
+            }
+
+            expect(lastFrame()).toContain('Bridges: Puzzle #5')
+
+            // Try to go past last puzzle
+            stdin.write('n')
+            await setTimeout(50)
+
+            // Should still be on last puzzle
+            expect(lastFrame()).toContain('Bridges: Puzzle #5')
         })
 
         it('does not navigate before first puzzle', async () => {

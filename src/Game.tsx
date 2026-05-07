@@ -74,8 +74,8 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
     const canGoNext =
         puzzleIndex < puzzles.length - 1 &&
         (progressIndex < 0 ||
-            (progressIndex + 1 < puzzleStates.length &&
-                puzzleStates[progressIndex + 1] !== 'not-started'))
+            puzzleStates[progressIndex + 1] !== 'not-started' ||
+            puzzleStates[progressIndex] === 'solved')
 
     const {
         selectionState,
@@ -115,10 +115,6 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
                 const next = [...current]
                 // Mark current puzzle as solved
                 next[progressIndex] = 'solved'
-                // Mark next puzzle as in-progress if it exists and is not-started
-                if (progressIndex + 1 < next.length && next[progressIndex + 1] === 'not-started') {
-                    next[progressIndex + 1] = 'in-progress'
-                }
                 return next
             })
             setLastSolvedPuzzle(puzzleIndex)
@@ -158,7 +154,25 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
                 if (canGoNext) {
                     resetSolutionReached()
                     resetBridges()
-                    setPuzzleIndex(i => Math.min(puzzles.length - 1, i + 1))
+                    const newIndex = Math.min(puzzles.length - 1, puzzleIndex + 1)
+                    // Update puzzle states: mark current as solved if needed, mark new as in-progress
+                    const currentProgressIndex =
+                        puzzleIndex >= sampleOffset ? puzzleIndex - sampleOffset : -1
+                    const newProgressIndex = newIndex >= sampleOffset ? newIndex - sampleOffset : -1
+                    if (currentProgressIndex >= 0 || newProgressIndex >= 0) {
+                        setPuzzleStates(current => {
+                            const next = [...current]
+                            // If current puzzle is in-progress and not solved, keep it as-is
+                            // If navigating away from an unsolved puzzle, it stays in-progress in the array
+                            // but we'll rely on only showing one as "active" - actually let's just
+                            // allow the new one to become in-progress
+                            if (newProgressIndex >= 0 && next[newProgressIndex] === 'not-started') {
+                                next[newProgressIndex] = 'in-progress'
+                            }
+                            return next
+                        })
+                    }
+                    setPuzzleIndex(newIndex)
                     setShowSolution(false)
                 }
                 return
