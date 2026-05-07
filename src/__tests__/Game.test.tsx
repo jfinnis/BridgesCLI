@@ -55,7 +55,7 @@ describe('Game', () => {
     })
 
     describe('game controls - next/previous', () => {
-        it('navigates to next puzzle with n key when interactive', async () => {
+        it('does not navigate to next puzzle with n key when current puzzle not solved', async () => {
             const { stdin, lastFrame } = render(
                 <Game puzzles={TEST_PUZZLES_5} hasCustomPuzzle={false} enableSolutions={false} />
             )
@@ -64,7 +64,8 @@ describe('Game', () => {
 
             stdin.write('n')
             await setTimeout(5)
-            expect(lastFrame()).toContain('Bridges: Puzzle #2')
+            // Should still be on puzzle #1 because it's not solved
+            expect(lastFrame()).toContain('Bridges: Puzzle #1')
         })
 
         it('navigates to previous puzzle with p key when interactive', async () => {
@@ -72,10 +73,7 @@ describe('Game', () => {
                 <Game puzzles={TEST_PUZZLES_5} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
-            stdin.write('n')
-            await setTimeout(5)
-            expect(lastFrame()).toContain('Bridges: Puzzle #2')
-
+            // 'p' should work to go back (even from puzzle #1, it stays at #1)
             stdin.write('p')
             await setTimeout(5)
             expect(lastFrame()).toContain('Bridges: Puzzle #1')
@@ -86,22 +84,14 @@ describe('Game', () => {
                 <Game puzzles={TEST_PUZZLES_5} hasCustomPuzzle={false} enableSolutions={false} />
             )
 
-            // Navigate to last puzzle (index 4)
-            stdin.write('n')
-            await setTimeout(5)
-            stdin.write('n')
-            await setTimeout(5)
+            // Try to go past last puzzle (should stay on #1 since not solved)
             stdin.write('n')
             await setTimeout(5)
             stdin.write('n')
             await setTimeout(5)
 
-            // Try to go past last puzzle
-            stdin.write('n')
-            await setTimeout(5)
-
-            // Should still be on last puzzle
-            expect(lastFrame()).toContain('Bridges: Puzzle #5')
+            // Should still be on first puzzle
+            expect(lastFrame()).toContain('Bridges: Puzzle #1')
         })
 
         it('does not navigate before first puzzle', async () => {

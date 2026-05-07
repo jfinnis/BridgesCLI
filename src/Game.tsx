@@ -154,11 +154,13 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
                 setShowSolution(false)
                 return
             }
-            if (input === 'n' && canGoNext) {
-                resetSolutionReached()
-                resetBridges()
-                setPuzzleIndex(i => Math.min(puzzles.length - 1, i + 1))
-                setShowSolution(false)
+            if (input === 'n') {
+                if (canGoNext) {
+                    resetSolutionReached()
+                    resetBridges()
+                    setPuzzleIndex(i => Math.min(puzzles.length - 1, i + 1))
+                    setShowSolution(false)
+                }
                 return
             }
             // Ignore bridge-related input on solved puzzles
@@ -204,10 +206,7 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
                     puzzle={encoding}
                     isCustomPuzzle={hasCustomPuzzle && puzzleIndex === 0}
                 />
-                <PuzzleProgress
-                    states={puzzleStates}
-                    columns={5}
-                />
+                <PuzzleProgress states={puzzleStates} columns={5} />
                 <Controls
                     hasSolution={!!puzzle.solution}
                     enableSolutions={enableSolutions}
