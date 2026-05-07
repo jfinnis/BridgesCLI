@@ -6,12 +6,13 @@ import { Command } from 'commander'
 import { render } from 'ink'
 
 import Game from './Game.tsx'
-import { type PuzzleData, samplePuzzles } from './utils/puzzle-encoding.ts'
+import { debugPuzzles, type PuzzleData, samplePuzzles } from './utils/puzzle-encoding.ts'
 
 const packageJson = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf8'))
 
 type CliOptions = {
     puzzle: string | undefined
+    quickMode: boolean | undefined
 }
 
 const program = new Command()
@@ -38,15 +39,16 @@ program
   Example (3x3 with corner islands):
     --puzzle "3x3:1a2.c.1a2"`
     )
+    .option('--quick-mode', 'Use 5 easy debug puzzles for quick testing')
     .parse(process.argv)
 
 const options = program.opts<CliOptions>()
 
-let puzzles: PuzzleData[] = samplePuzzles
+let puzzles: PuzzleData[] = options.quickMode ? debugPuzzles : samplePuzzles
 let hasCustomPuzzle = false
 if (options.puzzle) {
     hasCustomPuzzle = true
-    puzzles = [{ encoding: options.puzzle }, ...samplePuzzles]
+    puzzles = [{ encoding: options.puzzle }, ...puzzles]
 }
 
-render(<Game puzzles={puzzles} hasCustomPuzzle={hasCustomPuzzle} />)
+render(<Game puzzles={puzzles} hasCustomPuzzle={hasCustomPuzzle} isQuickMode={options.quickMode} />)

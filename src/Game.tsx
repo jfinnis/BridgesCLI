@@ -14,9 +14,10 @@ import usePuzzleInput from './utils/usePuzzleInput.ts'
 type GameProps = {
     puzzles: PuzzleData[]
     hasCustomPuzzle: boolean
+    isQuickMode?: boolean
 }
 
-export default function Game({ puzzles, hasCustomPuzzle }: GameProps) {
+export default function Game({ puzzles, hasCustomPuzzle, isQuickMode }: GameProps) {
     const [puzzleIndex, setPuzzleIndex] = useState(0)
 
     // Progress only tracks sample puzzles (exclude custom puzzle if present)
@@ -194,6 +195,7 @@ export default function Game({ puzzles, hasCustomPuzzle }: GameProps) {
                     puzzleIndex={puzzleIndex}
                     puzzle={encoding}
                     isCustomPuzzle={hasCustomPuzzle && puzzleIndex === 0}
+                    isQuickMode={isQuickMode}
                 />
                 <PuzzleProgress states={puzzleStates} columns={5} />
                 <Controls

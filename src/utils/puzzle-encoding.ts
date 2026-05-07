@@ -205,6 +205,33 @@ export interface PuzzleData {
     solution?: string
 }
 
+/**
+ * Easy debug puzzles for quick testing with --quick-mode flag.
+ * These are super simple puzzles that can be solved quickly.
+ */
+export const debugPuzzles: PuzzleData[] = [
+    {
+        encoding: '3x1:1a1',
+        solution: '3x1:1-1',
+    },
+    {
+        encoding: '3x1:1a1',
+        solution: '3x1:1-1',
+    },
+    {
+        encoding: '3x1:1a1',
+        solution: '3x1:1-1',
+    },
+    {
+        encoding: '3x1:1a1',
+        solution: '3x1:1-1',
+    },
+    {
+        encoding: '3x1:1a1',
+        solution: '3x1:1-1',
+    },
+]
+
 export const samplePuzzles: PuzzleData[] = [
     {
         encoding: '7x7:4a3a3a3.a2c4a.3b3b3.g.2b8a4a.d1a3.a1a4a1a',
