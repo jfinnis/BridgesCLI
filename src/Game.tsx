@@ -163,8 +163,8 @@ export default function Game({ puzzles, hasCustomPuzzle, enableSolutions }: Game
                 }
                 return
             }
-            // Ignore bridge-related input on solved puzzles
-            if (isReadOnly) {
+            // Ignore bridge-related input on solved puzzles, but allow quit
+            if (isReadOnly && input !== 'q') {
                 return
             }
             handleInput(input, key)
