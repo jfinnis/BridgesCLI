@@ -40,31 +40,31 @@ describe('Game', () => {
 
             // Solve puzzle 1
             stdin.write('2')
-            await setTimeout(5)
+            await setTimeout(10)
             stdin.write('a')
-            await setTimeout(5)
+            await setTimeout(10)
             stdin.write('l')
-            await setTimeout(5)
+            await setTimeout(10)
 
             stdin.write('2')
-            await setTimeout(5)
+            await setTimeout(10)
             stdin.write('b')
-            await setTimeout(5)
+            await setTimeout(10)
             stdin.write('l')
-            await setTimeout(5)
+            await setTimeout(10)
 
             stdin.write('2')
-            await setTimeout(5)
+            await setTimeout(10)
             stdin.write('a')
-            await setTimeout(5)
+            await setTimeout(10)
             stdin.write('j')
-            await setTimeout(50)
+            await setTimeout(100)
 
             expect(lastFrame()).toContain('Congratulations! Puzzle solved!')
 
             // Now navigate to puzzle 2 - it should become in-progress
             stdin.write('n')
-            await setTimeout(50)
+            await setTimeout(100)
 
             expect(lastFrame()).toContain('Bridges: Puzzle #2')
         })
@@ -338,8 +338,8 @@ describe('Game', () => {
 
     describe('game controls - quit', () => {
         it('quits when q is pressed', async () => {
-            const exitMock = vi.fn()
-            vi.spyOn(process, 'exit').mockImplementation(exitMock as any)
+            const exitMock = vi.fn<(code?: string | number | null | undefined) => never>()
+            vi.spyOn(process, 'exit').mockImplementation(exitMock)
 
             const { stdin } = render(<Game puzzles={TEST_PUZZLES_5} hasCustomPuzzle={false} />)
 
