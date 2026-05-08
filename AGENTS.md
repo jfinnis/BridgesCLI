@@ -6,9 +6,27 @@ This is a CLI renderer for Hashiwokakero (Bridges) puzzles. It renders a grid of
 
 - `bun start` - Run the puzzle (interactive mode)
 - `bun start --puzzle <encoding>` - Run with a specific puzzle encoding
+- `bun start --quick-mode` - Run with 5 easy debug puzzles for quick testing
 - `bun run test` - Run unit tests
 - `bun run typecheck` - typescript typechecker
 - `bun run lint` - Lint and format
+
+## Gameplay
+
+### Drawing Bridges
+1. **Select nodes**: Press the node's value (1-8) to select a node (e.g., `1` for a node with value 1)
+2. **Disambiguation**: If multiple nodes share the same value, press the node's label (a-z) to select the correct one - this step is skipped if only one node matches the selected value
+3. **Draw bridge**: Press a direction key (`h` = left, `j` = down, `k` = up, `l` = right) to draw a single bridge, or uppercase (`H`/`J`/`K`/`L`) for double bridges
+
+### Solving Puzzles
+- When a puzzle is solved, a "Congratulations! Puzzle solved!" message appears
+- Press `n` to navigate to the next puzzle
+- Future puzzles are locked until the current puzzle is completed
+- When all puzzles are solved, an additional "🎉 You've solved all the puzzles! 🎉" message appears
+
+### Navigation
+- Press `p` to go to the previous puzzle (only if not on the first puzzle, and can navigate back to current)
+- Press `q` at any time to quit the game
 
 ## Command Order
 

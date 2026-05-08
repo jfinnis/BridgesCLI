@@ -226,6 +226,7 @@ describe('constructNode', () => {
     })
 })
 
+// biome-ignore lint/security/noSecrets: false positive
 describe('getDisplayMode()', () => {
     it('returns normal when highlightedNode is undefined', () => {
         const node: HashiNodeData = { value: 1 }
