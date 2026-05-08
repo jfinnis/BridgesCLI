@@ -6,7 +6,7 @@ A terminal-based Bridges (Hashiwokakero) puzzle game built with React and [Ink](
 
 Bridges (also known as Hashiwokakero) is a logic puzzle where you connect numbered islands with bridges. Each island displays a number indicating exactly how many bridges must connect to it. Bridges can be single or double, and must run horizontally or vertically between islands without crossing.
 
-![Demo](docs/readme-demo-1.png)
+![Demo](docs/readme-demo-2.png)
 
 ## Installation
 ```bash
