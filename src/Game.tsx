@@ -31,6 +31,9 @@ export default function Game({ puzzles, hasCustomPuzzle, isQuickMode }: GameProp
             .map((_, i) => (i === 0 ? 'in-progress' : 'not-started'))
     )
 
+    // Check if all puzzles are solved
+    const allSolved = useMemo(() => puzzleStates.every(state => state === 'solved'), [puzzleStates])
+
     // Track which puzzle was last solved to detect first-time solves
     const [lastSolvedPuzzle, setLastSolvedPuzzle] = useState<number | null>(null)
 
@@ -215,6 +218,7 @@ export default function Game({ puzzles, hasCustomPuzzle, isQuickMode }: GameProp
                     gridNotConnected={gridNotConnected}
                     isJustSolved={isJustSolved}
                     isPuzzleCompleted={isPuzzleCompleted}
+                    allSolved={allSolved}
                 />
             </Box>
         </Box>

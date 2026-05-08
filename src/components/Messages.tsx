@@ -4,12 +4,14 @@ type MessagesProps = {
     gridNotConnected?: boolean
     isJustSolved?: boolean
     isPuzzleCompleted?: boolean
+    allSolved?: boolean
 }
 
 export default function Messages({
     gridNotConnected = false,
     isJustSolved = false,
     isPuzzleCompleted = false,
+    allSolved = false,
 }: MessagesProps) {
     return (
         <Box flexDirection="column">
@@ -25,6 +27,11 @@ export default function Messages({
             {gridNotConnected ? (
                 <Text bold color="yellow">
                     Grid is not fully connected
+                </Text>
+            ) : null}
+            {allSolved ? (
+                <Text bold color="cyan">
+                    🎉 You've solved all the puzzles! 🎉
                 </Text>
             ) : null}
         </Box>
