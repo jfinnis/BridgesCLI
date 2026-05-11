@@ -6,11 +6,31 @@ export function bridgesEqual(a: PlacedBridge, b: PlacedBridge): boolean {
         (a.from.row === b.from.row &&
             a.from.col === b.from.col &&
             a.to.row === b.to.row &&
-            a.to.col === b.to.col) ||
+            a.to.col === b.to.col &&
+            a.count === b.count) ||
         (a.from.row === b.to.row &&
             a.from.col === b.to.col &&
             a.to.row === b.from.row &&
-            a.to.col === b.from.col)
+            a.to.col === b.from.col &&
+            a.count === b.count)
+    )
+}
+
+export function findBridgeInDirection(
+    bridges: PlacedBridge[],
+    from: { row: number; col: number },
+    to: { row: number; col: number }
+): PlacedBridge | undefined {
+    return bridges.find(
+        b =>
+            (b.from.row === from.row &&
+                b.from.col === from.col &&
+                b.to.row === to.row &&
+                b.to.col === to.col) ||
+            (b.from.row === to.row &&
+                b.from.col === to.col &&
+                b.to.row === from.row &&
+                b.to.col === from.col)
     )
 }
 
@@ -18,10 +38,31 @@ export function toggleBridge(
     bridges: PlacedBridge[],
     bridge: PlacedBridge
 ): { bridges: PlacedBridge[]; erased: boolean } {
-    const exists = bridges.some(b => bridgesEqual(b, bridge))
-    if (exists) {
-        return { bridges: bridges.filter(b => !bridgesEqual(b, bridge)), erased: true }
+    const { from, to, count } = bridge
+
+    const exactMatch = bridges.find(
+        b =>
+            (b.from.row === from.row &&
+                b.from.col === from.col &&
+                b.to.row === to.row &&
+                b.to.col === to.col &&
+                b.count === count) ||
+            (b.from.row === to.row &&
+                b.from.col === to.col &&
+                b.to.row === from.row &&
+                b.to.col === from.col &&
+                b.count === count)
+    )
+    if (exactMatch) {
+        return { bridges: bridges.filter(b => b !== exactMatch), erased: true }
     }
+
+    const existingInDirection = findBridgeInDirection(bridges, from, to)
+    if (existingInDirection) {
+        const updated = bridges.map(b => (b === existingInDirection ? { ...b, count } : b))
+        return { bridges: updated, erased: false }
+    }
+
     return { bridges: [...bridges, bridge], erased: false }
 }
 
