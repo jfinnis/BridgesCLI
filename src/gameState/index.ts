@@ -55,7 +55,12 @@ export function useGameState({
             resetTimeoutRef.current = null
         }
         solutionJustReachedRef.current = false
-        setSelectionState(getInitialSelectionState())
+        setSelectionState(prev => {
+            if (prev.mode === 'selected' || prev.mode === 'invalid') {
+                return getInitialSelectionState()
+            }
+            return prev
+        })
     }, [])
 
     const clearResetTimeout = useCallback(() => {
