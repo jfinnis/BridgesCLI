@@ -2,22 +2,13 @@ import { Text } from 'ink'
 
 type TitleProps = {
     puzzleIndex: number
-    puzzle: string
-    isCustomPuzzle?: boolean
-    isQuickMode?: boolean
+    isSinglePuzzleMode?: boolean
 }
 
-export default function Title({
-    puzzleIndex,
-    puzzle,
-    isCustomPuzzle = false,
-    isQuickMode = false,
-}: TitleProps) {
-    const title = isCustomPuzzle
-        ? `Bridges: Puzzle - ${puzzle}`
-        : isQuickMode
-          ? `Bridges: Quick Mode #${puzzleIndex + 1}`
-          : `Bridges: Puzzle #${puzzleIndex + 1}`
+export default function Title({ puzzleIndex, isSinglePuzzleMode = false }: TitleProps) {
+    const title = isSinglePuzzleMode
+        ? `Bridges: Custom Puzzle`
+        : `Bridges: Puzzle #${puzzleIndex + 1}`
 
     return <Text bold>{title}</Text>
 }

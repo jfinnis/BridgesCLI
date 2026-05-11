@@ -13,28 +13,23 @@ import usePuzzleInput from './utils/usePuzzleInput.ts'
 
 type GameProps = {
     puzzles: PuzzleData[]
-    hasCustomPuzzle: boolean
-    isQuickMode?: boolean
+    isSinglePuzzleMode?: boolean
 }
 
-export default function Game({ puzzles, hasCustomPuzzle, isQuickMode }: GameProps) {
+export default function Game({ puzzles, isSinglePuzzleMode = false }: GameProps) {
     const [puzzleIndex, setPuzzleIndex] = useState(0)
 
-    // Progress only tracks sample puzzles (exclude custom puzzle if present)
-    const sampleOffset = hasCustomPuzzle ? 1 : 0
-    const sampleCount = puzzles.length - sampleOffset
+    // Puzzle progress tracking (not used in single-puzzle mode)
+    const sampleCount = puzzles.length
 
-    // Initialize puzzle states: first sample puzzle is in-progress, rest are not-started
     const [puzzleStates, setPuzzleStates] = useState<PuzzleState[]>(() =>
         Array(sampleCount)
             .fill('not-started')
             .map((_, i) => (i === 0 ? 'in-progress' : 'not-started'))
     )
 
-    // Check if all puzzles are solved
     const allSolved = useMemo(() => puzzleStates.every(state => state === 'solved'), [puzzleStates])
 
-    // Track which puzzle was last solved to detect first-time solves
     const [lastSolvedPuzzle, setLastSolvedPuzzle] = useState<number | null>(null)
 
     const handlePrev = useCallback(() => {
@@ -56,20 +51,12 @@ export default function Game({ puzzles, hasCustomPuzzle, isQuickMode }: GameProp
 
     const canUseInput = Boolean(process.stdin.isTTY)
 
-    // Map puzzleIndex to progress index (excluding custom puzzle)
-    const isSamplePuzzle = puzzleIndex >= sampleOffset
-    const progressIndex = isSamplePuzzle ? puzzleIndex - sampleOffset : -1
+    const isReadOnly = puzzleStates[puzzleIndex] === 'solved'
 
-    // Compute read-only state: solved puzzles are read-only
-    const isReadOnly = progressIndex >= 0 && puzzleStates[progressIndex] === 'solved'
-
-    // Compute navigation permissions
     const canGoPrevious = puzzleIndex > 0
     const canGoNext =
         puzzleIndex < puzzles.length - 1 &&
-        (progressIndex < 0 ||
-            puzzleStates[progressIndex + 1] !== 'not-started' ||
-            puzzleStates[progressIndex] === 'solved')
+        (puzzleStates[puzzleIndex] === 'solved' || puzzleStates[puzzleIndex + 1] !== 'not-started')
 
     const {
         selectionState,
@@ -84,8 +71,8 @@ export default function Game({ puzzles, hasCustomPuzzle, isQuickMode }: GameProp
               puzzleIndex,
               puzzlesLength: puzzles.length,
               originalRows,
-              onPrev: handlePrev,
-              onNext: handleNext,
+              onPrev: isSinglePuzzleMode ? () => {} : handlePrev,
+              onNext: isSinglePuzzleMode ? () => {} : handleNext,
               onQuit: () => process.exit(0),
               isReadOnly,
           })
@@ -99,39 +86,34 @@ export default function Game({ puzzles, hasCustomPuzzle, isQuickMode }: GameProp
               resetBridges: () => {},
           }
 
-    // Update progress when puzzle is solved
     useEffect(() => {
-        if (solutionReached && progressIndex >= 0) {
+        if (solutionReached && puzzleIndex < puzzles.length) {
             setPuzzleStates(current => {
-                // Only act if this puzzle is currently in-progress
-                if (current[progressIndex] !== 'in-progress') return current
+                if (current[puzzleIndex] !== 'in-progress') return current
                 const next = [...current]
-                // Mark current puzzle as solved
-                next[progressIndex] = 'solved'
+                next[puzzleIndex] = 'solved'
                 return next
             })
             setLastSolvedPuzzle(puzzleIndex)
         }
-    }, [solutionReached, progressIndex, puzzleIndex])
+    }, [solutionReached, puzzleIndex, puzzles.length])
 
-    // Reset lastSolvedPuzzle when navigating away from a solved puzzle
     useEffect(() => {
-        if (progressIndex < 0) {
-            setLastSolvedPuzzle(null)
-            return
-        }
-        if (puzzleStates[progressIndex] !== 'solved' || lastSolvedPuzzle !== puzzleIndex) {
+        if (puzzleStates[puzzleIndex] !== 'solved' || lastSolvedPuzzle !== puzzleIndex) {
             setLastSolvedPuzzle(null)
         }
-    }, [puzzleIndex, progressIndex, puzzleStates, lastSolvedPuzzle])
+    }, [puzzleIndex, puzzleStates, lastSolvedPuzzle])
 
-    // Determine message to show
     const isJustSolved = solutionReached && lastSolvedPuzzle === puzzleIndex
     const isPuzzleCompleted =
-        progressIndex >= 0 && puzzleStates[progressIndex] === 'solved' && !isJustSolved
+        puzzleStates[puzzleIndex] === 'solved' && !isJustSolved && !isSinglePuzzleMode
 
     const handleKeyInput = useCallback(
         (input: string, key: { escape?: boolean }) => {
+            if (isSinglePuzzleMode) {
+                handleInput(input, key)
+                return
+            }
             if (input === 'p') {
                 resetSolutionReached()
                 resetBridges()
@@ -143,34 +125,31 @@ export default function Game({ puzzles, hasCustomPuzzle, isQuickMode }: GameProp
                     resetSolutionReached()
                     resetBridges()
                     const newIndex = Math.min(puzzles.length - 1, puzzleIndex + 1)
-                    // Update puzzle states: mark current as solved if needed, mark new as in-progress
-                    const currentProgressIndex =
-                        puzzleIndex >= sampleOffset ? puzzleIndex - sampleOffset : -1
-                    const newProgressIndex = newIndex >= sampleOffset ? newIndex - sampleOffset : -1
-                    if (currentProgressIndex >= 0 || newProgressIndex >= 0) {
-                        setPuzzleStates(current => {
-                            const next = [...current]
-                            // If current puzzle is in-progress and not solved, keep it as-is
-                            // If navigating away from an unsolved puzzle, it stays in-progress in the array
-                            // but we'll rely on only showing one as "active" - actually let's just
-                            // allow the new one to become in-progress
-                            if (newProgressIndex >= 0 && next[newProgressIndex] === 'not-started') {
-                                next[newProgressIndex] = 'in-progress'
-                            }
-                            return next
-                        })
-                    }
+                    setPuzzleStates(current => {
+                        const next = [...current]
+                        if (newIndex < next.length && next[newIndex] === 'not-started') {
+                            next[newIndex] = 'in-progress'
+                        }
+                        return next
+                    })
                     setPuzzleIndex(newIndex)
                 }
                 return
             }
-            // Ignore bridge-related input on solved puzzles, but allow quit
             if (isReadOnly && input !== 'q') {
                 return
             }
             handleInput(input, key)
         },
-        [handleInput, puzzles.length, resetSolutionReached, resetBridges, isReadOnly, canGoNext]
+        [
+            handleInput,
+            puzzles.length,
+            resetSolutionReached,
+            resetBridges,
+            isReadOnly,
+            canGoNext,
+            isSinglePuzzleMode,
+        ]
     )
 
     if (canUseInput) {
@@ -194,17 +173,12 @@ export default function Game({ puzzles, hasCustomPuzzle, isQuickMode }: GameProp
     return (
         <Box flexDirection="row">
             <Box flexDirection="column" marginRight={3}>
-                <Title
-                    puzzleIndex={puzzleIndex}
-                    puzzle={encoding}
-                    isCustomPuzzle={hasCustomPuzzle && puzzleIndex === 0}
-                    isQuickMode={isQuickMode}
-                />
-                <PuzzleProgress states={puzzleStates} columns={5} />
+                <Title puzzleIndex={puzzleIndex} isSinglePuzzleMode={isSinglePuzzleMode} />
+                {!isSinglePuzzleMode && <PuzzleProgress states={puzzleStates} columns={5} />}
                 <Controls
                     selectionState={selectionState}
-                    canGoNext={canGoNext}
-                    canGoPrevious={canGoPrevious}
+                    canGoNext={canGoNext && !isSinglePuzzleMode}
+                    canGoPrevious={canGoPrevious && !isSinglePuzzleMode}
                 />
             </Box>
             <Box flexDirection="column">
@@ -218,7 +192,7 @@ export default function Game({ puzzles, hasCustomPuzzle, isQuickMode }: GameProp
                     gridNotConnected={gridNotConnected}
                     isJustSolved={isJustSolved}
                     isPuzzleCompleted={isPuzzleCompleted}
-                    allSolved={allSolved}
+                    allSolved={isSinglePuzzleMode ? false : allSolved}
                 />
             </Box>
         </Box>

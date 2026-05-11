@@ -21,9 +21,7 @@ describe('Game', () => {
 
     describe('game controls - next/previous', () => {
         it('does not navigate to next puzzle with n key when current puzzle not solved', async () => {
-            const { stdin, lastFrame } = render(
-                <Game puzzles={TEST_PUZZLES_5} hasCustomPuzzle={false} />
-            )
+            const { stdin, lastFrame } = render(<Game puzzles={TEST_PUZZLES_5} />)
 
             expect(lastFrame()).toContain('Bridges: Puzzle #1')
 
@@ -36,7 +34,7 @@ describe('Game', () => {
         it('navigates to next puzzle with n key after solving current puzzle', async () => {
             const puzzle = { encoding: '3x3:2a1.c.2a1' }
             const puzzles = Array(5).fill(puzzle)
-            const { stdin, lastFrame } = render(<Game puzzles={puzzles} hasCustomPuzzle={false} />)
+            const { stdin, lastFrame } = render(<Game puzzles={puzzles} />)
 
             // Solve puzzle 1
             stdin.write('2')
@@ -70,9 +68,7 @@ describe('Game', () => {
         })
 
         it('navigates to previous puzzle with p key when interactive', async () => {
-            const { stdin, lastFrame } = render(
-                <Game puzzles={TEST_PUZZLES_5} hasCustomPuzzle={false} />
-            )
+            const { stdin, lastFrame } = render(<Game puzzles={TEST_PUZZLES_5} />)
 
             // 'p' should work to go back (even from puzzle #1, it stays at #1)
             stdin.write('p')
@@ -83,7 +79,7 @@ describe('Game', () => {
         it('does not navigate past last puzzle', async () => {
             const puzzle = { encoding: '3x3:2a1.c.2a1' }
             const puzzles = Array(5).fill(puzzle)
-            const { stdin, lastFrame } = render(<Game puzzles={puzzles} hasCustomPuzzle={false} />)
+            const { stdin, lastFrame } = render(<Game puzzles={puzzles} />)
 
             // Navigate to last puzzle (puzzle 5) by solving each puzzle and pressing 'n'
             for (let i = 0; i < 4; i++) {
@@ -127,9 +123,7 @@ describe('Game', () => {
         })
 
         it('does not navigate before first puzzle', async () => {
-            const { stdin, lastFrame } = render(
-                <Game puzzles={TEST_PUZZLES_5} hasCustomPuzzle={false} />
-            )
+            const { stdin, lastFrame } = render(<Game puzzles={TEST_PUZZLES_5} />)
 
             stdin.write('p')
             await setTimeout(5)
@@ -146,7 +140,7 @@ describe('Game', () => {
                 TEST_PUZZLE,
                 TEST_PUZZLE_2,
             ]
-            const { stdin, lastFrame } = render(<Game puzzles={puzzles} hasCustomPuzzle={false} />)
+            const { stdin, lastFrame } = render(<Game puzzles={puzzles} />)
 
             stdin.write('3')
             await setTimeout(5)
@@ -162,7 +156,7 @@ describe('Game', () => {
                 TEST_PUZZLE,
                 TEST_PUZZLE_2,
             ]
-            const { stdin, lastFrame } = render(<Game puzzles={puzzles} hasCustomPuzzle={false} />)
+            const { stdin, lastFrame } = render(<Game puzzles={puzzles} />)
 
             stdin.write('2')
             await setTimeout(5)
@@ -179,7 +173,7 @@ describe('Game', () => {
                 TEST_PUZZLE,
                 TEST_PUZZLE_2,
             ]
-            const { stdin, lastFrame } = render(<Game puzzles={puzzles} hasCustomPuzzle={false} />)
+            const { stdin, lastFrame } = render(<Game puzzles={puzzles} />)
 
             stdin.write('1')
             await setTimeout(5)
@@ -196,7 +190,7 @@ describe('Game', () => {
                 TEST_PUZZLE,
                 TEST_PUZZLE_2,
             ]
-            const { stdin, lastFrame } = render(<Game puzzles={puzzles} hasCustomPuzzle={false} />)
+            const { stdin, lastFrame } = render(<Game puzzles={puzzles} />)
 
             stdin.write('1')
             await setTimeout(5)
@@ -215,7 +209,7 @@ describe('Game', () => {
                 TEST_PUZZLE,
                 TEST_PUZZLE_2,
             ]
-            const { stdin, lastFrame } = render(<Game puzzles={puzzles} hasCustomPuzzle={false} />)
+            const { stdin, lastFrame } = render(<Game puzzles={puzzles} />)
 
             stdin.write('1')
             await setTimeout(5)
@@ -231,7 +225,7 @@ describe('Game', () => {
         it('draws horizontal bridge', async () => {
             const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
             const puzzles = Array(5).fill(puzzleWithEachBridge)
-            const { stdin, lastFrame } = render(<Game puzzles={puzzles} hasCustomPuzzle={false} />)
+            const { stdin, lastFrame } = render(<Game puzzles={puzzles} />)
 
             stdin.write('3')
             await setTimeout(5)
@@ -246,7 +240,7 @@ describe('Game', () => {
         it('draws a vertical bridge', async () => {
             const puzzleWithEachBridge = { encoding: '3x3:2a3.c.3a4' }
             const puzzles = Array(5).fill(puzzleWithEachBridge)
-            const { stdin, lastFrame } = render(<Game puzzles={puzzles} hasCustomPuzzle={false} />)
+            const { stdin, lastFrame } = render(<Game puzzles={puzzles} />)
 
             stdin.write('2')
             await setTimeout(5)
@@ -259,7 +253,7 @@ describe('Game', () => {
         it('draws a double horizontal bridge', async () => {
             const puzzleWithEachBridge = { encoding: '3x3:3a4.c.2a4' }
             const puzzles = Array(5).fill(puzzleWithEachBridge)
-            const { stdin, lastFrame } = render(<Game puzzles={puzzles} hasCustomPuzzle={false} />)
+            const { stdin, lastFrame } = render(<Game puzzles={puzzles} />)
 
             stdin.write('3')
             await setTimeout(5)
@@ -272,7 +266,7 @@ describe('Game', () => {
         it('draws a double vertical bridge', async () => {
             const puzzleWithEachBridge = { encoding: '3x3:3a2.c.4a2' }
             const puzzles = Array(5).fill(puzzleWithEachBridge)
-            const { stdin, lastFrame } = render(<Game puzzles={puzzles} hasCustomPuzzle={false} />)
+            const { stdin, lastFrame } = render(<Game puzzles={puzzles} />)
 
             stdin.write('3')
             await setTimeout(5)
@@ -285,7 +279,7 @@ describe('Game', () => {
         it('erases a bridge', async () => {
             const puzzleWithBridge = { encoding: '3x3:2a1.b.2a1' }
             const puzzles = Array(5).fill(puzzleWithBridge)
-            const { stdin, lastFrame } = render(<Game puzzles={puzzles} hasCustomPuzzle={false} />)
+            const { stdin, lastFrame } = render(<Game puzzles={puzzles} />)
 
             stdin.write('2')
             await setTimeout(5)
@@ -309,7 +303,7 @@ describe('Game', () => {
         it('detects a valid solution', async () => {
             const puzzle = { encoding: '3x3:2a1.c.2a1' }
             const puzzles = Array(5).fill(puzzle)
-            const { stdin, lastFrame } = render(<Game puzzles={puzzles} hasCustomPuzzle={false} />)
+            const { stdin, lastFrame } = render(<Game puzzles={puzzles} />)
 
             stdin.write('2')
             await setTimeout(5)
@@ -341,7 +335,7 @@ describe('Game', () => {
             const exitMock = vi.fn<(code?: string | number | null | undefined) => never>()
             vi.spyOn(process, 'exit').mockImplementation(exitMock)
 
-            const { stdin } = render(<Game puzzles={TEST_PUZZLES_5} hasCustomPuzzle={false} />)
+            const { stdin } = render(<Game puzzles={TEST_PUZZLES_5} />)
 
             stdin.write('q')
             await setTimeout(5)

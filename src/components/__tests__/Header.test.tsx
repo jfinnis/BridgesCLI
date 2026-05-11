@@ -6,15 +6,13 @@ import Title from '../Title.tsx'
 
 describe('Title', () => {
     it('shows puzzle number for indexed puzzles', () => {
-        const { lastFrame } = render(<Title puzzleIndex={2} puzzle="5x5:1a1" />)
+        const { lastFrame } = render(<Title puzzleIndex={2} />)
         expect(lastFrame()).toContain('Bridges: Puzzle #3')
     })
 
     it('shows custom puzzle label for custom puzzles', () => {
-        const { lastFrame } = render(
-            <Title puzzleIndex={0} puzzle="5x5:1a1" isCustomPuzzle={true} />
-        )
-        expect(lastFrame()).toContain('Bridges: Puzzle - 5x5:1a1')
+        const { lastFrame } = render(<Title puzzleIndex={0} isSinglePuzzleMode={true} />)
+        expect(lastFrame()).toContain('Bridges: Custom Puzzle')
     })
 })
 

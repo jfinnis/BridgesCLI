@@ -44,11 +44,16 @@ program
 
 const options = program.opts<CliOptions>()
 
-let puzzles: PuzzleData[] = options.quickMode ? debugPuzzles : samplePuzzles
-let hasCustomPuzzle = false
-if (options.puzzle) {
-    hasCustomPuzzle = true
-    puzzles = [{ encoding: options.puzzle }, ...puzzles]
+let puzzles: PuzzleData[]
+let isSinglePuzzleMode = false
+
+if (options.puzzle && !options.quickMode) {
+    puzzles = [{ encoding: options.puzzle }]
+    isSinglePuzzleMode = true
+} else if (options.quickMode) {
+    puzzles = debugPuzzles
+} else {
+    puzzles = samplePuzzles
 }
 
-render(<Game puzzles={puzzles} hasCustomPuzzle={hasCustomPuzzle} isQuickMode={options.quickMode} />)
+render(<Game puzzles={puzzles} isSinglePuzzleMode={isSinglePuzzleMode} />)
